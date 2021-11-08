@@ -1,49 +1,20 @@
 import React from 'react';
-import {Animated, StatusBar} from 'react-native';
+import {StatusBar} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
+import {
+  CardStyleInterpolators,
+  createStackNavigator,
+} from '@react-navigation/stack';
 import {TransitionSpec} from '@react-navigation/stack/lib/typescript/src/types';
 
 import WelcomeScreen from '../screens/Welcome';
 import LoginScreen from '../screens/Login';
 import RegisterScreen from '../screens/Register';
 import Screens from '../constants/Screens';
+import UpdateProfileScreen from '../screens/UpdateProfile';
+import {verticalSlide} from '../utils/navigationsAnimation';
 
 const Stack = createStackNavigator();
-
-const forSlide = ({current, next, inverted, layouts: {screen}}: any) => {
-  const progress = Animated.add(
-    current.progress.interpolate({
-      inputRange: [0, 1],
-      outputRange: [0, 1],
-      extrapolate: 'clamp',
-    }),
-    next
-      ? next.progress.interpolate({
-          inputRange: [0, 1],
-          outputRange: [0, 1],
-          extrapolate: 'clamp',
-        })
-      : 0,
-  );
-
-  return {
-    cardStyle: {
-      transform: [
-        {
-          translateY: Animated.multiply(
-            progress.interpolate({
-              inputRange: [0, 1, 2],
-              outputRange: [screen.height, 0, -screen.height],
-              extrapolate: 'clamp',
-            }),
-            inverted,
-          ),
-        },
-      ],
-    },
-  };
-};
 
 const config = {
   animation: 'timing',
@@ -67,7 +38,7 @@ const AppNavContainer = () => {
           component={LoginScreen}
           options={{
             headerShown: false,
-            cardStyleInterpolator: forSlide,
+            cardStyleInterpolator: verticalSlide,
             transitionSpec: {
               open: config,
               close: config,
@@ -79,7 +50,19 @@ const AppNavContainer = () => {
           component={RegisterScreen}
           options={{
             headerShown: false,
-            cardStyleInterpolator: forSlide,
+            cardStyleInterpolator: verticalSlide,
+            transitionSpec: {
+              open: config,
+              close: config,
+            },
+          }}
+        />
+        <Stack.Screen
+          name={Screens.UpdateProfile}
+          component={UpdateProfileScreen}
+          options={{
+            headerShown: false,
+            cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
             transitionSpec: {
               open: config,
               close: config,
