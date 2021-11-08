@@ -30,4 +30,10 @@ export const styles = StyleSheet.create({
   textButton: {
     height: 20,
   },
+  center: {
+    marginTop: 'auto',
+    marginBottom: 'auto',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  },
 });

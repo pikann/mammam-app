@@ -43,7 +43,7 @@ export default function RegisterScreen({navigation}: any) {
         />
         <Button
           style={styles.signInButton}
-          onPress={() => console.log('Register')}>
+          onPress={() => navigation.navigate(Screens.UpdateProfile)}>
           Register
         </Button>
         <Button

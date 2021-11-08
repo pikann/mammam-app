@@ -84,3 +84,20 @@ export function TextButton(
     </TouchableHighlight>
   );
 }
+
+export function IconButton(
+  props: TouchableHighlightProps & {name: string; color: string; size: number},
+) {
+  const {style, name, color, size, ...otherProps} = props;
+  return (
+    <TouchableHighlight
+      style={{
+        ...styles.backButton,
+        ...(style as object),
+      }}
+      underlayColor="transparent"
+      {...otherProps}>
+      <Icon style={styles.center} name={name} color={color} size={size} />
+    </TouchableHighlight>
+  );
+}
