@@ -8,7 +8,7 @@ const apiMiddleWare = () => (next: any) => (action: any) => {
   if (actionType.indexOf('_FAILED') > 0) {
     const statusCode = payloadAction.response.data.statusCode;
 
-    if (+statusCode === 401) {
+    if (+statusCode === 401 && !actionType.startsWith('LOGIN')) {
       previousActions.push(action);
     } else {
       const message = JSON.stringify(payloadAction.response.data.message);
