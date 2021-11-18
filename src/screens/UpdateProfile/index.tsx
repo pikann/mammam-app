@@ -1,14 +1,22 @@
 import React, {useRef} from 'react';
 import {Animated, Image} from 'react-native';
+import {StackNavigationHelpers} from '@react-navigation/stack/lib/typescript/src/types';
 
-import Button, {BackButton, IconButton} from '../../components/Button';
+import Button, {IconButton, TextButton} from '../../components/Button';
 import Text from '../../components/Text';
 import TextInput from '../../components/TextInput';
 import View, {Row} from '../../components/View';
 import Colors from '../../constants/Colors';
 import {styles} from './styles';
+import * as AppActions from '../../store/actions';
+import {connect} from 'react-redux';
 
-export default function UpdateProfileScreen({navigation}: any) {
+interface IProp {
+  navigation: StackNavigationHelpers;
+  logout: () => void;
+}
+
+const UpdateProfileScreen = (props: IProp) => {
   const marginTop = useRef(new Animated.Value(50)).current;
 
   const onFocusUsername = () => {
@@ -28,10 +36,12 @@ export default function UpdateProfileScreen({navigation}: any) {
   return (
     <View style={styles.background}>
       <Row style={styles.topRow}>
-        <BackButton
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-        />
+        <TextButton
+          style={styles.logoutButton}
+          textStyle={styles.logoutButtonText}
+          onPress={() => props.logout()}>
+          Logout
+        </TextButton>
       </Row>
       <Text style={styles.title}>Update profile</Text>
       <Text style={styles.description}>Update your display profile</Text>
@@ -62,4 +72,10 @@ export default function UpdateProfileScreen({navigation}: any) {
       </Animated.View>
     </View>
   );
-}
+};
+
+const mapDispatchToProps = (dispatch: any) => ({
+  logout: () => dispatch(AppActions.logout.request()),
+});
+
+export default connect(null, mapDispatchToProps)(UpdateProfileScreen);

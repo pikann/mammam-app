@@ -6,6 +6,7 @@ import {
   View as DefaultView,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import FastImage from 'react-native-fast-image';
 
 import Colors from '../../constants/Colors';
 import Text from '../Text';
@@ -15,26 +16,35 @@ export default function Button(
   props: TouchableHighlightProps & {
     children?: React.ReactNode | string;
     textChildrenStyle?: TextStyle | undefined;
+    loading?: boolean;
   },
 ) {
-  const {style, children, textChildrenStyle, ...otherProps} = props;
+  const {style, children, textChildrenStyle, loading, ...otherProps} = props;
   return (
     <TouchableHighlight
       style={{
         ...styles.button,
         ...(style as object),
       }}
+      disabled={loading}
       {...otherProps}>
       {typeof children === 'string' ? (
-        <DefaultView style={styles.flex}>
-          <Text
-            style={{
-              ...styles.textStyleButton,
-              ...textChildrenStyle,
-            }}>
-            {children}
-          </Text>
-        </DefaultView>
+        loading ? (
+          <FastImage
+            source={require('../../assets/images/white-loading.gif')}
+            style={styles.loading}
+          />
+        ) : (
+          <DefaultView style={styles.flex}>
+            <Text
+              style={{
+                ...styles.textStyleButton,
+                ...textChildrenStyle,
+              }}>
+              {children}
+            </Text>
+          </DefaultView>
+        )
       ) : (
         children
       )}
