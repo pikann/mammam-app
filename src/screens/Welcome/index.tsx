@@ -1,5 +1,6 @@
 import React, {useEffect, useRef} from 'react';
 import {Animated, Dimensions, Image} from 'react-native';
+import {StackNavigationHelpers} from '@react-navigation/stack/lib/typescript/src/types';
 
 import Button from '../../components/Button';
 import Text from '../../components/Text';
@@ -7,7 +8,11 @@ import View, {Row} from '../../components/View';
 import Screens from '../../constants/Screens';
 import {styles} from './styles';
 
-export default function WelcomeScreen({navigation}: any) {
+interface IProp {
+  navigation: StackNavigationHelpers;
+}
+
+export default function WelcomeScreen(props: IProp) {
   let disabled = useRef(true);
   const {width, height} = Dimensions.get('window');
   const top = useRef(new Animated.Value(height - 0.65 * width)).current;
@@ -69,7 +74,7 @@ export default function WelcomeScreen({navigation}: any) {
               style={styles.signInButton}
               onPress={() => {
                 if (!disabled.current) {
-                  navigation.navigate(Screens.Login);
+                  props.navigation.navigate(Screens.Login);
                 }
               }}>
               Sign In
@@ -80,7 +85,7 @@ export default function WelcomeScreen({navigation}: any) {
               textChildrenStyle={styles.signUpButtonText as {}}
               onPress={() => {
                 if (!disabled.current) {
-                  navigation.navigate(Screens.Register);
+                  props.navigation.navigate(Screens.Register);
                 }
               }}>
               Sign Up

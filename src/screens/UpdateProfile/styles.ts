@@ -15,12 +15,12 @@ export const styles = StyleSheet.create({
   backButton: {
     marginLeft: 40,
   },
-  registerButton: {
+  logoutButton: {
     marginLeft: 'auto',
     marginRight: 40,
     height: 30,
   },
-  registerButtonText: {
+  logoutButtonText: {
     fontFamily: 'SourceSansPro-SemiBold',
     fontSize: 18,
   },

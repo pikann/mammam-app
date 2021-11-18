@@ -1,5 +1,6 @@
 import React from 'react';
 import {Image, View as DefaultView} from 'react-native';
+import {StackNavigationHelpers} from '@react-navigation/stack/lib/typescript/src/types';
 
 import Button, {BackButton, TextButton} from '../../components/Button';
 import Text from '../../components/Text';
@@ -8,18 +9,22 @@ import View, {Row} from '../../components/View';
 import Screens from '../../constants/Screens';
 import {styles} from './styles';
 
-export default function LoginScreen({navigation}: any) {
+interface IProp {
+  navigation: StackNavigationHelpers;
+}
+
+export default function LoginScreen(props: IProp) {
   return (
     <View style={styles.background}>
       <Row style={styles.topRow}>
         <BackButton
           style={styles.backButton}
-          onPress={() => navigation.goBack()}
+          onPress={() => props.navigation.goBack()}
         />
         <TextButton
           style={styles.registerButton}
           textStyle={styles.registerButtonText}
-          onPress={() => navigation.navigate(Screens.Register)}>
+          onPress={() => props.navigation.navigate(Screens.Register)}>
           Register
         </TextButton>
       </Row>
