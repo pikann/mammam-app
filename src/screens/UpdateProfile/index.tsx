@@ -1,5 +1,5 @@
-import React, {useRef} from 'react';
-import {Animated, Image} from 'react-native';
+import React, {useRef, useState} from 'react';
+import {Animated, Image, ToastAndroid} from 'react-native';
 import {StackNavigationHelpers} from '@react-navigation/stack/lib/typescript/src/types';
 
 import Button, {IconButton, TextButton} from '../../components/Button';
@@ -8,15 +8,22 @@ import TextInput from '../../components/TextInput';
 import View, {Row} from '../../components/View';
 import Colors from '../../constants/Colors';
 import {styles} from './styles';
+import * as UpdateProfileActions from './store/actions';
 import * as AppActions from '../../store/actions';
 import {connect} from 'react-redux';
+import {createStructuredSelector} from 'reselect';
+import {makeSelectLoading} from './store/selectors';
 
 interface IProp {
   navigation: StackNavigationHelpers;
+  isLoading: boolean;
+  updateProfile: (payload: any) => void;
   logout: () => void;
 }
 
 const UpdateProfileScreen = (props: IProp) => {
+  const [username, setUsername] = useState('');
+  const [avatar, setAvatar] = useState('');
   const marginTop = useRef(new Animated.Value(50)).current;
 
   const onFocusUsername = () => {
@@ -33,6 +40,22 @@ const UpdateProfileScreen = (props: IProp) => {
       useNativeDriver: false,
     }).start(() => {});
   };
+
+  const onUpdateProfile = () => {
+    if (!username) {
+      ToastAndroid.show('Enter username!', ToastAndroid.SHORT);
+      return;
+    }
+    const payload = {};
+    if (username) {
+      payload['username'] = username;
+    }
+    if (avatar) {
+      payload['avatar'] = avatar;
+    }
+    props.updateProfile(payload);
+  };
+
   return (
     <View style={styles.background}>
       <Row style={styles.topRow}>
@@ -61,12 +84,14 @@ const UpdateProfileScreen = (props: IProp) => {
         <TextInput
           style={styles.usernameInput}
           placeholder="Username"
+          onChangeText={text => setUsername(text)}
           onFocus={onFocusUsername}
           onBlur={onBlurUsername}
         />
         <Button
           style={styles.submitButton}
-          onPress={() => console.log('Submit')}>
+          loading={props.isLoading}
+          onPress={() => onUpdateProfile()}>
           Submit
         </Button>
       </Animated.View>
@@ -74,8 +99,17 @@ const UpdateProfileScreen = (props: IProp) => {
   );
 };
 
-const mapDispatchToProps = (dispatch: any) => ({
-  logout: () => dispatch(AppActions.logout.request()),
+const mapStateToProps = createStructuredSelector<any, any>({
+  isLoading: makeSelectLoading(),
 });
 
-export default connect(null, mapDispatchToProps)(UpdateProfileScreen);
+const mapDispatchToProps = (dispatch: any) => ({
+  logout: () => dispatch(AppActions.logout.request()),
+  updateProfile: (payload: any) =>
+    dispatch(UpdateProfileActions.updateProfile.request(payload)),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(UpdateProfileScreen);
