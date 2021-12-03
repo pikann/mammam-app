@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import AxiosClientInstance from '../../utils/axios';
 
 import * as AppActions from '../actions';
+import {refreshTokenService} from '../services';
 
 interface Data {
   [key: string]: any;
@@ -41,12 +42,7 @@ function* checkLogin() {
 
 function* logout() {
   try {
-    yield AsyncStorage.removeItem('access_token');
-    yield AsyncStorage.removeItem('email');
-    yield AsyncStorage.removeItem('id_user');
-    yield AsyncStorage.removeItem('refresh_token');
-    yield AsyncStorage.removeItem('role');
-    yield AsyncStorage.removeItem('username');
+    yield AsyncStorage.clear();
 
     yield put({type: AppActions.Types.CHECK_LOGIN.begin});
 
@@ -61,7 +57,30 @@ function* logout() {
   }
 }
 
+function* refreshToken() {
+  try {
+    const token: string = yield call(AsyncStorage.getItem, 'refresh_token');
+
+    if (token) {
+      const response: Data = yield call(refreshTokenService, token);
+
+      yield AsyncStorage.setItem('access_token', response.data.access_token);
+      AxiosClientInstance.setHeader(response.data.access_token);
+
+      yield put({type: AppActions.Types.REFRESH_TOKEN.succeeded});
+    } else {
+      yield put({type: AppActions.Types.LOGOUT.begin});
+    }
+  } catch (error) {
+    yield put({
+      type: AppActions.Types.REFRESH_TOKEN.failed,
+      payload: error,
+    });
+  }
+}
+
 export default function* appWatcher() {
   yield takeLatest(AppActions.Types.CHECK_LOGIN.begin, checkLogin);
   yield takeLatest(AppActions.Types.LOGOUT.begin, logout);
+  yield takeLatest(AppActions.Types.REFRESH_TOKEN.begin, refreshToken);
 }
