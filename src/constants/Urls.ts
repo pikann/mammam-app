@@ -1,3 +1,3 @@
 export default {
-  API: 'https://mammam-backend.herokuapp.com/',
+  API: 'https://api.mammam.online/',
 };
