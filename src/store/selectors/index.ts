@@ -9,4 +9,14 @@ const makeSelectLogin = () =>
     return state.login;
   });
 
-export {makeSelectLogin};
+const makeSelectUsername = () =>
+  createSelector(appState, state => {
+    return state.username;
+  });
+
+const makeSelectAvatar = () =>
+  createSelector(appState, state => {
+    return state.avatar;
+  });
+
+export {makeSelectLogin, makeSelectUsername, makeSelectAvatar};

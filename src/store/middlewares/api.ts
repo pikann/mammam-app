@@ -8,6 +8,7 @@ const apiMiddleWare = (store: any) => (next: any) => async (action: any) => {
   const {type: actionType, payload: payloadAction} = action;
 
   if (actionType.indexOf('_FAILED') > 0) {
+    console.log('FAILED', payloadAction.response.data);
     const statusCode = payloadAction.response.data.statusCode;
 
     if (+statusCode === 401 && !actionType.startsWith('LOGIN')) {

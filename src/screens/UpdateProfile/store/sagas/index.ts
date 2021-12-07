@@ -1,6 +1,7 @@
 import {call, put, takeLatest} from 'redux-saga/effects';
 
 import * as UpdateProfileAction from '../actions';
+import * as AppActions from '../../../../store/actions';
 import {updateProfileService} from '../services';
 
 interface Data {
@@ -19,6 +20,10 @@ function* updateProfileSaga({payload}: any) {
     });
     yield put({
       type: UpdateProfileAction.Types.UPDATE_PROFILE.succeeded,
+    });
+    yield put({
+      type: AppActions.Types.GET_USER_PROFILE.succeeded,
+      payload,
     });
   } catch (error) {
     yield put({

@@ -15,10 +15,17 @@ import Screens from '../constants/Screens';
 import UpdateProfileScreen from '../screens/UpdateProfile';
 import {verticalSlide} from '../utils/navigationsAnimation';
 import {createStructuredSelector} from 'reselect';
-import {makeSelectLogin} from '../store/selectors';
+import {makeSelectLogin, makeSelectUsername} from '../store/selectors';
 import * as AppActions from '../store/actions';
+import HomeScreen from '../screens/Home';
 
 const Stack = createStackNavigator();
+
+interface IProp {
+  login: boolean;
+  username: string;
+  checkLogin: () => void;
+}
 
 const config = {
   animation: 'timing',
@@ -27,17 +34,17 @@ const config = {
   },
 } as TransitionSpec;
 
-const AppNavContainer = ({login, checkLogin}: any) => {
+const AppNavContainer = (props: IProp) => {
   useEffect(() => {
     setTimeout(() => {
-      checkLogin();
+      props.checkLogin();
     }, 2000);
-  }, [checkLogin]);
+  });
 
   return (
     <NavigationContainer>
       <StatusBar hidden={true} />
-      {!login ? (
+      {!props.login ? (
         <Stack.Navigator initialRouteName={Screens.Welcome}>
           <Stack.Screen
             name={Screens.Welcome}
@@ -69,7 +76,7 @@ const AppNavContainer = ({login, checkLogin}: any) => {
             }}
           />
         </Stack.Navigator>
-      ) : (
+      ) : props.username === '' ? (
         <Stack.Navigator initialRouteName={Screens.UpdateProfile}>
           <Stack.Screen
             name={Screens.UpdateProfile}
@@ -84,6 +91,21 @@ const AppNavContainer = ({login, checkLogin}: any) => {
             }}
           />
         </Stack.Navigator>
+      ) : (
+        <Stack.Navigator initialRouteName={Screens.Home}>
+          <Stack.Screen
+            name={Screens.Home}
+            component={HomeScreen}
+            options={{
+              headerShown: false,
+              cardStyleInterpolator: verticalSlide,
+              transitionSpec: {
+                open: config,
+                close: config,
+              },
+            }}
+          />
+        </Stack.Navigator>
       )}
     </NavigationContainer>
   );
@@ -91,6 +113,7 @@ const AppNavContainer = ({login, checkLogin}: any) => {
 
 const mapStateToProps = createStructuredSelector<any, any>({
   login: makeSelectLogin(),
+  username: makeSelectUsername(),
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
