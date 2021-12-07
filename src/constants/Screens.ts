@@ -3,4 +3,5 @@ export default {
   Login: 'Login',
   Register: 'Register',
   UpdateProfile: 'UpdateProfile',
+  Home: 'Home',
 };
