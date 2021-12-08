@@ -3,7 +3,7 @@ import React from 'react';
 import View from '../../components/View';
 import Text from '../../components/Text';
 
-const HomeScreen = () => {
+const MeScreen = () => {
   return (
     <View style={{flex: 1}}>
       <Text
@@ -13,10 +13,10 @@ const HomeScreen = () => {
           marginLeft: 'auto',
           marginRight: 'auto',
         }}>
-        Home
+        Me
       </Text>
     </View>
   );
 };
 
-export default HomeScreen;
+export default MeScreen;
