@@ -1,23 +1,18 @@
 import React, {useEffect} from 'react';
 import {StatusBar} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
-import {
-  CardStyleInterpolators,
-  createStackNavigator,
-} from '@react-navigation/stack';
-import {TransitionSpec} from '@react-navigation/stack/lib/typescript/src/types';
+import {createStackNavigator} from '@react-navigation/stack';
 import {connect} from 'react-redux';
 
-import WelcomeScreen from '../screens/Welcome';
-import LoginScreen from '../screens/Login';
-import RegisterScreen from '../screens/Register';
 import Screens from '../constants/Screens';
 import UpdateProfileScreen from '../screens/UpdateProfile';
-import {verticalSlide} from '../utils/navigationsAnimation';
 import {createStructuredSelector} from 'reselect';
 import {makeSelectLogin, makeSelectUsername} from '../store/selectors';
 import * as AppActions from '../store/actions';
-import HomeScreen from '../screens/Home';
+import UnauthenticatedNav from './Unauthenticated';
+import Navigations from '../constants/Navigations';
+import AuthenticatedNav from './Authenticated';
+import {horizontalIOSOption} from './animation';
 
 const Stack = createStackNavigator();
 
@@ -26,13 +21,6 @@ interface IProp {
   username: string;
   checkLogin: () => void;
 }
-
-const config = {
-  animation: 'timing',
-  config: {
-    duration: 500,
-  },
-} as TransitionSpec;
 
 const AppNavContainer = (props: IProp) => {
   useEffect(() => {
@@ -45,35 +33,11 @@ const AppNavContainer = (props: IProp) => {
     <NavigationContainer>
       <StatusBar hidden={true} />
       {!props.login ? (
-        <Stack.Navigator initialRouteName={Screens.Welcome}>
+        <Stack.Navigator initialRouteName={Navigations.Unauthenticated}>
           <Stack.Screen
-            name={Screens.Welcome}
-            component={WelcomeScreen}
+            name={Navigations.Unauthenticated}
+            component={UnauthenticatedNav}
             options={{headerShown: false}}
-          />
-          <Stack.Screen
-            name={Screens.Login}
-            component={LoginScreen}
-            options={{
-              headerShown: false,
-              cardStyleInterpolator: verticalSlide,
-              transitionSpec: {
-                open: config,
-                close: config,
-              },
-            }}
-          />
-          <Stack.Screen
-            name={Screens.Register}
-            component={RegisterScreen}
-            options={{
-              headerShown: false,
-              cardStyleInterpolator: verticalSlide,
-              transitionSpec: {
-                open: config,
-                close: config,
-              },
-            }}
           />
         </Stack.Navigator>
       ) : props.username === '' ? (
@@ -81,29 +45,15 @@ const AppNavContainer = (props: IProp) => {
           <Stack.Screen
             name={Screens.UpdateProfile}
             component={UpdateProfileScreen}
-            options={{
-              headerShown: false,
-              cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-              transitionSpec: {
-                open: config,
-                close: config,
-              },
-            }}
+            options={horizontalIOSOption}
           />
         </Stack.Navigator>
       ) : (
-        <Stack.Navigator initialRouteName={Screens.Home}>
+        <Stack.Navigator initialRouteName={Navigations.Authenticated}>
           <Stack.Screen
-            name={Screens.Home}
-            component={HomeScreen}
-            options={{
-              headerShown: false,
-              cardStyleInterpolator: verticalSlide,
-              transitionSpec: {
-                open: config,
-                close: config,
-              },
-            }}
+            name={Navigations.Authenticated}
+            component={AuthenticatedNav}
+            options={{headerShown: false}}
           />
         </Stack.Navigator>
       )}
