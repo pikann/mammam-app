@@ -6,7 +6,7 @@ buildscript {
         minSdkVersion = 21
         compileSdkVersion = 30
         targetSdkVersion = 30
-        ndkVersion = "21.4.7075529"
+        ndkVersion = "23.1.7779620"
     }
     repositories {
         google()
@@ -34,5 +34,11 @@ allprojects {
 
         google()
         maven { url 'https://www.jitpack.io' }
+
+        jcenter() {
+            content {
+                includeModule("com.yqritc", "android-scalablevideoview")
+            }
+        }
     }
 }

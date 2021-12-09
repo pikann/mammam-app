@@ -14,6 +14,8 @@ target 'MamMamApp' do
 
   pod 'react-native-safe-area-context', :path => '../node_modules/react-native-safe-area-context'
 
+  pod 'react-native-video', :path => '../node_modules/react-native-video'
+
   target 'MamMamAppTests' do
     inherit! :complete
     # Pods for testing
