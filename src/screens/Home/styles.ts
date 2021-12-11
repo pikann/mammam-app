@@ -15,6 +15,11 @@ export const styles = StyleSheet.create({
     marginLeft: 'auto',
     marginRight: 'auto',
   },
+  videoFrame: {
+    backgroundColor: Colors.black,
+    width: width,
+    height: height - 55,
+  },
   video: {
     flex: 1,
   },
@@ -80,10 +85,19 @@ export const styles = StyleSheet.create({
     marginBottom: 20,
     borderRadius: 25,
   },
-  description: {
-    color: Colors.background,
+  descriptionView: {
+    backgroundColor: 'transparent',
     marginTop: 'auto',
     marginBottom: 15,
     marginLeft: 15,
+  },
+  description: {
+    color: Colors.background,
+    fontSize: 15,
+    marginBottom: 10,
+  },
+  views: {
+    color: Colors.background,
+    fontSize: 12,
   },
 });

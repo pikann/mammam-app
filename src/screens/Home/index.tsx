@@ -1,58 +1,135 @@
-import React, {useRef} from 'react';
-import {Image} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Dimensions, Image} from 'react-native';
 import Video from 'react-native-video';
-import {IconButton, TextButton} from '../../components/Button';
+import {connect} from 'react-redux';
+import {StackNavigationHelpers} from '@react-navigation/stack/lib/typescript/src/types';
+import {createStructuredSelector} from 'reselect';
 
+import {IconButton, TextButton} from '../../components/Button';
+import * as HomeActions from './store/actions';
 import Text from '../../components/Text';
-import View, {Row} from '../../components/View';
+import View, {DoublePressView, Row} from '../../components/View';
 import Colors from '../../constants/Colors';
 import {styles} from './styles';
+import {makeSelectPosts} from './store/selectors';
+import {ScrollView} from 'react-native-gesture-handler';
+import {IPost} from './store/interfaces/post';
 
-const HomeScreen = () => {
+const {height} = Dimensions.get('window');
+
+interface IProp {
+  navigation: StackNavigationHelpers;
+  posts: IPost[];
+  getPosts: () => void;
+  likePost: (postId: string) => void;
+  dislikePost: (postId: string) => void;
+  viewPost: (postId: string) => void;
+}
+
+const HomeScreen = ({
+  posts,
+  getPosts,
+  likePost,
+  dislikePost,
+  viewPost,
+}: IProp) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    getPosts();
+  }, [getPosts]);
+
+  useEffect(() => {
+    if (posts.length > 0) {
+      viewPost(posts[currentIndex]._id);
+    }
+  }, [currentIndex, posts, viewPost]);
+
   return (
     <View style={styles.background}>
-      <View style={styles.background}>
-        <Video
-          source={{
-            uri: 'https://mammam-photo-video-bucket-dev.s3.ap-southeast-1.amazonaws.com/b18f1303-c759-4f45-b7a4-5b0dbd4fc9e1',
-          }}
-          style={styles.video}
-          resizeMode={'contain'}
-          repeat={true}
-        />
-        <Row style={styles.absoluteView}>
-          <Text style={styles.description}>Description of user...</Text>
-          <View style={styles.actionView}>
-            <IconButton
-              style={styles.likeActionButton}
-              name={'heart'}
-              color={Colors.background}
-              size={45}
-            />
-            <Text style={styles.actionCount}>100</Text>
-            <IconButton
-              style={styles.actionButton}
-              name={'ios-chatbubble-ellipses-sharp'}
-              color={Colors.background}
-              size={30}
-            />
-            <Text style={styles.actionCount}>100</Text>
-            <IconButton
-              style={styles.actionButton}
-              name={'share-social'}
-              color={Colors.background}
-              size={30}
-            />
-            <Text style={styles.actionCount}>100</Text>
-            <Image
-              style={styles.avatarAuthor}
-              source={{
-                uri: 'https://mammam-photo-video-bucket-dev.s3.ap-southeast-1.amazonaws.com/ba3af8b3-d56f-417e-a801-1f10c2d047cb',
-              }}
-            />
-          </View>
-        </Row>
-      </View>
+      <ScrollView
+        snapToInterval={height - 55}
+        disableIntervalMomentum={true}
+        onMomentumScrollEnd={event => {
+          setCurrentIndex(
+            Math.round(event.nativeEvent.contentOffset.y / (height - 55)),
+          );
+        }}
+        style={styles.flex}>
+        {posts.map((post, index) => {
+          return index - currentIndex < 3 && index - currentIndex > -2 ? (
+            <View style={styles.videoFrame} key={index}>
+              <Video
+                source={{
+                  uri: post.url,
+                }}
+                style={styles.video}
+                resizeMode={'contain'}
+                repeat={true}
+                paused={index !== currentIndex}
+              />
+              <DoublePressView
+                onDoublePress={() => {
+                  likePost(post._id);
+                }}>
+                <Row style={styles.absoluteView}>
+                  <View style={styles.descriptionView}>
+                    <Text style={styles.description}>{post.description}</Text>
+                    <Text
+                      style={styles.views}>{`${post.viewTotal} views`}</Text>
+                  </View>
+                  <View style={styles.actionView}>
+                    <IconButton
+                      style={styles.likeActionButton}
+                      name={'heart'}
+                      color={
+                        post.isLiked ? Colors.secondary : Colors.background
+                      }
+                      size={45}
+                      onPress={() => {
+                        if (post.isLiked) {
+                          dislikePost(post._id);
+                        } else {
+                          likePost(post._id);
+                        }
+                      }}
+                    />
+                    <Text style={styles.actionCount}>
+                      {'' + post.likeTotal}
+                    </Text>
+                    <IconButton
+                      style={styles.actionButton}
+                      name={'ios-chatbubble-ellipses-sharp'}
+                      color={Colors.background}
+                      size={30}
+                    />
+                    <Text style={styles.actionCount}>
+                      {'' + post.commentTotal}
+                    </Text>
+                    <IconButton
+                      style={styles.actionButton}
+                      name={'share-social'}
+                      color={Colors.background}
+                      size={30}
+                    />
+                    <Text style={styles.actionCount}>
+                      {'' + post.shareTotal}
+                    </Text>
+                    <Image
+                      style={styles.avatarAuthor}
+                      source={{
+                        uri: post.author.avatar,
+                      }}
+                    />
+                  </View>
+                </Row>
+              </DoublePressView>
+            </View>
+          ) : (
+            <View style={styles.videoFrame} key={index} />
+          );
+        })}
+      </ScrollView>
 
       <Row style={styles.tagView}>
         <TextButton textStyle={{...styles.tagTitle, ...styles.choicedTag}}>
@@ -71,4 +148,16 @@ const HomeScreen = () => {
   );
 };
 
-export default HomeScreen;
+const mapStateToProps = createStructuredSelector<any, any>({
+  posts: makeSelectPosts(),
+});
+
+const mapDispatchToProps = (dispatch: any) => ({
+  getPosts: () => dispatch(HomeActions.getPosts.request()),
+  likePost: (postId: string) => dispatch(HomeActions.likePost.request(postId)),
+  dislikePost: (postId: string) =>
+    dispatch(HomeActions.dislikePost.request(postId)),
+  viewPost: (postId: string) => dispatch(HomeActions.viewPost.request(postId)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
