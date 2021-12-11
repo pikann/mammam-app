@@ -10,7 +10,7 @@ export const initialState = {
 
 export type AppState = typeof initialState;
 
-const registerReducer = (state = initialState, {type, payload}: any) =>
+const appReducer = (state = initialState, {type, payload}: any) =>
   produce(state, (draft: AppState) => {
     switch (type) {
       case AppActions.Types.CHECK_LOGIN.succeeded:
@@ -30,4 +30,4 @@ const registerReducer = (state = initialState, {type, payload}: any) =>
     }
   });
 
-export default registerReducer;
+export default appReducer;
