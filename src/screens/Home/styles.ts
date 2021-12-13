@@ -95,6 +95,7 @@ export const styles = StyleSheet.create({
     color: Colors.background,
     fontSize: 15,
     marginBottom: 10,
+    marginTop: 5,
   },
   views: {
     color: Colors.background,
