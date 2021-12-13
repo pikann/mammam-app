@@ -14,6 +14,7 @@ import {styles} from './styles';
 import {makeSelectPosts} from './store/selectors';
 import {ScrollView} from 'react-native-gesture-handler';
 import {IPost} from './store/interfaces/post';
+import timeAgo from '../../utils/timeAgo';
 
 const {height} = Dimensions.get('window');
 
@@ -74,6 +75,7 @@ const HomeScreen = ({
                 }}>
                 <Row style={styles.absoluteView}>
                   <View style={styles.descriptionView}>
+                    <Text style={styles.views}>{timeAgo(post.createdAt)}</Text>
                     <Text style={styles.description}>{post.description}</Text>
                     <Text
                       style={styles.views}>{`${post.viewTotal} views`}</Text>
