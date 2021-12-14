@@ -15,6 +15,7 @@ import {makeSelectPosts} from './store/selectors';
 import {ScrollView} from 'react-native-gesture-handler';
 import {IPost} from './store/interfaces/post';
 import timeAgo from '../../utils/timeAgo';
+import CommentModal from './components/CommentModal';
 
 const {height} = Dimensions.get('window');
 
@@ -35,6 +36,7 @@ const HomeScreen = ({
   viewPost,
 }: IProp) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [commandModelShow, setCommandModelShow] = useState(false);
 
   useEffect(() => {
     getPosts();
@@ -104,6 +106,9 @@ const HomeScreen = ({
                       name={'ios-chatbubble-ellipses-sharp'}
                       color={Colors.background}
                       size={30}
+                      onPress={() => {
+                        setCommandModelShow(true);
+                      }}
                     />
                     <Text style={styles.actionCount}>
                       {'' + post.commentTotal}
@@ -146,6 +151,10 @@ const HomeScreen = ({
           size={15}
         />
       </Row>
+      <CommentModal
+        commandModelShow={commandModelShow}
+        setCommandModelShow={setCommandModelShow}
+      />
     </View>
   );
 };
