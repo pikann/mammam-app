@@ -1,34 +1,30 @@
-import {Dimensions, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import Colors from '../../../../constants/Colors';
-
-const {width} = Dimensions.get('window');
 
 export const styles = StyleSheet.create({
   flex: {flex: 1},
   container: {
-    flex: 1,
-    paddingHorizontal: 25,
-    paddingTop: 20,
+    paddingTop: 15,
+    width: '100%',
   },
   avatarAuthor: {
     width: 35,
     height: 35,
     marginBottom: 20,
+    marginRight: 15,
     borderRadius: 25,
   },
   content: {
     backgroundColor: Colors.gray,
-    width: width - 100,
     minHeight: 35,
     paddingVertical: 10,
     paddingHorizontal: 17,
-    marginLeft: 15,
     borderRadius: 25,
   },
   createAt: {
     fontSize: 10,
     marginTop: 4,
-    marginLeft: 30,
+    marginLeft: 15,
   },
   likeActionButton: {
     width: 35,
@@ -40,7 +36,7 @@ export const styles = StyleSheet.create({
     marginTop: 4,
   },
   repliesRow: {
-    marginLeft: 20,
+    marginLeft: 7,
   },
   reply: {
     fontSize: 10,

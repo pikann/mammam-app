@@ -9,4 +9,24 @@ const makeSelectPosts = () =>
     return state.posts;
   });
 
-export {makeSelectPosts};
+const makeSelectComments = () =>
+  createSelector(homeState, state => {
+    return state.comments;
+  });
+
+const makeSelectLoadingComments = () =>
+  createSelector(homeState, state => {
+    return state.loadingComments;
+  });
+
+const makeSelectCurrentPostId = () =>
+  createSelector(homeState, state => {
+    return state.currentPostId;
+  });
+
+export {
+  makeSelectPosts,
+  makeSelectComments,
+  makeSelectLoadingComments,
+  makeSelectCurrentPostId,
+};

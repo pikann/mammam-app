@@ -1,5 +1,7 @@
 import {Dimensions, StyleSheet} from 'react-native';
 
+import Colors from '../../../../constants/Colors';
+
 const {width, height} = Dimensions.get('window');
 
 export const styles = StyleSheet.create({
@@ -7,7 +9,7 @@ export const styles = StyleSheet.create({
   container: {
     position: 'absolute',
     width,
-    height,
+    height: height - 70,
     marginLeft: 0,
   },
   backgroundModal: {
@@ -19,7 +21,8 @@ export const styles = StyleSheet.create({
     flex: 1,
     width,
     height,
-    borderRadius: 50,
+    borderTopLeftRadius: 50,
+    borderTopRightRadius: 50,
     top: 50,
   },
   title: {
@@ -28,5 +31,42 @@ export const styles = StyleSheet.create({
     marginLeft: 50,
     marginTop: 35,
     marginBottom: 20,
+  },
+  scrollChild: {
+    width,
+    paddingHorizontal: 25,
+  },
+  loading: {
+    width: 100,
+    height: 100,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  },
+  noCommentsView: {
+    marginTop: 'auto',
+    marginBottom: 'auto',
+  },
+  noComments: {
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  },
+  noCommentsText: {
+    fontSize: 40,
+    fontWeight: '700',
+    color: Colors.gray,
+    marginTop: 15,
+    marginBottom: 130,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  },
+  commantEditView: {
+    height: 70,
+    borderTopColor: Colors.gray,
+    borderTopWidth: 1,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+  },
+  commantEdit: {
+    height: 40,
   },
 });
