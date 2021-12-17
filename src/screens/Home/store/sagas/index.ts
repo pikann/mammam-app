@@ -2,8 +2,12 @@ import {call, put, takeLatest} from 'redux-saga/effects';
 
 import * as HomeAction from '../actions';
 import {
+  dislikeCommentService,
   dislikePostService,
+  getCommentsService,
   getPostsService,
+  getRepliesCommentService,
+  likeCommentService,
   likePostService,
   viewPostService,
 } from '../services';
@@ -76,9 +80,162 @@ function* viewPostSaga({payload}: any) {
   }
 }
 
+function* getCommentsSaga({payload}: any) {
+  try {
+    yield put({
+      type: HomeAction.Types.GET_COMMENTS.succeeded,
+      payload: [],
+    });
+    yield put({
+      type: HomeAction.Types.SET_CURRENT_POST_ID.begin,
+      payload: payload,
+    });
+    yield put({
+      type: HomeAction.Types.LOADING_COMMENTS.begin,
+    });
+    const response: Data = yield call(getCommentsService, {
+      postId: payload,
+      page: 0,
+    });
+
+    yield put({
+      type: HomeAction.Types.GET_COMMENTS.succeeded,
+      payload: response.data.comments,
+    });
+    yield put({
+      type: HomeAction.Types.LOADING_COMMENTS.succeeded,
+    });
+  } catch (error) {
+    yield put({
+      type: HomeAction.Types.LOADING_COMMENTS.succeeded,
+    });
+    yield put({
+      type: HomeAction.Types.GET_COMMENTS.failed,
+      payload: error,
+    });
+  }
+}
+
+function* appendCommentsSaga({payload}: any) {
+  try {
+    yield put({
+      type: HomeAction.Types.LOADING_COMMENTS.begin,
+    });
+    const response: Data = yield call(getCommentsService, payload);
+
+    yield put({
+      type: HomeAction.Types.APPEND_COMMENTS.succeeded,
+      payload: response.data.comments,
+    });
+    yield put({
+      type: HomeAction.Types.LOADING_COMMENTS.succeeded,
+    });
+  } catch (error) {
+    yield put({
+      type: HomeAction.Types.LOADING_COMMENTS.succeeded,
+    });
+    yield put({
+      type: HomeAction.Types.APPEND_COMMENTS.failed,
+      payload: error,
+    });
+  }
+}
+
+function* likeCommentSaga({payload}: any) {
+  try {
+    yield call(likeCommentService, payload);
+
+    yield put({
+      type: HomeAction.Types.LIKE_COMMENT.succeeded,
+      payload,
+    });
+  } catch (error) {
+    yield put({
+      type: HomeAction.Types.LIKE_COMMENT.failed,
+      payload: error,
+    });
+  }
+}
+
+function* dislikeCommentSaga({payload}: any) {
+  try {
+    yield call(dislikeCommentService, payload);
+
+    yield put({
+      type: HomeAction.Types.DISLIKE_COMMENT.succeeded,
+      payload,
+    });
+  } catch (error) {
+    yield put({
+      type: HomeAction.Types.DISLIKE_COMMENT.failed,
+      payload: error,
+    });
+  }
+}
+
+function* getRepliesCommentSaga({payload}: any) {
+  try {
+    yield put({
+      type: HomeAction.Types.GET_REPLIES_COMMENT.succeeded,
+      payload: {
+        commentId: payload,
+        replies: [],
+      },
+    });
+    const response: Data = yield call(getRepliesCommentService, {
+      commentId: payload,
+      page: 0,
+    });
+
+    yield put({
+      type: HomeAction.Types.GET_REPLIES_COMMENT.succeeded,
+      payload: {
+        commentId: payload,
+        replies: response.data.comments,
+      },
+    });
+  } catch (error) {
+    yield put({
+      type: HomeAction.Types.GET_REPLIES_COMMENT.failed,
+      payload: error,
+    });
+  }
+}
+
+function* appendRepliesCommentSaga({payload}: any) {
+  try {
+    const response: Data = yield call(getRepliesCommentService, payload);
+
+    yield put({
+      type: HomeAction.Types.APPEND_REPLIES_COMMENT.succeeded,
+      payload: {
+        commentId: payload.commentId,
+        replies: response.data.comments,
+      },
+    });
+  } catch (error) {
+    yield put({
+      type: HomeAction.Types.APPEND_REPLIES_COMMENT.failed,
+      payload: error,
+    });
+  }
+}
+
 export default function* homeWatcher() {
   yield takeLatest(HomeAction.Types.GET_POSTS.begin, getPostsSaga);
   yield takeLatest(HomeAction.Types.LIKE_POST.begin, likePostSaga);
   yield takeLatest(HomeAction.Types.DISLIKE_POST.begin, dislikePostSaga);
   yield takeLatest(HomeAction.Types.VIEW_POST.begin, viewPostSaga);
+  yield takeLatest(HomeAction.Types.GET_COMMENTS.begin, getCommentsSaga);
+  yield takeLatest(HomeAction.Types.APPEND_COMMENTS.begin, appendCommentsSaga);
+  yield takeLatest(HomeAction.Types.LIKE_COMMENT.begin, likeCommentSaga);
+  yield takeLatest(HomeAction.Types.DISLIKE_COMMENT.begin, dislikeCommentSaga);
+  yield takeLatest(
+    HomeAction.Types.GET_REPLIES_COMMENT.begin,
+    getRepliesCommentSaga,
+  );
+  yield takeLatest(
+    HomeAction.Types.APPEND_REPLIES_COMMENT.begin,
+    appendRepliesCommentSaga,
+  );
 }
