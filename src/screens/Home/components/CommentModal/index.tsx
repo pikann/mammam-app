@@ -1,17 +1,25 @@
 import * as React from 'react';
-import {ScrollView, TouchableOpacity} from 'react-native';
+import {useEffect, useRef} from 'react';
+import {
+  Keyboard,
+  ScrollView,
+  TouchableOpacity,
+  KeyboardEvent,
+  Animated,
+} from 'react-native';
 import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {StackNavigationHelpers} from '@react-navigation/stack/lib/typescript/src/types';
 
 import Text from '../../../../components/Text';
-import View from '../../../../components/View';
+import View, {Row} from '../../../../components/View';
 import Comment from '../Comment';
 import {styles} from './styles';
 import {IComment} from '../../store/interfaces/comment';
 import FastImage from 'react-native-fast-image';
 import Colors from '../../../../constants/Colors';
 import TextInput from '../../../../components/TextInput';
+import {IconButton} from '../../../../components/Button';
 
 interface IProp {
   navigation: StackNavigationHelpers;
@@ -30,6 +38,33 @@ interface IProp {
 const newLocal = 'ios-chatbubble-ellipses-sharp';
 
 export default function CommentModal(props: IProp) {
+  const height = useRef(new Animated.Value(75)).current;
+
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener(
+      'keyboardDidShow',
+      (e: KeyboardEvent) => {
+        Animated.timing(height, {
+          toValue: e.endCoordinates.height + 75,
+          duration: 100,
+          useNativeDriver: false,
+        }).start();
+      },
+    );
+    const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
+      Animated.timing(height, {
+        toValue: 75,
+        duration: 400,
+        useNativeDriver: false,
+      }).start();
+    });
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, [height]);
+
   return (
     <Modal
       style={styles.container}
@@ -92,9 +127,17 @@ export default function CommentModal(props: IProp) {
             )}
           </TouchableOpacity>
         </ScrollView>
-        <View style={styles.commantEditView}>
-          <TextInput style={styles.commantEdit} />
-        </View>
+        <Animated.View style={{...styles.commantEditView, height}}>
+          <Row>
+            <TextInput style={styles.commantEdit} placeholder="Comment" />
+            <IconButton
+              style={styles.commantButton}
+              name={'ios-send'}
+              color={Colors.primary}
+              size={30}
+            />
+          </Row>
+        </Animated.View>
       </View>
     </Modal>
   );

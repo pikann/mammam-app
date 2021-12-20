@@ -60,13 +60,19 @@ export const styles = StyleSheet.create({
     marginRight: 'auto',
   },
   commantEditView: {
-    height: 70,
     borderTopColor: Colors.gray,
     borderTopWidth: 1,
     paddingHorizontal: 20,
-    paddingVertical: 12,
+    paddingVertical: 15,
   },
   commantEdit: {
     height: 40,
+    width: width - 100,
+  },
+  commantButton: {
+    height: 40,
+    width: 40,
+    marginLeft: 'auto',
+    padding: 5,
   },
 });
