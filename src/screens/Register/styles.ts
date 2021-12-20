@@ -69,7 +69,7 @@ export const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     marginLeft: 40,
     width: width - 80,
-    marginTop: 'auto',
+    marginTop: 45,
     marginBottom: 25,
   },
   registerGoogleText: {
