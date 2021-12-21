@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useEffect, useRef} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {
   Keyboard,
   ScrollView,
@@ -15,7 +15,7 @@ import Text from '../../../../components/Text';
 import View, {Row} from '../../../../components/View';
 import Comment from '../Comment';
 import {styles} from './styles';
-import {IComment} from '../../store/interfaces/comment';
+import {IAuthor, IComment} from '../../store/interfaces/comment';
 import FastImage from 'react-native-fast-image';
 import Colors from '../../../../constants/Colors';
 import TextInput from '../../../../components/TextInput';
@@ -25,19 +25,27 @@ interface IProp {
   navigation: StackNavigationHelpers;
   commandModelShow: boolean;
   comments: IComment[];
+  totalComment: number;
+  totalPageComment: number;
+  pageComment: number;
   loadingComments: boolean;
   currentPostId: string;
+  userId: string;
+  username: string;
+  avatar: string;
   appendComments: (postId: string, page: number) => void;
   setCommandModelShow: (commandModelShow: boolean) => void;
   likeComment: (commentId: string) => void;
   dislikeComment: (commentId: string) => void;
   getRepliesComment: (commentId: string) => void;
   appendRepliesComment: (commentId: string, page: number) => void;
+  commentPost: (postId: string, content: string, author: IAuthor) => void;
 }
 
 const newLocal = 'ios-chatbubble-ellipses-sharp';
 
 export default function CommentModal(props: IProp) {
+  const [commentContent, setCommentContent] = useState('');
   const height = useRef(new Animated.Value(75)).current;
 
   useEffect(() => {
@@ -86,18 +94,14 @@ export default function CommentModal(props: IProp) {
               e.layoutMeasurement.height + e.contentOffset.y >=
                 e.contentSize.height - 20 &&
               !props.loadingComments &&
-              props.comments.length / 10 ===
-                Math.round(props.comments.length / 10)
+              props.pageComment < props.totalPageComment - 1
             ) {
-              props.appendComments(
-                props.currentPostId,
-                props.comments.length / 10,
-              );
+              props.appendComments(props.currentPostId, props.pageComment + 1);
             }
           }}
           scrollEventThrottle={400}>
           <TouchableOpacity style={styles.scrollChild} activeOpacity={1}>
-            {props.comments.map((comment, index) => (
+            {props.comments?.map((comment, index) => (
               <Comment
                 navigation={props.navigation}
                 comment={comment}
@@ -114,7 +118,7 @@ export default function CommentModal(props: IProp) {
                 style={styles.loading}
               />
             )}
-            {props.comments.length === 0 && !props.loadingComments && (
+            {props.comments?.length === 0 && !props.loadingComments && (
               <View style={styles.noCommentsView}>
                 <Icon
                   style={styles.noComments}
@@ -129,12 +133,25 @@ export default function CommentModal(props: IProp) {
         </ScrollView>
         <Animated.View style={{...styles.commantEditView, height}}>
           <Row>
-            <TextInput style={styles.commantEdit} placeholder="Comment" />
+            <TextInput
+              style={styles.commantEdit}
+              placeholder="Comment"
+              value={commentContent}
+              onChangeText={e => setCommentContent(e)}
+            />
             <IconButton
               style={styles.commantButton}
               name={'ios-send'}
               color={Colors.primary}
               size={30}
+              onPress={() => {
+                setCommentContent('');
+                props.commentPost(props.currentPostId, commentContent, {
+                  _id: props.userId,
+                  username: props.username,
+                  avatar: props.avatar,
+                });
+              }}
             />
           </Row>
         </Animated.View>

@@ -4,6 +4,7 @@ import * as AppActions from '../actions';
 
 export const initialState = {
   login: false,
+  id: '',
   username: '',
   avatar: '',
 };
@@ -17,6 +18,9 @@ const appReducer = (state = initialState, {type, payload}: any) =>
         draft.login = payload.login;
         break;
       case AppActions.Types.GET_USER_PROFILE.succeeded:
+        if (payload.id) {
+          draft.id = payload.id;
+        }
         if (payload.username) {
           draft.username = payload.username;
         }

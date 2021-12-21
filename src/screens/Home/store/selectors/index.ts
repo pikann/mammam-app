@@ -14,6 +14,21 @@ const makeSelectComments = () =>
     return state.comments;
   });
 
+const makeSelectTotalComment = () =>
+  createSelector(homeState, state => {
+    return state.totalComment;
+  });
+
+const makeSelectTotalPageComment = () =>
+  createSelector(homeState, state => {
+    return state.totalPageComment;
+  });
+
+const makeSelectPageComment = () =>
+  createSelector(homeState, state => {
+    return state.pageComment;
+  });
+
 const makeSelectLoadingComments = () =>
   createSelector(homeState, state => {
     return state.loadingComments;
@@ -27,6 +42,9 @@ const makeSelectCurrentPostId = () =>
 export {
   makeSelectPosts,
   makeSelectComments,
+  makeSelectTotalComment,
+  makeSelectTotalPageComment,
+  makeSelectPageComment,
   makeSelectLoadingComments,
   makeSelectCurrentPostId,
 };
