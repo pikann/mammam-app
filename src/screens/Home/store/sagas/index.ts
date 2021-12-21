@@ -2,6 +2,7 @@ import {call, put, takeLatest} from 'redux-saga/effects';
 
 import * as HomeAction from '../actions';
 import {
+  commentPostService,
   dislikeCommentService,
   dislikePostService,
   getCommentsService,
@@ -100,7 +101,7 @@ function* getCommentsSaga({payload}: any) {
 
     yield put({
       type: HomeAction.Types.GET_COMMENTS.succeeded,
-      payload: response.data.comments,
+      payload: response.data,
     });
     yield put({
       type: HomeAction.Types.LOADING_COMMENTS.succeeded,
@@ -125,7 +126,7 @@ function* appendCommentsSaga({payload}: any) {
 
     yield put({
       type: HomeAction.Types.APPEND_COMMENTS.succeeded,
-      payload: response.data.comments,
+      payload: response.data,
     });
     yield put({
       type: HomeAction.Types.LOADING_COMMENTS.succeeded,
@@ -221,6 +222,23 @@ function* appendRepliesCommentSaga({payload}: any) {
   }
 }
 
+function* commentPostSaga({payload: {postId, content, author}}: any) {
+  try {
+    console.log(postId);
+    const response: Data = yield call(commentPostService, postId, content);
+
+    yield put({
+      type: HomeAction.Types.COMMENT_POST.succeeded,
+      payload: {postId, content, commentId: response.data._id, author},
+    });
+  } catch (error) {
+    yield put({
+      type: HomeAction.Types.COMMENT_POST.failed,
+      payload: error,
+    });
+  }
+}
+
 export default function* homeWatcher() {
   yield takeLatest(HomeAction.Types.GET_POSTS.begin, getPostsSaga);
   yield takeLatest(HomeAction.Types.LIKE_POST.begin, likePostSaga);
@@ -238,4 +256,5 @@ export default function* homeWatcher() {
     HomeAction.Types.APPEND_REPLIES_COMMENT.begin,
     appendRepliesCommentSaga,
   );
+  yield takeLatest(HomeAction.Types.COMMENT_POST.begin, commentPostSaga);
 }

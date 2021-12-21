@@ -23,6 +23,9 @@ const timeAgo = (date: number) => {
   const timeAgoInSeconds = Math.floor((Date.now() - date) / 1000);
   const duration = getDuration(timeAgoInSeconds);
   const suffix = duration?.interval === 1 ? '' : 's';
+  if (!duration) {
+    return 'Now';
+  }
   return `${duration?.interval} ${duration?.epoch}${suffix} ago`;
 };
 

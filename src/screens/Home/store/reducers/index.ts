@@ -7,6 +7,9 @@ import {IPost} from '../interfaces/post';
 export const initialState = {
   posts: [] as IPost[],
   comments: [] as IComment[],
+  totalComment: 0,
+  totalPageComment: 0,
+  pageComment: 0,
   loadingComments: false,
   currentPostId: '',
 };
@@ -40,23 +43,36 @@ const homeReducer = (state = initialState, {type, payload}: any) =>
         }
         break;
       case HomeActions.Types.GET_COMMENTS.succeeded:
-        draft.comments = payload.map((comment: IComment) => {
+        draft.comments = payload.comments?.map((comment: IComment) => {
           return {
             ...comment,
             replies: [],
           };
         });
+        draft.totalComment = payload.total;
+        draft.totalPageComment = payload.totalPage;
+        draft.pageComment = payload.page;
         break;
       case HomeActions.Types.APPEND_COMMENTS.succeeded:
         draft.comments = [
           ...draft.comments,
-          ...payload.map((comment: IComment) => {
-            return {
-              ...comment,
-              replies: [],
-            };
-          }),
+          ...payload.comments
+            ?.filter(
+              (comment: IComment) =>
+                !draft.comments
+                  .map(({_id}: IComment) => _id)
+                  .includes(comment._id),
+            )
+            .map((comment: IComment) => {
+              return {
+                ...comment,
+                replies: [],
+              };
+            }),
         ];
+        draft.totalComment = payload.total;
+        draft.totalPageComment = payload.totalPage;
+        draft.pageComment = payload.page;
         break;
       case HomeActions.Types.LOADING_COMMENTS.begin:
         draft.loadingComments = true;
@@ -125,6 +141,27 @@ const homeReducer = (state = initialState, {type, payload}: any) =>
             ...payload.replies,
           ];
         }
+        break;
+      case HomeActions.Types.COMMENT_POST.succeeded:
+        index = draft.posts.findIndex(post => post._id === payload.postId);
+
+        if (index >= 0) {
+          draft.posts[index].commentTotal++;
+        }
+        draft.comments = [
+          {
+            _id: payload.commentId,
+            createdAt: Date.now(),
+            author: payload.author,
+            content: payload.content,
+            likeTotal: 0,
+            replyTotal: 0,
+            isLiked: false,
+            replies: [],
+            loadingReplies: false,
+          },
+          ...draft.comments,
+        ];
         break;
       default:
         break;

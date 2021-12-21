@@ -15,13 +15,21 @@ import {
   makeSelectComments,
   makeSelectCurrentPostId,
   makeSelectLoadingComments,
+  makeSelectPageComment,
   makeSelectPosts,
+  makeSelectTotalComment,
+  makeSelectTotalPageComment,
 } from './store/selectors';
 import {ScrollView} from 'react-native-gesture-handler';
 import {IPost} from './store/interfaces/post';
 import timeAgo from '../../utils/timeAgo';
 import CommentModal from './components/CommentModal';
-import {IComment} from './store/interfaces/comment';
+import {IAuthor, IComment} from './store/interfaces/comment';
+import {
+  makeSelectAvatar,
+  makeSelectId,
+  makeSelectUsername,
+} from '../../store/selectors';
 
 const {height} = Dimensions.get('window');
 
@@ -29,8 +37,14 @@ interface IProp {
   navigation: StackNavigationHelpers;
   posts: IPost[];
   comments: IComment[];
+  totalComment: number;
+  totalPageComment: number;
+  pageComment: number;
   loadingComments: boolean;
   currentPostId: string;
+  userId: string;
+  username: string;
+  avatar: string;
   getPosts: () => void;
   likePost: (postId: string) => void;
   dislikePost: (postId: string) => void;
@@ -41,14 +55,21 @@ interface IProp {
   dislikeComment: (commentId: string) => void;
   getRepliesComment: (commentId: string) => void;
   appendRepliesComment: (commentId: string, page: number) => void;
+  commentPost: (postId: string, content: string, author: IAuthor) => void;
 }
 
 const HomeScreen = ({
   navigation,
   posts,
   comments,
+  totalComment,
+  totalPageComment,
+  pageComment,
   loadingComments,
   currentPostId,
+  userId,
+  username,
+  avatar,
   getPosts,
   likePost,
   dislikePost,
@@ -59,6 +80,7 @@ const HomeScreen = ({
   dislikeComment,
   getRepliesComment,
   appendRepliesComment,
+  commentPost,
 }: IProp) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [commandModelShow, setCommandModelShow] = useState(false);
@@ -182,6 +204,12 @@ const HomeScreen = ({
         setCommandModelShow={setCommandModelShow}
         navigation={navigation}
         comments={comments}
+        totalComment={totalComment}
+        totalPageComment={totalPageComment}
+        pageComment={pageComment}
+        userId={userId}
+        username={username}
+        avatar={avatar}
         appendComments={appendComments}
         loadingComments={loadingComments}
         likeComment={likeComment}
@@ -189,6 +217,7 @@ const HomeScreen = ({
         currentPostId={currentPostId}
         getRepliesComment={getRepliesComment}
         appendRepliesComment={appendRepliesComment}
+        commentPost={commentPost}
       />
     </View>
   );
@@ -197,8 +226,14 @@ const HomeScreen = ({
 const mapStateToProps = createStructuredSelector<any, any>({
   posts: makeSelectPosts(),
   comments: makeSelectComments(),
+  totalComment: makeSelectTotalComment(),
+  totalPageComment: makeSelectTotalPageComment(),
+  pageComment: makeSelectPageComment(),
   loadingComments: makeSelectLoadingComments(),
   currentPostId: makeSelectCurrentPostId(),
+  userId: makeSelectId(),
+  username: makeSelectUsername(),
+  avatar: makeSelectAvatar(),
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
@@ -219,6 +254,8 @@ const mapDispatchToProps = (dispatch: any) => ({
     dispatch(HomeActions.getRepliesComment.request(commentId)),
   appendRepliesComment: (commentId: string, page: number) =>
     dispatch(HomeActions.appendRepliesComment.request({commentId, page})),
+  commentPost: (postId: string, content: string, author: IAuthor) =>
+    dispatch(HomeActions.commentPost.request({postId, content, author})),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);

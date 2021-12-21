@@ -35,3 +35,7 @@ export const getRepliesCommentService = async (payload: any) => {
     `/comments/${payload.commentId}/replies?page=${payload.page}&perpage=10`,
   );
 };
+
+export const commentPostService = async (postId: string, content: string) => {
+  return await AxiosClientInstance.post(`/posts/${postId}/comments`, {content});
+};

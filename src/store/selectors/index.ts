@@ -9,6 +9,11 @@ const makeSelectLogin = () =>
     return state.login;
   });
 
+const makeSelectId = () =>
+  createSelector(appState, state => {
+    return state.id;
+  });
+
 const makeSelectUsername = () =>
   createSelector(appState, state => {
     return state.username;
@@ -19,4 +24,4 @@ const makeSelectAvatar = () =>
     return state.avatar;
   });
 
-export {makeSelectLogin, makeSelectUsername, makeSelectAvatar};
+export {makeSelectLogin, makeSelectId, makeSelectUsername, makeSelectAvatar};

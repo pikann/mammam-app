@@ -81,6 +81,7 @@ function* getUserProfileSaga() {
     yield put({
       type: AppActions.Types.GET_USER_PROFILE.succeeded,
       payload: {
+        id: response.data._id,
         username: response.data.username,
         avatar: response.data.avatar,
       },
