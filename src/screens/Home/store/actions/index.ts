@@ -16,6 +16,8 @@ export const Types = actionTypesFactory(
   'GET_REPLIES_COMMENT',
   'APPEND_REPLIES_COMMENT',
   'COMMENT_POST',
+  'LOADING_REPLIES_COMMENT',
+  'REPLY_COMMENT',
 );
 
 export const getPosts = createActionGenerator(Types.GET_POSTS);
@@ -37,3 +39,7 @@ export const appendRepliesComment = createActionGenerator(
   Types.APPEND_REPLIES_COMMENT,
 );
 export const commentPost = createActionGenerator(Types.COMMENT_POST);
+export const loadingRepliesComment = createActionGenerator(
+  Types.LOADING_REPLIES_COMMENT,
+);
+export const replyComment = createActionGenerator(Types.REPLY_COMMENT);

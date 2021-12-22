@@ -75,4 +75,15 @@ export const styles = StyleSheet.create({
     marginLeft: 'auto',
     padding: 5,
   },
+  replyingText: {
+    marginLeft: 15,
+    marginTop: 15,
+    marginBottom: 10,
+  },
+  cancelReplying: {
+    width: 15,
+    height: 15,
+    marginLeft: 'auto',
+    marginRight: 10,
+  },
 });

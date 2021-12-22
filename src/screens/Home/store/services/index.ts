@@ -39,3 +39,12 @@ export const getRepliesCommentService = async (payload: any) => {
 export const commentPostService = async (postId: string, content: string) => {
   return await AxiosClientInstance.post(`/posts/${postId}/comments`, {content});
 };
+
+export const replyCommentService = async (
+  commentId: string,
+  content: string,
+) => {
+  return await AxiosClientInstance.post(`/comments/${commentId}/replies`, {
+    content,
+  });
+};

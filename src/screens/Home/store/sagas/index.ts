@@ -10,6 +10,7 @@ import {
   getRepliesCommentService,
   likeCommentService,
   likePostService,
+  replyCommentService,
   viewPostService,
 } from '../services';
 
@@ -177,6 +178,11 @@ function* dislikeCommentSaga({payload}: any) {
 function* getRepliesCommentSaga({payload}: any) {
   try {
     yield put({
+      type: HomeAction.Types.LOADING_REPLIES_COMMENT.begin,
+      payload: payload,
+    });
+
+    yield put({
       type: HomeAction.Types.GET_REPLIES_COMMENT.succeeded,
       payload: {
         commentId: payload,
@@ -189,6 +195,11 @@ function* getRepliesCommentSaga({payload}: any) {
     });
 
     yield put({
+      type: HomeAction.Types.LOADING_REPLIES_COMMENT.succeeded,
+      payload: payload,
+    });
+
+    yield put({
       type: HomeAction.Types.GET_REPLIES_COMMENT.succeeded,
       payload: {
         commentId: payload,
@@ -196,6 +207,10 @@ function* getRepliesCommentSaga({payload}: any) {
       },
     });
   } catch (error) {
+    yield put({
+      type: HomeAction.Types.LOADING_REPLIES_COMMENT.succeeded,
+      payload: payload,
+    });
     yield put({
       type: HomeAction.Types.GET_REPLIES_COMMENT.failed,
       payload: error,
@@ -205,16 +220,30 @@ function* getRepliesCommentSaga({payload}: any) {
 
 function* appendRepliesCommentSaga({payload}: any) {
   try {
+    yield put({
+      type: HomeAction.Types.LOADING_REPLIES_COMMENT.begin,
+      payload: payload,
+    });
+
     const response: Data = yield call(getRepliesCommentService, payload);
+
+    yield put({
+      type: HomeAction.Types.LOADING_REPLIES_COMMENT.succeeded,
+      payload: payload,
+    });
 
     yield put({
       type: HomeAction.Types.APPEND_REPLIES_COMMENT.succeeded,
       payload: {
         commentId: payload.commentId,
-        replies: response.data.comments,
+        replies: response.data,
       },
     });
   } catch (error) {
+    yield put({
+      type: HomeAction.Types.LOADING_REPLIES_COMMENT.succeeded,
+      payload: payload,
+    });
     yield put({
       type: HomeAction.Types.APPEND_REPLIES_COMMENT.failed,
       payload: error,
@@ -224,7 +253,6 @@ function* appendRepliesCommentSaga({payload}: any) {
 
 function* commentPostSaga({payload: {postId, content, author}}: any) {
   try {
-    console.log(postId);
     const response: Data = yield call(commentPostService, postId, content);
 
     yield put({
@@ -234,6 +262,22 @@ function* commentPostSaga({payload: {postId, content, author}}: any) {
   } catch (error) {
     yield put({
       type: HomeAction.Types.COMMENT_POST.failed,
+      payload: error,
+    });
+  }
+}
+
+function* replyCommentSaga({payload: {commentId, content, author}}: any) {
+  try {
+    const response: Data = yield call(replyCommentService, commentId, content);
+
+    yield put({
+      type: HomeAction.Types.REPLY_COMMENT.succeeded,
+      payload: {commentId, content, replyId: response.data._id, author},
+    });
+  } catch (error) {
+    yield put({
+      type: HomeAction.Types.REPLY_COMMENT.failed,
       payload: error,
     });
   }
@@ -257,4 +301,5 @@ export default function* homeWatcher() {
     appendRepliesCommentSaga,
   );
   yield takeLatest(HomeAction.Types.COMMENT_POST.begin, commentPostSaga);
+  yield takeLatest(HomeAction.Types.REPLY_COMMENT.begin, replyCommentSaga);
 }

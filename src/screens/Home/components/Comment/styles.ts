@@ -39,13 +39,23 @@ export const styles = StyleSheet.create({
     marginLeft: 7,
   },
   reply: {
-    fontSize: 10,
     marginTop: 4,
     marginLeft: 20,
+  },
+  replyText: {
+    fontSize: 10,
   },
   showRepliesText: {
     fontSize: 11,
     fontWeight: '700',
     marginTop: 5,
+  },
+  loading: {
+    width: 80,
+    height: 80,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginTop: -20,
+    marginBottom: -25,
   },
 });
