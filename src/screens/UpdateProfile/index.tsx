@@ -1,5 +1,6 @@
 import React, {useRef, useState} from 'react';
 import {Animated, Image, ToastAndroid} from 'react-native';
+import {launchImageLibrary} from 'react-native-image-picker';
 import {StackNavigationHelpers} from '@react-navigation/stack/lib/typescript/src/types';
 
 import Button, {IconButton, TextButton} from '../../components/Button';
@@ -14,6 +15,12 @@ import {connect} from 'react-redux';
 import {createStructuredSelector} from 'reselect';
 import {makeSelectLoading} from './store/selectors';
 
+interface IUpdateProfilePayload {
+  username: string | undefined;
+  avatar: string | undefined;
+  avatarType: string | undefined;
+}
+
 interface IProp {
   navigation: StackNavigationHelpers;
   isLoading: boolean;
@@ -24,6 +31,8 @@ interface IProp {
 const UpdateProfileScreen = (props: IProp) => {
   const [username, setUsername] = useState('');
   const [avatar, setAvatar] = useState('');
+  const [avatarType, setAvatarType] = useState('');
+
   const marginTop = useRef(new Animated.Value(50)).current;
 
   const onFocusUsername = () => {
@@ -46,14 +55,30 @@ const UpdateProfileScreen = (props: IProp) => {
       ToastAndroid.show('Enter username!', ToastAndroid.SHORT);
       return;
     }
-    const payload = {};
-    if (username) {
-      payload['username'] = username;
-    }
+    const payload: IUpdateProfilePayload = {
+      username: undefined,
+      avatar: undefined,
+      avatarType: undefined,
+    };
+    payload.username = username;
     if (avatar) {
-      payload['avatar'] = avatar;
+      payload.avatar = avatar;
+    }
+    if (avatarType) {
+      payload.avatarType = avatarType;
     }
     props.updateProfile(payload);
+  };
+
+  const onPickImage = async () => {
+    const result = await launchImageLibrary({
+      mediaType: 'photo',
+      includeBase64: true,
+    });
+    if (result?.assets && result.assets[0].uri && result.assets[0].type) {
+      setAvatar(result.assets[0].uri);
+      setAvatarType(result.assets[0].type);
+    }
   };
 
   return (
@@ -71,7 +96,11 @@ const UpdateProfileScreen = (props: IProp) => {
       <Animated.View style={{...styles.contentContainer, marginTop}}>
         <Image
           style={styles.avatar}
-          source={require('../../assets/images/default-avatar.png')}
+          source={
+            avatar === ''
+              ? require('../../assets/images/avatar-default.png')
+              : {uri: avatar}
+          }
           height={200}
           width={200}
         />
@@ -80,6 +109,8 @@ const UpdateProfileScreen = (props: IProp) => {
           name={'camera-reverse-outline'}
           color={Colors.background}
           size={32}
+          underlayColor={Colors.primary}
+          onPress={onPickImage}
         />
         <TextInput
           style={styles.usernameInput}

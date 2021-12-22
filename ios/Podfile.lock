@@ -281,6 +281,8 @@ PODS:
   - React-jsinspector (0.66.0)
   - React-logger (0.66.0):
     - glog
+  - react-native-image-picker (4.6.0):
+    - React-Core
   - react-native-safe-area-context (3.3.2):
     - React-Core
   - react-native-video (5.2.0):
@@ -419,6 +421,7 @@ DEPENDENCIES:
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
+  - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-video (from `../node_modules/react-native-video`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
@@ -496,6 +499,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   React-logger:
     :path: "../node_modules/react-native/ReactCommon/logger"
+  react-native-image-picker:
+    :path: "../node_modules/react-native-image-picker"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-video:
@@ -571,6 +576,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 6a05173dc0142abc582bd4edd2d23146b8cc218a
   React-jsinspector: be95ad424ba9f7b817aff22732eb9b1b810a000a
   React-logger: 9a9cd87d4ea681ae929b32ef580638ff1b50fb24
+  react-native-image-picker: 8c83c5c7d137e866bcb9a2db93f1e1ca866fddbf
   react-native-safe-area-context: 5cf05f49df9d17261e40e518481f2e334c6cd4b5
   react-native-video: 77ce22be7abff9e373527ca10106a99dea3ba56c
   React-perflogger: 1f554c2b684e2f484f9edcdfdaeedab039fbaca8
@@ -596,6 +602,6 @@ SPEC CHECKSUMS:
   Yoga: c11abbf5809216c91fcd62f5571078b83d9b6720
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: d90da1f0bfc49430e4a3a6a9ceca343cceeaa171
+PODFILE CHECKSUM: 83cbcf70579dfcd572a05e7dc71da6eb506c2b98
 
 COCOAPODS: 1.11.2

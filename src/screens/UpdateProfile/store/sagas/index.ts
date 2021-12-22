@@ -2,7 +2,11 @@ import {call, put, takeLatest} from 'redux-saga/effects';
 
 import * as UpdateProfileAction from '../actions';
 import * as AppActions from '../../../../store/actions';
-import {updateProfileService} from '../services';
+import {
+  getPresignedUrlService,
+  updateProfileService,
+  uploadImageService,
+} from '../services';
 
 interface Data {
   [key: string]: any;
@@ -13,7 +17,21 @@ function* updateProfileSaga({payload}: any) {
     yield put({
       type: UpdateProfileAction.Types.LOADING.begin,
     });
-    yield call(updateProfileService, payload);
+
+    const {
+      data: {imageUrl, presignedUrl},
+    }: Data = yield call(getPresignedUrlService);
+
+    yield call(uploadImageService, {
+      url: presignedUrl,
+      image: payload.avatar,
+      type: payload.avatarType,
+    });
+
+    yield call(updateProfileService, {
+      username: payload.username,
+      avatar: imageUrl,
+    });
 
     yield put({
       type: UpdateProfileAction.Types.LOADING.succeeded,
