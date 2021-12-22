@@ -46,6 +46,7 @@ export const styles = StyleSheet.create({
     height: 200,
     marginLeft: width / 2 - 100,
     marginTop: 50,
+    borderRadius: 100,
   },
   changeAvatarBtn: {
     backgroundColor: Colors.primary,

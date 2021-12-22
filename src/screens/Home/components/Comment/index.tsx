@@ -39,6 +39,7 @@ export default function Comment({
         source={{
           uri: comment.author.avatar,
         }}
+        defaultSource={require('../../../../assets/images/avatar-default.png')}
       />
       <View style={styles.flex}>
         <Text style={styles.content}>{comment.content}</Text>

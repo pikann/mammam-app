@@ -177,6 +177,7 @@ const HomeScreen = ({
                       source={{
                         uri: post.author.avatar,
                       }}
+                      defaultSource={require('../../assets/images/avatar-default.png')}
                     />
                   </View>
                 </Row>
