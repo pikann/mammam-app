@@ -56,6 +56,7 @@ interface IProp {
   getRepliesComment: (commentId: string) => void;
   appendRepliesComment: (commentId: string, page: number) => void;
   commentPost: (postId: string, content: string, author: IAuthor) => void;
+  replyComment: (commentId: string, content: string, author: IAuthor) => void;
 }
 
 const HomeScreen = ({
@@ -81,6 +82,7 @@ const HomeScreen = ({
   getRepliesComment,
   appendRepliesComment,
   commentPost,
+  replyComment,
 }: IProp) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [commandModelShow, setCommandModelShow] = useState(false);
@@ -218,6 +220,7 @@ const HomeScreen = ({
         getRepliesComment={getRepliesComment}
         appendRepliesComment={appendRepliesComment}
         commentPost={commentPost}
+        replyComment={replyComment}
       />
     </View>
   );
@@ -256,6 +259,8 @@ const mapDispatchToProps = (dispatch: any) => ({
     dispatch(HomeActions.appendRepliesComment.request({commentId, page})),
   commentPost: (postId: string, content: string, author: IAuthor) =>
     dispatch(HomeActions.commentPost.request({postId, content, author})),
+  replyComment: (commentId: string, content: string, author: IAuthor) =>
+    dispatch(HomeActions.replyComment.request({commentId, content, author})),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);

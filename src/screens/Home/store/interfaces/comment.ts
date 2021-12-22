@@ -14,4 +14,5 @@ export interface IComment extends Document {
   isLiked: boolean;
   replies: IComment[];
   loadingReplies: boolean;
+  pageReply: number;
 }

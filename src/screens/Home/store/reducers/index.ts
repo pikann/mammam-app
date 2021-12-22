@@ -21,12 +21,7 @@ const homeReducer = (state = initialState, {type, payload}: any) =>
     let index = 0;
     switch (type) {
       case HomeActions.Types.GET_POSTS.succeeded:
-        draft.posts = [
-          ...draft.posts,
-          ...payload.map((post: IPost) => {
-            return {...post, loadingReplies: false};
-          }),
-        ];
+        draft.posts = [...draft.posts, ...payload];
         break;
       case HomeActions.Types.LIKE_POST.succeeded:
         index = draft.posts.findIndex(post => post._id === payload);
@@ -47,6 +42,7 @@ const homeReducer = (state = initialState, {type, payload}: any) =>
           return {
             ...comment,
             replies: [],
+            loadingReplies: false,
           };
         });
         draft.totalComment = payload.total;
@@ -67,6 +63,7 @@ const homeReducer = (state = initialState, {type, payload}: any) =>
               return {
                 ...comment,
                 replies: [],
+                loadingReplies: false,
               };
             }),
         ];
@@ -138,8 +135,14 @@ const homeReducer = (state = initialState, {type, payload}: any) =>
         if (index >= 0) {
           draft.comments[index].replies = [
             ...draft.comments[index].replies,
-            ...payload.replies,
+            ...payload.replies.comments.filter(
+              (reply: IComment) =>
+                !draft.comments[index].replies
+                  .map(({_id}: IComment) => _id)
+                  .includes(reply._id),
+            ),
           ];
+          draft.comments[index].pageReply = payload.page;
         }
         break;
       case HomeActions.Types.COMMENT_POST.succeeded:
@@ -159,9 +162,46 @@ const homeReducer = (state = initialState, {type, payload}: any) =>
             isLiked: false,
             replies: [],
             loadingReplies: false,
+            pageReply: -1,
           },
           ...draft.comments,
         ];
+        break;
+      case HomeActions.Types.LOADING_REPLIES_COMMENT.begin:
+        index = draft.comments.findIndex(comment => comment._id === payload);
+        if (index >= 0) {
+          draft.comments[index].loadingReplies = true;
+        }
+        break;
+      case HomeActions.Types.LOADING_REPLIES_COMMENT.succeeded:
+        index = draft.comments.findIndex(comment => comment._id === payload);
+        if (index >= 0) {
+          draft.comments[index].loadingReplies = false;
+        }
+        break;
+      case HomeActions.Types.REPLY_COMMENT.succeeded:
+        index = draft.comments.findIndex(
+          comment => comment._id === payload.commentId,
+        );
+
+        if (index >= 0) {
+          draft.comments[index].replyTotal++;
+          draft.comments[index].replies = [
+            {
+              _id: payload.replyId,
+              createdAt: Date.now(),
+              author: payload.author,
+              content: payload.content,
+              likeTotal: 0,
+              replyTotal: 0,
+              isLiked: false,
+              replies: [],
+              loadingReplies: false,
+              pageReply: -1,
+            },
+            ...draft.comments[index].replies,
+          ];
+        }
         break;
       default:
         break;

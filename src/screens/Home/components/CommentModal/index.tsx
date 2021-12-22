@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
   KeyboardEvent,
   Animated,
+  ToastAndroid,
+  NativeScrollEvent,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -40,20 +42,75 @@ interface IProp {
   getRepliesComment: (commentId: string) => void;
   appendRepliesComment: (commentId: string, page: number) => void;
   commentPost: (postId: string, content: string, author: IAuthor) => void;
+  replyComment: (commentId: string, content: string, author: IAuthor) => void;
 }
 
 const newLocal = 'ios-chatbubble-ellipses-sharp';
 
 export default function CommentModal(props: IProp) {
   const [commentContent, setCommentContent] = useState('');
+  const [replyingComment, setReplyingComment] = useState<IComment | undefined>(
+    undefined,
+  );
+
+  const scrollRef = useRef<ScrollView | null>(null);
   const height = useRef(new Animated.Value(75)).current;
 
+  const onScroll = (e: NativeScrollEvent) => {
+    if (
+      e.layoutMeasurement.height + e.contentOffset.y >=
+        e.contentSize.height - 20 &&
+      !props.loadingComments &&
+      props.comments.length < props.totalComment
+    ) {
+      props.appendComments(props.currentPostId, props.pageComment + 1);
+    }
+  };
+
+  const onComment = () => {
+    if (commentContent.length === 0) {
+      ToastAndroid.show('Enter comment!', ToastAndroid.SHORT);
+    } else {
+      setCommentContent('');
+      Keyboard.dismiss();
+      if (replyingComment) {
+        setReplyingComment(undefined);
+        props.replyComment(
+          replyingComment._id,
+          commentContent,
+          replyingComment.author,
+        );
+      } else {
+        scrollRef.current?.scrollTo({
+          y: 0,
+          animated: true,
+        });
+        props.commentPost(props.currentPostId, commentContent, {
+          _id: props.userId,
+          username: props.username,
+          avatar: props.avatar,
+        });
+      }
+    }
+  };
+
   useEffect(() => {
+    setReplyingComment(undefined);
+  }, [props.currentPostId]);
+
+  useEffect(() => {
+    const defaultHeight = replyingComment ? 100 : 75;
+    Animated.timing(height, {
+      toValue: defaultHeight,
+      duration: 400,
+      useNativeDriver: false,
+    }).start();
+
     const showSubscription = Keyboard.addListener(
       'keyboardDidShow',
       (e: KeyboardEvent) => {
         Animated.timing(height, {
-          toValue: e.endCoordinates.height + 75,
+          toValue: e.endCoordinates.height + defaultHeight,
           duration: 100,
           useNativeDriver: false,
         }).start();
@@ -61,7 +118,7 @@ export default function CommentModal(props: IProp) {
     );
     const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
       Animated.timing(height, {
-        toValue: 75,
+        toValue: defaultHeight,
         duration: 400,
         useNativeDriver: false,
       }).start();
@@ -71,7 +128,7 @@ export default function CommentModal(props: IProp) {
       showSubscription.remove();
       hideSubscription.remove();
     };
-  }, [height]);
+  }, [height, replyingComment]);
 
   return (
     <Modal
@@ -89,20 +146,13 @@ export default function CommentModal(props: IProp) {
       <View style={styles.modalView}>
         <Text style={styles.title}>Comment</Text>
         <ScrollView
-          onScroll={({nativeEvent: e}) => {
-            if (
-              e.layoutMeasurement.height + e.contentOffset.y >=
-                e.contentSize.height - 20 &&
-              !props.loadingComments &&
-              props.pageComment < props.totalPageComment - 1
-            ) {
-              props.appendComments(props.currentPostId, props.pageComment + 1);
-            }
-          }}
+          ref={scrollRef}
+          onScroll={({nativeEvent: e}) => onScroll(e)}
           scrollEventThrottle={400}>
           <TouchableOpacity style={styles.scrollChild} activeOpacity={1}>
             {props.comments?.map((comment, index) => (
               <Comment
+                child={false}
                 navigation={props.navigation}
                 comment={comment}
                 key={index}
@@ -110,6 +160,7 @@ export default function CommentModal(props: IProp) {
                 dislikeComment={props.dislikeComment}
                 getRepliesComment={props.getRepliesComment}
                 appendRepliesComment={props.appendRepliesComment}
+                setReplyingComment={setReplyingComment}
               />
             ))}
             {props.loadingComments && (
@@ -144,16 +195,25 @@ export default function CommentModal(props: IProp) {
               name={'ios-send'}
               color={Colors.primary}
               size={30}
-              onPress={() => {
-                setCommentContent('');
-                props.commentPost(props.currentPostId, commentContent, {
-                  _id: props.userId,
-                  username: props.username,
-                  avatar: props.avatar,
-                });
-              }}
+              onPress={onComment}
             />
           </Row>
+          {replyingComment && (
+            <Row style={styles.replyingText}>
+              <Text>
+                {'Replying comment of ' + replyingComment.author.username}
+              </Text>
+              <IconButton
+                style={styles.cancelReplying}
+                name={'close'}
+                color={Colors.text}
+                size={15}
+                onPress={() => {
+                  setReplyingComment(undefined);
+                }}
+              />
+            </Row>
+          )}
         </Animated.View>
       </View>
     </Modal>
