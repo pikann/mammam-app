@@ -26,3 +26,12 @@ export const horizontalIOSOption = {
     close: config,
   },
 };
+
+export const verticalIOSOption = {
+  headerShown: false,
+  cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
+  transitionSpec: {
+    open: config,
+    close: config,
+  },
+};

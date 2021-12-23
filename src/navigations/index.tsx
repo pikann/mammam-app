@@ -12,7 +12,8 @@ import * as AppActions from '../store/actions';
 import UnauthenticatedNav from './Unauthenticated';
 import Navigations from '../constants/Navigations';
 import AuthenticatedNav from './Authenticated';
-import {horizontalIOSOption} from './animation';
+import {horizontalIOSOption, verticalIOSOption} from './animation';
+import PostScreen from '../screens/Post';
 
 const Stack = createStackNavigator();
 
@@ -54,6 +55,11 @@ const AppNavContainer = (props: IProp) => {
             name={Navigations.Authenticated}
             component={AuthenticatedNav}
             options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name={Navigations.Post}
+            component={PostScreen}
+            options={verticalIOSOption}
           />
         </Stack.Navigator>
       )}
