@@ -20,8 +20,20 @@ export const styles = StyleSheet.create({
     width: width,
     height: height - 55,
   },
+  loading: {
+    width: 100,
+    height: 100,
+    marginTop: 'auto',
+    marginBottom: 'auto',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  },
   video: {
+    position: 'absolute',
+    top: 0,
     flex: 1,
+    width: width,
+    height: height - 55,
   },
   tagView: {
     position: 'absolute',

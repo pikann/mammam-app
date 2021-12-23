@@ -30,6 +30,7 @@ import {
   makeSelectId,
   makeSelectUsername,
 } from '../../store/selectors';
+import FastImage from 'react-native-fast-image';
 
 const {height} = Dimensions.get('window');
 
@@ -111,6 +112,10 @@ const HomeScreen = ({
         {posts.map((post, index) => {
           return index - currentIndex < 3 && index - currentIndex > -2 ? (
             <View style={styles.videoFrame} key={index}>
+              <FastImage
+                source={require('../../assets/images/white-loading.gif')}
+                style={styles.loading}
+              />
               <Video
                 source={{
                   uri: post.url,

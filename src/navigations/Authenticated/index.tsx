@@ -1,6 +1,7 @@
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {StackNavigationHelpers} from '@react-navigation/stack/lib/typescript/src/types';
 
 import Screens from '../../constants/Screens';
 import HomeScreen from '../../screens/Home';
@@ -11,8 +12,13 @@ import Colors from '../../constants/Colors';
 import PostScreen from '../../screens/Post';
 import View from '../../components/View';
 import {styles} from './styles';
+import {TouchableOpacity} from 'react-native';
 
-const AuthenticatedNav = () => {
+interface IProp {
+  navigation: StackNavigationHelpers;
+}
+
+const AuthenticatedNav = ({navigation}: IProp) => {
   const Tab = createBottomTabNavigator();
   return (
     <Tab.Navigator
@@ -60,6 +66,13 @@ const AuthenticatedNav = () => {
             </View>
           ),
           unmountOnBlur: true,
+          tabBarButton: props => (
+            <TouchableOpacity
+              {...props}
+              onPress={() => navigation.navigate(Screens.Post)}
+              activeOpacity={0.9}
+            />
+          ),
         }}
       />
       <Tab.Screen
