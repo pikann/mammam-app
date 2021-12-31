@@ -3,6 +3,7 @@ import produce from 'immer';
 import * as AppActions from '../actions';
 
 export const initialState = {
+  started: false,
   login: false,
   id: '',
   username: '',
@@ -16,6 +17,9 @@ const appReducer = (state = initialState, {type, payload}: any) =>
     switch (type) {
       case AppActions.Types.CHECK_LOGIN.succeeded:
         draft.login = payload.login;
+        if (!draft.started) {
+          draft.started = true;
+        }
         break;
       case AppActions.Types.GET_USER_PROFILE.succeeded:
         if (payload.id) {
@@ -28,6 +32,9 @@ const appReducer = (state = initialState, {type, payload}: any) =>
           draft.avatar = payload.avatar;
         }
         draft.login = true;
+        if (!draft.started) {
+          draft.started = true;
+        }
         break;
       default:
         break;
