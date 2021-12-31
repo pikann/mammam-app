@@ -17,4 +17,5 @@ export interface IPost {
   viewTotal: number;
   shareTotal: number;
   isLiked: boolean;
+  loading: boolean;
 }

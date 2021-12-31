@@ -58,6 +58,8 @@ interface IProp {
   appendRepliesComment: (commentId: string, page: number) => void;
   commentPost: (postId: string, content: string, author: IAuthor) => void;
   replyComment: (commentId: string, content: string, author: IAuthor) => void;
+  loadingVideo: (postId: string) => void;
+  displayVideo: (postId: string) => void;
 }
 
 const HomeScreen = ({
@@ -84,6 +86,8 @@ const HomeScreen = ({
   appendRepliesComment,
   commentPost,
   replyComment,
+  loadingVideo,
+  displayVideo,
 }: IProp) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [commandModelShow, setCommandModelShow] = useState(false);
@@ -103,6 +107,8 @@ const HomeScreen = ({
       <ScrollView
         snapToInterval={height - 55}
         disableIntervalMomentum={true}
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
         onMomentumScrollEnd={event => {
           setCurrentIndex(
             Math.round(event.nativeEvent.contentOffset.y / (height - 55)),
@@ -112,10 +118,12 @@ const HomeScreen = ({
         {posts.map((post, index) => {
           return index - currentIndex < 3 && index - currentIndex > -2 ? (
             <View style={styles.videoFrame} key={index}>
-              <FastImage
-                source={require('../../assets/images/white-loading.gif')}
-                style={styles.loading}
-              />
+              {post.loading && index === currentIndex && (
+                <FastImage
+                  source={require('../../assets/images/white-loading.gif')}
+                  style={styles.loading}
+                />
+              )}
               <Video
                 source={{
                   uri: post.url,
@@ -124,6 +132,12 @@ const HomeScreen = ({
                 resizeMode={'contain'}
                 repeat={true}
                 paused={index !== currentIndex}
+                onLoadStart={() => {
+                  loadingVideo(post._id);
+                }}
+                onReadyForDisplay={() => {
+                  displayVideo(post._id);
+                }}
               />
               <DoublePressView
                 onDoublePress={() => {
@@ -267,6 +281,10 @@ const mapDispatchToProps = (dispatch: any) => ({
     dispatch(HomeActions.commentPost.request({postId, content, author})),
   replyComment: (commentId: string, content: string, author: IAuthor) =>
     dispatch(HomeActions.replyComment.request({commentId, content, author})),
+  loadingVideo: (postId: string) =>
+    dispatch(HomeActions.loadingVideo.request(postId)),
+  displayVideo: (postId: string) =>
+    dispatch(HomeActions.displayVideo.request(postId)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
