@@ -4,6 +4,11 @@ import {initialState} from '../reducers';
 
 export const appState = (state: any) => state.appReducer || initialState;
 
+const makeSelectStarted = () =>
+  createSelector(appState, state => {
+    return state.started;
+  });
+
 const makeSelectLogin = () =>
   createSelector(appState, state => {
     return state.login;
@@ -24,4 +29,10 @@ const makeSelectAvatar = () =>
     return state.avatar;
   });
 
-export {makeSelectLogin, makeSelectId, makeSelectUsername, makeSelectAvatar};
+export {
+  makeSelectStarted,
+  makeSelectLogin,
+  makeSelectId,
+  makeSelectUsername,
+  makeSelectAvatar,
+};

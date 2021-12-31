@@ -1,7 +1,7 @@
 import {Dimensions, StyleSheet} from 'react-native';
 import Colors from '../../constants/Colors';
 
-const {width} = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
 export const styles = StyleSheet.create({
   background: {
@@ -36,7 +36,8 @@ export const styles = StyleSheet.create({
     marginTop: 10,
   },
   contentContainer: {
-    flex: 1,
+    height,
+    width,
     marginTop: 50,
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
@@ -69,7 +70,7 @@ export const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     marginLeft: 40,
     width: width - 80,
-    marginTop: 90,
+    marginTop: 'auto',
     marginBottom: 25,
   },
   loginGoogleText: {
@@ -94,7 +95,7 @@ export const styles = StyleSheet.create({
   loginFacebookBtn: {
     backgroundColor: '#1877F2',
     marginLeft: 40,
-    marginBottom: 40,
+    marginBottom: height - 510,
     width: width - 80,
   },
   loginFacebookText: {

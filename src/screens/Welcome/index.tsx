@@ -1,5 +1,7 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Animated, Dimensions, Image} from 'react-native';
+import {connect} from 'react-redux';
+import {createStructuredSelector} from 'reselect';
 import {StackNavigationHelpers} from '@react-navigation/stack/lib/typescript/src/types';
 
 import Button from '../../components/Button';
@@ -7,12 +9,17 @@ import Text from '../../components/Text';
 import View, {Row} from '../../components/View';
 import Screens from '../../constants/Screens';
 import {styles} from './styles';
+import {makeSelectLogin, makeSelectStarted} from '../../store/selectors';
 
 interface IProp {
   navigation: StackNavigationHelpers;
+  started: boolean;
+  login: boolean;
 }
 
-export default function WelcomeScreen(props: IProp) {
+const WelcomeScreen = (props: IProp) => {
+  const [startAnimate, setStartAnimate] = useState(false);
+
   let disabled = useRef(true);
   const {width, height} = Dimensions.get('window');
   const top = useRef(new Animated.Value(height - 0.65 * width)).current;
@@ -21,7 +28,14 @@ export default function WelcomeScreen(props: IProp) {
   const fade = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    setTimeout(() => {
+    const timer = setTimeout(() => {
+      setStartAnimate(true);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [props.login]);
+
+  useEffect(() => {
+    if (!props.login && startAnimate && props.started) {
       Animated.timing(borderRadius, {
         toValue: 50,
         duration: 700,
@@ -44,8 +58,18 @@ export default function WelcomeScreen(props: IProp) {
         duration: 1200,
         useNativeDriver: false,
       }).start();
-    }, 3000);
-  });
+    }
+  }, [
+    props.login,
+    startAnimate,
+    props.started,
+    borderRadius,
+    top,
+    height,
+    width,
+    left,
+    fade,
+  ]);
 
   return (
     <View style={styles.background}>
@@ -95,4 +119,11 @@ export default function WelcomeScreen(props: IProp) {
       </Animated.View>
     </View>
   );
-}
+};
+
+const mapStateToProps = createStructuredSelector<any, any>({
+  started: makeSelectStarted(),
+  login: makeSelectLogin(),
+});
+
+export default connect(mapStateToProps, null)(WelcomeScreen);
