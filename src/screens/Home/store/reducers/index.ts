@@ -21,7 +21,12 @@ const homeReducer = (state = initialState, {type, payload}: any) =>
     let index = 0;
     switch (type) {
       case HomeActions.Types.GET_POSTS.succeeded:
-        draft.posts = [...draft.posts, ...payload];
+        draft.posts = [
+          ...draft.posts,
+          ...payload.map((post: IPost) => {
+            return {...post, loading: true};
+          }),
+        ];
         break;
       case HomeActions.Types.LIKE_POST.succeeded:
         index = draft.posts.findIndex(post => post._id === payload);
@@ -201,6 +206,18 @@ const homeReducer = (state = initialState, {type, payload}: any) =>
             },
             ...draft.comments[index].replies,
           ];
+        }
+        break;
+      case HomeActions.Types.LOADING_VIDEO.begin:
+        index = draft.posts.findIndex(post => post._id === payload);
+        if (!draft.posts[index].loading) {
+          draft.posts[index].loading = true;
+        }
+        break;
+      case HomeActions.Types.DISPLAY_VIDEO.begin:
+        index = draft.posts.findIndex(post => post._id === payload);
+        if (draft.posts[index].loading) {
+          draft.posts[index].loading = false;
         }
         break;
       default:

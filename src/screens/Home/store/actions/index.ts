@@ -18,6 +18,8 @@ export const Types = actionTypesFactory(
   'COMMENT_POST',
   'LOADING_REPLIES_COMMENT',
   'REPLY_COMMENT',
+  'LOADING_VIDEO',
+  'DISPLAY_VIDEO',
 );
 
 export const getPosts = createActionGenerator(Types.GET_POSTS);
@@ -43,3 +45,5 @@ export const loadingRepliesComment = createActionGenerator(
   Types.LOADING_REPLIES_COMMENT,
 );
 export const replyComment = createActionGenerator(Types.REPLY_COMMENT);
+export const loadingVideo = createActionGenerator(Types.LOADING_VIDEO);
+export const displayVideo = createActionGenerator(Types.DISPLAY_VIDEO);
