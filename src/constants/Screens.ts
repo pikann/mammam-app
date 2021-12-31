@@ -7,6 +7,7 @@ export default {
   // Authenticated
   Home: 'Home',
   Map: 'Map',
+  Camera: 'Camera',
   Post: 'Post',
   Restaurant: 'Restaurant',
   Me: 'Me',

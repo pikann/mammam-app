@@ -9,10 +9,10 @@ import MapScreen from '../../screens/Map';
 import RestaurantScreen from '../../screens/Restaurant';
 import MeScreen from '../../screens/Me';
 import Colors from '../../constants/Colors';
-import PostScreen from '../../screens/Post';
 import View from '../../components/View';
 import {styles} from './styles';
 import {TouchableOpacity} from 'react-native';
+import CameraScreen from '../../screens/Camera';
 
 interface IProp {
   navigation: StackNavigationHelpers;
@@ -52,7 +52,7 @@ const AuthenticatedNav = ({navigation}: IProp) => {
       />
       <Tab.Screen
         name={Screens.Post}
-        component={PostScreen}
+        component={CameraScreen}
         options={{
           headerShown: false,
           tabBarIcon: ({size}) => (
@@ -69,7 +69,7 @@ const AuthenticatedNav = ({navigation}: IProp) => {
           tabBarButton: props => (
             <TouchableOpacity
               {...props}
-              onPress={() => navigation.navigate(Screens.Post)}
+              onPress={() => navigation.navigate(Screens.Camera)}
               activeOpacity={0.9}
             />
           ),
