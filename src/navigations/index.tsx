@@ -14,6 +14,7 @@ import Navigations from '../constants/Navigations';
 import AuthenticatedNav from './Authenticated';
 import {horizontalIOSOption, verticalIOSOption} from './animation';
 import PostScreen from '../screens/Post';
+import CameraScreen from '../screens/Camera';
 
 const Stack = createStackNavigator();
 
@@ -57,9 +58,14 @@ const AppNavContainer = (props: IProp) => {
             options={{headerShown: false}}
           />
           <Stack.Screen
+            name={Navigations.Camera}
+            component={CameraScreen}
+            options={verticalIOSOption}
+          />
+          <Stack.Screen
             name={Navigations.Post}
             component={PostScreen}
-            options={verticalIOSOption}
+            options={horizontalIOSOption}
           />
         </Stack.Navigator>
       )}

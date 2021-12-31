@@ -1,51 +1,90 @@
-import React from 'react';
-import {RNCamera} from 'react-native-camera';
+import React, {useEffect, useRef} from 'react';
+import {Animated, Dimensions, Keyboard, KeyboardEvent} from 'react-native';
+import {createStructuredSelector} from 'reselect';
+import Video from 'react-native-video';
+import {connect} from 'react-redux';
+import {StackNavigationHelpers} from '@react-navigation/stack/lib/typescript/src/types';
 
-import View, {Row} from '../../components/View';
+import View from '../../components/View';
 import {styles} from './styles';
-import {IconButton} from '../../components/Button';
+import {makeSelectVideoURI} from './store/selectors';
+import TextInput from '../../components/TextInput';
+import Button, {IconButton} from '../../components/Button';
 import Colors from '../../constants/Colors';
-import {TouchableOpacity} from 'react-native';
 
-const PostScreen = () => {
+const {height} = Dimensions.get('window');
+
+interface IProp {
+  navigation: StackNavigationHelpers;
+  videoURI: string;
+}
+
+const PostScreen = (props: IProp) => {
+  const marginTop = useRef(new Animated.Value(height * 0.6)).current;
+
+  useEffect(() => {
+    Animated.timing(marginTop, {
+      toValue: height * 0.6,
+      duration: 400,
+      useNativeDriver: false,
+    }).start();
+
+    const showSubscription = Keyboard.addListener(
+      'keyboardDidShow',
+      (e: KeyboardEvent) => {
+        Animated.timing(marginTop, {
+          toValue: height * 0.6 - e.endCoordinates.height,
+          duration: 300,
+          useNativeDriver: false,
+        }).start();
+      },
+    );
+    const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
+      Animated.timing(marginTop, {
+        toValue: height * 0.6,
+        duration: 400,
+        useNativeDriver: false,
+      }).start();
+    });
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, [marginTop]);
+
   return (
     <View style={styles.container}>
-      <RNCamera
-        style={styles.cameraPreview}
-        type={RNCamera.Constants.Type.back}
-        flashMode={RNCamera.Constants.FlashMode.on}
-        androidCameraPermissionOptions={{
-          title: 'Permission to use camera',
-          message: 'We need your permission to use your camera',
-          buttonPositive: 'Ok',
-          buttonNegative: 'Cancel',
+      <Video
+        source={{
+          uri: props.videoURI,
         }}
-        androidRecordAudioPermissionOptions={{
-          title: 'Permission to use audio recording',
-          message: 'We need your permission to use your audio',
-          buttonPositive: 'Ok',
-          buttonNegative: 'Cancel',
-        }}
+        style={styles.video}
+        resizeMode={'contain'}
+        repeat={true}
       />
-      <Row style={styles.bottomRow}>
-        <IconButton
-          style={styles.changeCameraBtn}
-          name={'camera-reverse-outline'}
-          color={Colors.background}
-          size={27}
-          underlayColor={Colors.primary}
+      <Animated.View style={{...styles.infoContainer, marginTop}}>
+        <TextInput style={styles.description} placeholder="Description..." />
+        <TextInput
+          style={styles.place}
+          placeholder="Place..."
+          editable={false}
         />
-        <TouchableOpacity style={styles.recordBtn} />
-        <IconButton
-          style={styles.pickInLibraryBtn}
-          name={'folder'}
-          color={Colors.background}
-          size={23}
-          underlayColor={Colors.price}
-        />
-      </Row>
+        <Button style={styles.postBtn}>Post</Button>
+      </Animated.View>
+      <IconButton
+        style={styles.closeBtn}
+        name={'close'}
+        color={Colors.background}
+        size={35}
+        onPress={() => props.navigation.goBack()}
+      />
     </View>
   );
 };
 
-export default PostScreen;
+const mapStateToProps = createStructuredSelector<any, any>({
+  videoURI: makeSelectVideoURI(),
+});
+
+export default connect(mapStateToProps, null)(PostScreen);
