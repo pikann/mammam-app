@@ -1,25 +1,59 @@
-import React from 'react';
-import {Image, View as DefaultView} from 'react-native';
+import React, {useState} from 'react';
+import {connect} from 'react-redux';
+import {Image, ToastAndroid, View as DefaultView} from 'react-native';
+import {createStructuredSelector} from 'reselect';
+import {StackNavigationHelpers} from '@react-navigation/stack/lib/typescript/src/types';
 
+import * as RegisterActions from './store/actions';
 import Button, {BackButton, TextButton} from '../../components/Button';
 import Text from '../../components/Text';
 import TextInput from '../../components/TextInput';
 import View, {Row} from '../../components/View';
 import Screens from '../../constants/Screens';
+import {makeSelectLoading} from './store/selectors';
 import {styles} from './styles';
 
-export default function RegisterScreen({navigation}: any) {
+interface IProp {
+  navigation: StackNavigationHelpers;
+  isLoading: boolean;
+  register: (payload: any) => void;
+}
+
+const RegisterScreen = (props: IProp) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
+  const onRegister = () => {
+    if (!email) {
+      ToastAndroid.show('Enter email!', ToastAndroid.SHORT);
+      return;
+    }
+    if (!password) {
+      ToastAndroid.show('Enter password!', ToastAndroid.SHORT);
+      return;
+    }
+    if (!confirmPassword) {
+      ToastAndroid.show('Enter confirm password!', ToastAndroid.SHORT);
+      return;
+    }
+    if (password !== confirmPassword) {
+      ToastAndroid.show('Passwords didn’t match!', ToastAndroid.SHORT);
+      return;
+    }
+    props.register({email, password});
+  };
   return (
     <View style={styles.background}>
       <Row style={styles.topRow}>
         <BackButton
           style={styles.backButton}
-          onPress={() => navigation.goBack()}
+          onPress={() => props.navigation.goBack()}
         />
         <TextButton
           style={styles.registerButton}
           textStyle={styles.registerButtonText}
-          onPress={() => navigation.navigate(Screens.Login)}>
+          onPress={() => props.navigation.navigate(Screens.Login)}>
           Login
         </TextButton>
       </Row>
@@ -30,20 +64,27 @@ export default function RegisterScreen({navigation}: any) {
           style={styles.emailInput}
           placeholder="Email"
           keyboardType="email-address"
+          onChangeText={text => setEmail(text)}
+          value={email}
         />
         <TextInput
           style={styles.passwordInput}
           placeholder="Password"
           secureTextEntry={true}
+          onChangeText={text => setPassword(text)}
+          value={password}
         />
         <TextInput
           style={styles.passwordInput}
           placeholder="Confirm password"
           secureTextEntry={true}
+          onChangeText={text => setConfirmPassword(text)}
+          value={confirmPassword}
         />
         <Button
           style={styles.signInButton}
-          onPress={() => console.log('Register')}>
+          loading={props.isLoading}
+          onPress={() => onRegister()}>
           Register
         </Button>
         <Button
@@ -81,4 +122,15 @@ export default function RegisterScreen({navigation}: any) {
       </View>
     </View>
   );
-}
+};
+
+const mapStateToProps = createStructuredSelector<any, any>({
+  isLoading: makeSelectLoading(),
+});
+
+const mapDispatchToProps = (dispatch: any) => ({
+  register: (payload: any) =>
+    dispatch(RegisterActions.register.request(payload)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(RegisterScreen);

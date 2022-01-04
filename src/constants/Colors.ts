@@ -6,4 +6,5 @@ export default {
   textGray: '#CDCDCD',
   price: '#E4723C',
   gray: '#EEEEEE',
+  black: '#000000',
 };

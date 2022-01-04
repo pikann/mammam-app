@@ -1,5 +1,9 @@
 import * as React from 'react';
-import {View as DefaultView, ViewProps} from 'react-native';
+import {
+  TouchableWithoutFeedback,
+  View as DefaultView,
+  ViewProps,
+} from 'react-native';
 
 import {styles} from './styles';
 
@@ -20,6 +24,27 @@ export function Row(props: ViewProps & {children?: React.ReactNode}) {
       style={{
         ...styles.row,
         ...(style as object),
+      }}
+      {...otherProps}
+    />
+  );
+}
+
+export function DoublePressView(
+  props: ViewProps & {children?: React.ReactNode} & {onDoublePress: () => void},
+) {
+  const [lastPress, setLastPress] = React.useState(0);
+  const {style, onDoublePress, ...otherProps} = props;
+  return (
+    <TouchableWithoutFeedback
+      style={{...styles.view, ...(style as object)}}
+      onPress={() => {
+        if (Date.now() - lastPress < 1000) {
+          onDoublePress();
+          setLastPress(0);
+        } else {
+          setLastPress(Date.now());
+        }
       }}
       {...otherProps}
     />
