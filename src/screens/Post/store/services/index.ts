@@ -1,7 +1,7 @@
 import AxiosClientInstance from '../../../../utils/axios';
 
-export const updateProfileService = async (payload: any) => {
-  return await AxiosClientInstance.patch('users/profile', payload);
+export const postService = async (payload: any) => {
+  return await AxiosClientInstance.post('posts', payload);
 };
 
 export const getPresignedUrlService = async () => {

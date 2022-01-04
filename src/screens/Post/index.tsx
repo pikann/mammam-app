@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Animated, Dimensions, Keyboard, KeyboardEvent} from 'react-native';
 import {createStructuredSelector} from 'reselect';
 import Video from 'react-native-video';
@@ -7,19 +7,30 @@ import {StackNavigationHelpers} from '@react-navigation/stack/lib/typescript/src
 
 import View from '../../components/View';
 import {styles} from './styles';
-import {makeSelectVideoURI} from './store/selectors';
+import * as PostActions from './store/actions';
+import {
+  makeSelectIsLoading,
+  makeSelectVideoType,
+  makeSelectVideoURI,
+} from './store/selectors';
 import TextInput from '../../components/TextInput';
 import Button, {IconButton} from '../../components/Button';
 import Colors from '../../constants/Colors';
+import Screens from '../../constants/Screens';
 
 const {height} = Dimensions.get('window');
 
 interface IProp {
   navigation: StackNavigationHelpers;
   videoURI: string;
+  videoType: string;
+  isLoading: boolean;
+  postVideo: (payload: any) => void;
 }
 
 const PostScreen = (props: IProp) => {
+  const [description, setDescription] = useState('');
+
   const marginTop = useRef(new Animated.Value(height * 0.6)).current;
 
   useEffect(() => {
@@ -64,13 +75,31 @@ const PostScreen = (props: IProp) => {
         repeat={true}
       />
       <Animated.View style={{...styles.infoContainer, marginTop}}>
-        <TextInput style={styles.description} placeholder="Description..." />
+        <TextInput
+          style={styles.description}
+          placeholder="Description..."
+          onChangeText={text => setDescription(text)}
+        />
         <TextInput
           style={styles.place}
           placeholder="Place..."
           editable={false}
         />
-        <Button style={styles.postBtn}>Post</Button>
+        <Button
+          style={styles.postBtn}
+          loading={props.isLoading}
+          onPress={() =>
+            props.postVideo({
+              description: description,
+              video: props.videoURI,
+              videoType: props.videoType,
+              callback: () => {
+                props.navigation.navigate(Screens.Home);
+              },
+            })
+          }>
+          Post
+        </Button>
       </Animated.View>
       <IconButton
         style={styles.closeBtn}
@@ -85,6 +114,12 @@ const PostScreen = (props: IProp) => {
 
 const mapStateToProps = createStructuredSelector<any, any>({
   videoURI: makeSelectVideoURI(),
+  videoType: makeSelectVideoType(),
+  isLoading: makeSelectIsLoading(),
 });
 
-export default connect(mapStateToProps, null)(PostScreen);
+const mapDispatchToProps = (dispatch: any) => ({
+  postVideo: (payload: any) => dispatch(PostActions.postVideo.request(payload)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(PostScreen);
