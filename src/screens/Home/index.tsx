@@ -14,6 +14,7 @@ import {styles} from './styles';
 import {
   makeSelectComments,
   makeSelectCurrentPostId,
+  makeSelectLoading,
   makeSelectLoadingComments,
   makeSelectPageComment,
   makeSelectPosts,
@@ -46,7 +47,9 @@ interface IProp {
   userId: string;
   username: string;
   avatar: string;
+  isLoading: boolean;
   getPosts: () => void;
+  appendPosts: (availables: string) => void;
   likePost: (postId: string) => void;
   dislikePost: (postId: string) => void;
   viewPost: (postId: string) => void;
@@ -74,7 +77,9 @@ const HomeScreen = ({
   userId,
   username,
   avatar,
+  isLoading,
   getPosts,
+  appendPosts,
   likePost,
   dislikePost,
   viewPost,
@@ -100,7 +105,20 @@ const HomeScreen = ({
     if (posts.length > 0) {
       viewPost(posts[currentIndex]._id);
     }
-  }, [currentIndex, posts, viewPost]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentIndex, viewPost]);
+
+  useEffect(() => {
+    if (currentIndex >= posts.length - 2 && !isLoading && posts.length > 0) {
+      appendPosts(
+        posts
+          .slice(currentIndex, posts.length)
+          .map(post => post._id)
+          .join(','),
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [appendPosts, currentIndex, viewPost]);
 
   return (
     <View style={styles.background}>
@@ -261,10 +279,13 @@ const mapStateToProps = createStructuredSelector<any, any>({
   userId: makeSelectId(),
   username: makeSelectUsername(),
   avatar: makeSelectAvatar(),
+  isLoading: makeSelectLoading(),
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
   getPosts: () => dispatch(HomeActions.getPosts.request()),
+  appendPosts: (availables: string) =>
+    dispatch(HomeActions.appendPosts.request(availables)),
   likePost: (postId: string) => dispatch(HomeActions.likePost.request(postId)),
   dislikePost: (postId: string) =>
     dispatch(HomeActions.dislikePost.request(postId)),

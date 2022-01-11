@@ -4,6 +4,12 @@ export const getPostsService = async () => {
   return await AxiosClientInstance.get('/posts?perpage=5');
 };
 
+export const appendPostsService = async (availables: string) => {
+  return await AxiosClientInstance.get(
+    `/posts?perpage=5&availables=${availables}`,
+  );
+};
+
 export const likePostService = async (postId: string) => {
   return await AxiosClientInstance.put(`/posts/${postId}/like`, {});
 };

@@ -12,6 +12,7 @@ export const initialState = {
   pageComment: 0,
   loadingComments: false,
   currentPostId: '',
+  isLoading: false,
 };
 
 export type HomeState = typeof initialState;
@@ -21,6 +22,11 @@ const homeReducer = (state = initialState, {type, payload}: any) =>
     let index = 0;
     switch (type) {
       case HomeActions.Types.GET_POSTS.succeeded:
+        draft.posts = payload.map((post: IPost) => {
+          return {...post, loading: true};
+        });
+        break;
+      case HomeActions.Types.APPEND_POSTS.succeeded:
         draft.posts = [
           ...draft.posts,
           ...payload.map((post: IPost) => {
@@ -219,6 +225,12 @@ const homeReducer = (state = initialState, {type, payload}: any) =>
         if (draft.posts[index].loading) {
           draft.posts[index].loading = false;
         }
+        break;
+      case HomeActions.Types.LOADING.begin:
+        draft.isLoading = true;
+        break;
+      case HomeActions.Types.LOADING.succeeded:
+        draft.isLoading = false;
         break;
       default:
         break;

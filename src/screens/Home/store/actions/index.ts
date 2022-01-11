@@ -4,6 +4,7 @@ import {actionTypesFactory} from '../../../../utils/actionTypesFactory';
 export const Types = actionTypesFactory(
   'HOME',
   'GET_POSTS',
+  'APPEND_POSTS',
   'LIKE_POST',
   'DISLIKE_POST',
   'VIEW_POST',
@@ -20,9 +21,11 @@ export const Types = actionTypesFactory(
   'REPLY_COMMENT',
   'LOADING_VIDEO',
   'DISPLAY_VIDEO',
+  'LOADING',
 );
 
 export const getPosts = createActionGenerator(Types.GET_POSTS);
+export const appendPosts = createActionGenerator(Types.APPEND_POSTS);
 export const likePost = createActionGenerator(Types.LIKE_POST);
 export const dislikePost = createActionGenerator(Types.DISLIKE_POST);
 export const viewPost = createActionGenerator(Types.VIEW_POST);
@@ -47,3 +50,4 @@ export const loadingRepliesComment = createActionGenerator(
 export const replyComment = createActionGenerator(Types.REPLY_COMMENT);
 export const loadingVideo = createActionGenerator(Types.LOADING_VIDEO);
 export const displayVideo = createActionGenerator(Types.DISPLAY_VIDEO);
+export const loading = createActionGenerator(Types.LOADING);
