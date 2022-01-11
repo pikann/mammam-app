@@ -18,7 +18,7 @@ export const styles = StyleSheet.create({
   videoFrame: {
     backgroundColor: Colors.black,
     width: width,
-    height: height - 55,
+    height: Math.floor(height - 55),
   },
   loading: {
     width: 100,
@@ -31,9 +31,8 @@ export const styles = StyleSheet.create({
   video: {
     position: 'absolute',
     top: 0,
-    flex: 1,
     width: width,
-    height: height - 55,
+    height: Math.floor(height - 56),
   },
   tagView: {
     position: 'absolute',
@@ -62,7 +61,7 @@ export const styles = StyleSheet.create({
   absoluteView: {
     backgroundColor: 'transparent',
     position: 'absolute',
-    height: height - 55,
+    height: Math.floor(height - 55),
     width,
   },
   actionView: {

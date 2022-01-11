@@ -105,13 +105,17 @@ const HomeScreen = ({
   return (
     <View style={styles.background}>
       <ScrollView
-        snapToInterval={height - 55}
+        snapToOffsets={[...Array(posts.length)].map(
+          (x, i) => i * Math.floor(height - 55),
+        )}
         disableIntervalMomentum={true}
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
         onMomentumScrollEnd={event => {
           setCurrentIndex(
-            Math.round(event.nativeEvent.contentOffset.y / (height - 55)),
+            Math.round(
+              event.nativeEvent.contentOffset.y / Math.floor(height - 55),
+            ),
           );
         }}
         style={styles.flex}>
