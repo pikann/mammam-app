@@ -39,6 +39,11 @@ const makeSelectCurrentPostId = () =>
     return state.currentPostId;
   });
 
+const makeSelectLoading = () =>
+  createSelector(homeState, state => {
+    return state.isLoading;
+  });
+
 export {
   makeSelectPosts,
   makeSelectComments,
@@ -47,4 +52,5 @@ export {
   makeSelectPageComment,
   makeSelectLoadingComments,
   makeSelectCurrentPostId,
+  makeSelectLoading,
 };
