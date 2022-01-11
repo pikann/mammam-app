@@ -105,8 +105,7 @@ const HomeScreen = ({
     if (posts.length > 0) {
       viewPost(posts[currentIndex]._id);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentIndex, viewPost]);
+  }, [currentIndex, posts, viewPost]);
 
   useEffect(() => {
     if (currentIndex >= posts.length - 2 && !isLoading && posts.length > 0) {
