@@ -44,6 +44,11 @@ const makeSelectLoading = () =>
     return state.isLoading;
   });
 
+const makeSelectGetPostsTag = () =>
+  createSelector(homeState, state => {
+    return state.getPostsTag;
+  });
+
 export {
   makeSelectPosts,
   makeSelectComments,
@@ -53,4 +58,5 @@ export {
   makeSelectLoadingComments,
   makeSelectCurrentPostId,
   makeSelectLoading,
+  makeSelectGetPostsTag,
 };

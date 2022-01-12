@@ -22,6 +22,7 @@ export const Types = actionTypesFactory(
   'LOADING_VIDEO',
   'DISPLAY_VIDEO',
   'LOADING',
+  'SET_GET_POSTS_TAG',
 );
 
 export const getPosts = createActionGenerator(Types.GET_POSTS);
@@ -51,3 +52,4 @@ export const replyComment = createActionGenerator(Types.REPLY_COMMENT);
 export const loadingVideo = createActionGenerator(Types.LOADING_VIDEO);
 export const displayVideo = createActionGenerator(Types.DISPLAY_VIDEO);
 export const loading = createActionGenerator(Types.LOADING);
+export const setGetPostsTag = createActionGenerator(Types.SET_GET_POSTS_TAG);

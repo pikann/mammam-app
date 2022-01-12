@@ -4,6 +4,8 @@ import Video from 'react-native-video';
 import {connect} from 'react-redux';
 import {StackNavigationHelpers} from '@react-navigation/stack/lib/typescript/src/types';
 import {createStructuredSelector} from 'reselect';
+import Icon from 'react-native-vector-icons/Ionicons';
+import FastImage from 'react-native-fast-image';
 
 import {IconButton, TextButton} from '../../components/Button';
 import * as HomeActions from './store/actions';
@@ -14,6 +16,7 @@ import {styles} from './styles';
 import {
   makeSelectComments,
   makeSelectCurrentPostId,
+  makeSelectGetPostsTag,
   makeSelectLoading,
   makeSelectLoadingComments,
   makeSelectPageComment,
@@ -31,7 +34,7 @@ import {
   makeSelectId,
   makeSelectUsername,
 } from '../../store/selectors';
-import FastImage from 'react-native-fast-image';
+import {GetPostsTag} from './store/enums/get-posts-tag';
 
 const {height} = Dimensions.get('window');
 
@@ -48,8 +51,9 @@ interface IProp {
   username: string;
   avatar: string;
   isLoading: boolean;
-  getPosts: () => void;
-  appendPosts: (availables: string) => void;
+  getPostsTag: string;
+  getPosts: (tag: string) => void;
+  appendPosts: (tag: string, availables: string) => void;
   likePost: (postId: string) => void;
   dislikePost: (postId: string) => void;
   viewPost: (postId: string) => void;
@@ -63,6 +67,7 @@ interface IProp {
   replyComment: (commentId: string, content: string, author: IAuthor) => void;
   loadingVideo: (postId: string) => void;
   displayVideo: (postId: string) => void;
+  setGetPostsTag: (tag: string) => void;
 }
 
 const HomeScreen = ({
@@ -78,6 +83,7 @@ const HomeScreen = ({
   username,
   avatar,
   isLoading,
+  getPostsTag,
   getPosts,
   appendPosts,
   likePost,
@@ -93,13 +99,15 @@ const HomeScreen = ({
   replyComment,
   loadingVideo,
   displayVideo,
+  setGetPostsTag,
 }: IProp) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [commandModelShow, setCommandModelShow] = useState(false);
 
   useEffect(() => {
-    getPosts();
-  }, [getPosts]);
+    setCurrentIndex(0);
+    getPosts(getPostsTag);
+  }, [getPosts, getPostsTag]);
 
   useEffect(() => {
     if (posts.length > 0) {
@@ -110,6 +118,7 @@ const HomeScreen = ({
   useEffect(() => {
     if (currentIndex >= posts.length - 2 && !isLoading && posts.length > 0) {
       appendPosts(
+        getPostsTag,
         posts
           .slice(currentIndex, posts.length)
           .map(post => post._id)
@@ -121,120 +130,167 @@ const HomeScreen = ({
 
   return (
     <View style={styles.background}>
-      <ScrollView
-        snapToOffsets={[...Array(posts.length)].map(
-          (x, i) => i * Math.floor(height - 55),
-        )}
-        disableIntervalMomentum={true}
-        showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}
-        onMomentumScrollEnd={event => {
-          setCurrentIndex(
-            Math.round(
-              event.nativeEvent.contentOffset.y / Math.floor(height - 55),
-            ),
-          );
-        }}
-        style={styles.flex}>
-        {posts.map((post, index) => {
-          return index - currentIndex < 3 && index - currentIndex > -2 ? (
-            <View style={styles.videoFrame} key={index}>
-              {post.loading && index === currentIndex && (
-                <FastImage
-                  source={require('../../assets/images/white-loading.gif')}
-                  style={styles.loading}
+      {posts.length > 0 ? (
+        <ScrollView
+          snapToOffsets={[...Array(posts.length)].map(
+            (x, i) => i * Math.floor(height - 55),
+          )}
+          disableIntervalMomentum={true}
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
+          onMomentumScrollEnd={event => {
+            setCurrentIndex(
+              Math.round(
+                event.nativeEvent.contentOffset.y / Math.floor(height - 55),
+              ),
+            );
+          }}
+          style={styles.flex}>
+          {posts.map((post, index) => {
+            return index - currentIndex < 3 && index - currentIndex > -2 ? (
+              <View style={styles.videoFrame} key={index}>
+                {post.loading && index === currentIndex && (
+                  <FastImage
+                    source={require('../../assets/images/white-loading.gif')}
+                    style={styles.loading}
+                  />
+                )}
+                <Video
+                  source={{
+                    uri: post.url,
+                  }}
+                  style={styles.video}
+                  resizeMode={'contain'}
+                  repeat={true}
+                  paused={index !== currentIndex}
+                  onLoadStart={() => {
+                    loadingVideo(post._id);
+                  }}
+                  onReadyForDisplay={() => {
+                    displayVideo(post._id);
+                  }}
                 />
-              )}
-              <Video
-                source={{
-                  uri: post.url,
-                }}
-                style={styles.video}
-                resizeMode={'contain'}
-                repeat={true}
-                paused={index !== currentIndex}
-                onLoadStart={() => {
-                  loadingVideo(post._id);
-                }}
-                onReadyForDisplay={() => {
-                  displayVideo(post._id);
-                }}
-              />
-              <DoublePressView
-                onDoublePress={() => {
-                  likePost(post._id);
-                }}>
-                <Row style={styles.absoluteView}>
-                  <View style={styles.descriptionView}>
-                    <Text style={styles.views}>{timeAgo(post.createdAt)}</Text>
-                    <Text style={styles.description}>{post.description}</Text>
-                    <Text
-                      style={styles.views}>{`${post.viewTotal} views`}</Text>
-                  </View>
-                  <View style={styles.actionView}>
-                    <IconButton
-                      style={styles.likeActionButton}
-                      name={'heart'}
-                      color={
-                        post.isLiked ? Colors.secondary : Colors.background
-                      }
-                      size={45}
-                      onPress={() => {
-                        if (post.isLiked) {
-                          dislikePost(post._id);
-                        } else {
-                          likePost(post._id);
+                <DoublePressView
+                  onDoublePress={() => {
+                    likePost(post._id);
+                  }}>
+                  <Row style={styles.absoluteView}>
+                    <View style={styles.descriptionView}>
+                      <Text style={styles.views}>
+                        {timeAgo(post.createdAt)}
+                      </Text>
+                      <Text style={styles.description}>{post.description}</Text>
+                      <Text
+                        style={styles.views}>{`${post.viewTotal} views`}</Text>
+                    </View>
+                    <View style={styles.actionView}>
+                      <IconButton
+                        style={styles.likeActionButton}
+                        name={'heart'}
+                        color={
+                          post.isLiked ? Colors.secondary : Colors.background
                         }
-                      }}
-                    />
-                    <Text style={styles.actionCount}>
-                      {'' + post.likeTotal}
-                    </Text>
-                    <IconButton
-                      style={styles.actionButton}
-                      name={'ios-chatbubble-ellipses-sharp'}
-                      color={Colors.background}
-                      size={30}
-                      onPress={() => {
-                        getComments(post._id);
-                        setCommandModelShow(true);
-                      }}
-                    />
-                    <Text style={styles.actionCount}>
-                      {'' + post.commentTotal}
-                    </Text>
-                    <IconButton
-                      style={styles.actionButton}
-                      name={'share-social'}
-                      color={Colors.background}
-                      size={30}
-                    />
-                    <Text style={styles.actionCount}>
-                      {'' + post.shareTotal}
-                    </Text>
-                    <Image
-                      style={styles.avatarAuthor}
-                      source={{
-                        uri: post.author.avatar,
-                      }}
-                      defaultSource={require('../../assets/images/avatar-default.png')}
-                    />
-                  </View>
-                </Row>
-              </DoublePressView>
-            </View>
-          ) : (
-            <View style={styles.videoFrame} key={index} />
-          );
-        })}
-      </ScrollView>
+                        size={45}
+                        onPress={() => {
+                          if (post.isLiked) {
+                            dislikePost(post._id);
+                          } else {
+                            likePost(post._id);
+                          }
+                        }}
+                      />
+                      <Text style={styles.actionCount}>
+                        {'' + post.likeTotal}
+                      </Text>
+                      <IconButton
+                        style={styles.actionButton}
+                        name={'ios-chatbubble-ellipses-sharp'}
+                        color={Colors.background}
+                        size={30}
+                        onPress={() => {
+                          getComments(post._id);
+                          setCommandModelShow(true);
+                        }}
+                      />
+                      <Text style={styles.actionCount}>
+                        {'' + post.commentTotal}
+                      </Text>
+                      <IconButton
+                        style={styles.actionButton}
+                        name={'share-social'}
+                        color={Colors.background}
+                        size={30}
+                      />
+                      <Text style={styles.actionCount}>
+                        {'' + post.shareTotal}
+                      </Text>
+                      <Image
+                        style={styles.avatarAuthor}
+                        source={{
+                          uri: post.author.avatar,
+                        }}
+                        defaultSource={require('../../assets/images/avatar-default.png')}
+                      />
+                    </View>
+                  </Row>
+                </DoublePressView>
+              </View>
+            ) : (
+              <View style={styles.videoFrame} key={index} />
+            );
+          })}
+        </ScrollView>
+      ) : isLoading ? (
+        <FastImage
+          source={require('../../assets/images/white-loading.gif')}
+          style={styles.loading}
+        />
+      ) : (
+        <View style={styles.noPostView}>
+          <Icon
+            style={styles.center}
+            name={'newspaper-outline'}
+            color={Colors.text}
+            size={200}
+          />
+          <Text style={styles.noPostText}>No video available</Text>
+        </View>
+      )}
 
       <Row style={styles.tagView}>
-        <TextButton textStyle={{...styles.tagTitle, ...styles.choicedTag}}>
+        <TextButton
+          textStyle={
+            getPostsTag === GetPostsTag.ForYou
+              ? {...styles.tagTitle, ...styles.choicedTag}
+              : styles.tagTitle
+          }
+          onPress={() => {
+            setGetPostsTag(GetPostsTag.ForYou);
+          }}>
           For you
         </TextButton>
-        <TextButton textStyle={{...styles.tagTitle}}>Popular</TextButton>
-        <TextButton textStyle={{...styles.tagTitle}}>Following</TextButton>
+        <TextButton
+          textStyle={
+            getPostsTag === GetPostsTag.Popular
+              ? {...styles.tagTitle, ...styles.choicedTag}
+              : styles.tagTitle
+          }
+          onPress={() => {
+            setGetPostsTag(GetPostsTag.Popular);
+          }}>
+          Popular
+        </TextButton>
+        <TextButton
+          textStyle={
+            getPostsTag === GetPostsTag.Following
+              ? {...styles.tagTitle, ...styles.choicedTag}
+              : styles.tagTitle
+          }
+          onPress={() => {
+            setGetPostsTag(GetPostsTag.Following);
+          }}>
+          Following
+        </TextButton>
         <IconButton
           style={styles.searchButton}
           name={'search'}
@@ -279,12 +335,13 @@ const mapStateToProps = createStructuredSelector<any, any>({
   username: makeSelectUsername(),
   avatar: makeSelectAvatar(),
   isLoading: makeSelectLoading(),
+  getPostsTag: makeSelectGetPostsTag(),
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
-  getPosts: () => dispatch(HomeActions.getPosts.request()),
-  appendPosts: (availables: string) =>
-    dispatch(HomeActions.appendPosts.request(availables)),
+  getPosts: (tag: string) => dispatch(HomeActions.getPosts.request(tag)),
+  appendPosts: (tag: string, availables: string) =>
+    dispatch(HomeActions.appendPosts.request({tag, availables})),
   likePost: (postId: string) => dispatch(HomeActions.likePost.request(postId)),
   dislikePost: (postId: string) =>
     dispatch(HomeActions.dislikePost.request(postId)),
@@ -309,6 +366,8 @@ const mapDispatchToProps = (dispatch: any) => ({
     dispatch(HomeActions.loadingVideo.request(postId)),
   displayVideo: (postId: string) =>
     dispatch(HomeActions.displayVideo.request(postId)),
+  setGetPostsTag: (tag: string) =>
+    dispatch(HomeActions.setGetPostsTag.request(tag)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);

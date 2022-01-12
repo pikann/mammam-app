@@ -1,6 +1,7 @@
 import produce from 'immer';
 
 import * as HomeActions from '../actions';
+import {GetPostsTag} from '../enums/get-posts-tag';
 import {IComment} from '../interfaces/comment';
 import {IPost} from '../interfaces/post';
 
@@ -13,6 +14,7 @@ export const initialState = {
   loadingComments: false,
   currentPostId: '',
   isLoading: false,
+  getPostsTag: GetPostsTag.ForYou,
 };
 
 export type HomeState = typeof initialState;
@@ -231,6 +233,9 @@ const homeReducer = (state = initialState, {type, payload}: any) =>
         break;
       case HomeActions.Types.LOADING.succeeded:
         draft.isLoading = false;
+        break;
+      case HomeActions.Types.SET_GET_POSTS_TAG.begin:
+        draft.getPostsTag = payload;
         break;
       default:
         break;
