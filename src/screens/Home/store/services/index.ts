@@ -1,12 +1,12 @@
 import AxiosClientInstance from '../../../../utils/axios';
 
-export const getPostsService = async () => {
-  return await AxiosClientInstance.get('/posts?perpage=5');
+export const getPostsService = async (tag: string) => {
+  return await AxiosClientInstance.get(`/posts?tag=${tag}&perpage=5`);
 };
 
-export const appendPostsService = async (availables: string) => {
+export const appendPostsService = async (payload: any) => {
   return await AxiosClientInstance.get(
-    `/posts?perpage=5&availables=${availables}`,
+    `/posts?tag=${payload.tag}&perpage=5&availables=${payload.availables}`,
   );
 };
 

@@ -112,4 +112,16 @@ export const styles = StyleSheet.create({
     color: Colors.background,
     fontSize: 12,
   },
+  noPostView: {
+    backgroundColor: Colors.black,
+    marginTop: 'auto',
+    marginBottom: 'auto',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  },
+  noPostText: {
+    fontSize: 30,
+    fontWeight: '700',
+    marginTop: 10,
+  },
 });

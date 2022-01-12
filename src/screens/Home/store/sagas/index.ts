@@ -19,13 +19,18 @@ interface Data {
   [key: string]: any;
 }
 
-function* getPostsSaga() {
+function* getPostsSaga({payload}: any) {
   try {
+    yield put({
+      type: HomeAction.Types.GET_POSTS.succeeded,
+      payload: [],
+    });
+
     yield put({
       type: HomeAction.Types.LOADING.begin,
     });
 
-    const response: Data = yield call(getPostsService);
+    const response: Data = yield call(getPostsService, payload);
 
     yield put({
       type: HomeAction.Types.LOADING.succeeded,
