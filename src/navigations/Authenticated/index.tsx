@@ -7,7 +7,7 @@ import Screens from '../../constants/Screens';
 import HomeScreen from '../../screens/Home';
 import MapScreen from '../../screens/Map';
 import RestaurantScreen from '../../screens/Restaurant';
-import MeScreen from '../../screens/Me';
+import UserScreen from '../../screens/User';
 import Colors from '../../constants/Colors';
 import View from '../../components/View';
 import {styles} from './styles';
@@ -87,8 +87,8 @@ const AuthenticatedNav = ({navigation}: IProp) => {
         }}
       />
       <Tab.Screen
-        name={Screens.Me}
-        component={MeScreen}
+        name={Screens.User}
+        component={UserScreen}
         options={{
           headerShown: false,
           tabBarIcon: ({color, size}) => (

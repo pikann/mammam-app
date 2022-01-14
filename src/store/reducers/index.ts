@@ -8,6 +8,7 @@ export const initialState = {
   id: '',
   username: '',
   avatar: '',
+  bio: '',
 };
 
 export type AppState = typeof initialState;
@@ -30,6 +31,9 @@ const appReducer = (state = initialState, {type, payload}: any) =>
         }
         if (payload.avatar) {
           draft.avatar = payload.avatar;
+        }
+        if (payload.bio) {
+          draft.bio = payload.bio;
         }
         draft.login = true;
         if (!draft.started) {

@@ -2,6 +2,7 @@ export interface IAuthor {
   _id: string;
   avatar: string;
   username: string;
+  bio: string;
 }
 
 export interface IPost {
