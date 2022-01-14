@@ -2,6 +2,7 @@ export interface IAuthor extends Document {
   _id: string;
   avatar: string;
   username: string;
+  bio: string;
 }
 
 export interface IComment extends Document {

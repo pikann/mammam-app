@@ -35,6 +35,7 @@ interface IProp {
   userId: string;
   username: string;
   avatar: string;
+  bio: string;
   appendComments: (postId: string, page: number) => void;
   setCommandModelShow: (commandModelShow: boolean) => void;
   likeComment: (commentId: string) => void;
@@ -89,6 +90,7 @@ export default function CommentModal(props: IProp) {
           _id: props.userId,
           username: props.username,
           avatar: props.avatar,
+          bio: props.bio,
         });
       }
     }

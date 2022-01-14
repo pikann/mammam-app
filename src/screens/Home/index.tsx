@@ -31,6 +31,7 @@ import CommentModal from './components/CommentModal';
 import {IAuthor, IComment} from './store/interfaces/comment';
 import {
   makeSelectAvatar,
+  makeSelectBio,
   makeSelectId,
   makeSelectUsername,
 } from '../../store/selectors';
@@ -50,6 +51,7 @@ interface IProp {
   userId: string;
   username: string;
   avatar: string;
+  bio: string;
   isLoading: boolean;
   getPostsTag: string;
   getPosts: (tag: string) => void;
@@ -82,6 +84,7 @@ const HomeScreen = ({
   userId,
   username,
   avatar,
+  bio,
   isLoading,
   getPostsTag,
   getPosts,
@@ -309,6 +312,7 @@ const HomeScreen = ({
         userId={userId}
         username={username}
         avatar={avatar}
+        bio={bio}
         appendComments={appendComments}
         loadingComments={loadingComments}
         likeComment={likeComment}
@@ -334,6 +338,7 @@ const mapStateToProps = createStructuredSelector<any, any>({
   userId: makeSelectId(),
   username: makeSelectUsername(),
   avatar: makeSelectAvatar(),
+  bio: makeSelectBio(),
   isLoading: makeSelectLoading(),
   getPostsTag: makeSelectGetPostsTag(),
 });

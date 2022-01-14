@@ -10,5 +10,5 @@ export default {
   Camera: 'Camera',
   Post: 'Post',
   Restaurant: 'Restaurant',
-  Me: 'Me',
+  User: 'User',
 };
