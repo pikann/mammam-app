@@ -12,7 +12,7 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   contentContainer: {
-    height,
+    height: height - 170,
     width,
     marginTop: 140,
     borderTopLeftRadius: 50,
@@ -51,13 +51,13 @@ export const styles = StyleSheet.create({
     height: 27,
   },
   scrollContainer: {
-    padding: 40,
+    padding: 30,
+    marginTop: 15,
   },
   bioText: {
     fontFamily: 'SourceSansPro-Light',
     fontSize: 16,
     textAlign: 'center',
-    marginTop: 10,
   },
   followProfile: {
     marginTop: 35,
@@ -79,9 +79,56 @@ export const styles = StyleSheet.create({
     fontSize: 15,
   },
   followBtn: {
-    width: width - 80,
+    width: width - 90,
     backgroundColor: Colors.price,
     shadowColor: 'transparent',
     marginTop: 30,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  },
+  listVideoView: {
+    backgroundColor: 'transparent',
+    marginTop: 30,
+    marginBottom: 50,
+  },
+  thumbnailView: {
+    backgroundColor: Colors.black,
+    width: (width - 90) / 3,
+    height: (width - 80) / 2,
+    marginHorizontal: 5,
+    marginVertical: 10,
+    borderRadius: 15,
+  },
+  thumbnailImage: {
+    backgroundColor: Colors.black,
+    width: (width - 90) / 3,
+    height: (width - 80) / 2,
+    borderRadius: 15,
+  },
+  viewBlurThumbnail: {
+    position: 'absolute',
+    backgroundColor: '#00000088',
+    width: (width - 90) / 3,
+    height: (width - 80) / 2,
+    borderRadius: 15,
+  },
+  likeIconThumbnail: {
+    marginTop: 'auto',
+    marginLeft: 7,
+    marginBottom: 7,
+  },
+  viewTotalThumbnail: {
+    fontFamily: 'SourceSansPro-SemiBold',
+    fontSize: 15,
+    color: Colors.background,
+    marginTop: 'auto',
+    marginLeft: 4,
+    marginBottom: 6,
+  },
+  loading: {
+    width: 100,
+    height: 100,
+    marginLeft: 'auto',
+    marginRight: 'auto',
   },
 });

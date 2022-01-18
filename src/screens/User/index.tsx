@@ -1,19 +1,86 @@
-import React, {useState} from 'react';
-import {Image, ScrollView} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Image, NativeScrollEvent, ScrollView} from 'react-native';
 import {connect} from 'react-redux';
 import {createStructuredSelector} from 'reselect';
 import {Menu, MenuItem} from 'react-native-material-menu';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 import View, {Row} from '../../components/View';
 import Text from '../../components/Text';
 import {styles} from './styles';
-import {makeSelectAvatar, makeSelectUsername} from '../../store/selectors';
+import {
+  makeSelectAvatar,
+  makeSelectBio,
+  makeSelectId,
+  makeSelectUsername,
+} from '../../store/selectors';
+import {makeSelectPosts} from '../Home/store/selectors';
 import Colors from '../../constants/Colors';
 import Button, {IconButton} from '../../components/Button';
+import * as UserActions from './store/actions';
 import * as AppActions from '../../store/actions';
+import {IPost} from '../../interfaces/post';
+import FastImage from 'react-native-fast-image';
+import {makeSelectLoading} from './store/selectors';
 
-const UserScreen = (props: any) => {
+interface IUserPayload {
+  userId: string;
+  username: string;
+  avatar: string;
+  bio: string;
+  posts: IPost[];
+  isLoading: boolean;
+  logout: () => void;
+  getPostOfUser: (payload: any) => void;
+  appendPostOfUser: (payload: any) => void;
+}
+
+const UserScreen = ({
+  userId,
+  username,
+  avatar,
+  bio,
+  posts,
+  isLoading,
+  logout,
+  getPostOfUser,
+  appendPostOfUser,
+}: IUserPayload) => {
   const [popupVisible, setPopupVisible] = useState(false);
+  const [page, setPage] = useState(0);
+
+  useEffect(() => {
+    getPostOfUser({
+      author: {
+        _id: userId,
+        username,
+        avatar,
+        bio,
+      },
+      page: 0,
+    });
+    setPage(1);
+  }, [avatar, bio, getPostOfUser, userId, username]);
+
+  const onScroll = (e: NativeScrollEvent) => {
+    if (
+      e.layoutMeasurement.height + e.contentOffset.y >=
+        e.contentSize.height - 20 &&
+      !isLoading
+    ) {
+      appendPostOfUser({
+        author: {
+          _id: userId,
+          username,
+          avatar,
+          bio,
+        },
+        page,
+      });
+
+      setPage(page + 1);
+    }
+  };
 
   return (
     <View style={styles.background}>
@@ -21,7 +88,9 @@ const UserScreen = (props: any) => {
         <ScrollView
           style={styles.scrollContainer}
           showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={false}>
+          showsHorizontalScrollIndicator={false}
+          onScroll={({nativeEvent: e}) => onScroll(e)}
+          scrollEventThrottle={400}>
           <Text style={styles.bioText}>Bio.........</Text>
           <Row style={styles.followProfile}>
             <View style={styles.followTextGroup}>
@@ -33,20 +102,57 @@ const UserScreen = (props: any) => {
               <Text style={styles.followField}>Followings</Text>
             </View>
           </Row>
-          <Button style={styles.followBtn} loading={props.isLoading}>
-            Update profile
-          </Button>
+          <Button style={styles.followBtn}>Update profile</Button>
+          <View style={styles.listVideoView}>
+            {[...Array(Math.ceil(posts.length / 3)).keys()].map(rowId => (
+              <Row key={rowId}>
+                {[...Array(3).keys()].map(colId => {
+                  if (rowId * 3 + colId < posts.length) {
+                    return (
+                      <View key={colId} style={styles.thumbnailView}>
+                        <Image
+                          style={styles.thumbnailImage}
+                          source={{uri: posts[rowId * 3 + colId].thumbnail}}
+                        />
+                        <Row style={styles.viewBlurThumbnail}>
+                          <Icon
+                            style={styles.likeIconThumbnail}
+                            name="heart"
+                            size={16}
+                            color={Colors.background}
+                          />
+                          <Text style={styles.viewTotalThumbnail}>
+                            {'' + posts[rowId * 3 + colId].likeTotal}
+                          </Text>
+                        </Row>
+                      </View>
+                    );
+                  } else {
+                    return <View key={colId} />;
+                  }
+                })}
+              </Row>
+            ))}
+            {isLoading ? (
+              <FastImage
+                source={require('../../assets/images/white-loading.gif')}
+                style={styles.loading}
+              />
+            ) : (
+              <View />
+            )}
+          </View>
         </ScrollView>
       </View>
       <Row style={styles.profileView}>
         <Image
           style={styles.avatar}
           source={{
-            uri: props.avatar,
+            uri: avatar,
           }}
           defaultSource={require('../../assets/images/avatar-default.png')}
         />
-        <Text style={styles.username}>{props.username}</Text>
+        <Text style={styles.username}>{username}</Text>
       </Row>
       <View style={styles.optionView}>
         <IconButton
@@ -60,7 +166,7 @@ const UserScreen = (props: any) => {
         <Menu
           visible={popupVisible}
           onRequestClose={() => setPopupVisible(false)}>
-          <MenuItem onPress={() => props.logout()}>Logout</MenuItem>
+          <MenuItem onPress={() => logout()}>Logout</MenuItem>
         </Menu>
       </View>
     </View>
@@ -68,12 +174,20 @@ const UserScreen = (props: any) => {
 };
 
 const mapStateToProps = createStructuredSelector<any, any>({
+  userId: makeSelectId(),
   username: makeSelectUsername(),
   avatar: makeSelectAvatar(),
+  bio: makeSelectBio(),
+  posts: makeSelectPosts(),
+  isLoading: makeSelectLoading(),
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
   logout: () => dispatch(AppActions.logout.request()),
+  getPostOfUser: (payload: any) =>
+    dispatch(UserActions.getUserPosts.request(payload)),
+  appendPostOfUser: (payload: any) =>
+    dispatch(UserActions.appendUserPosts.request(payload)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserScreen);

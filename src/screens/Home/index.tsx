@@ -25,10 +25,10 @@ import {
   makeSelectTotalPageComment,
 } from './store/selectors';
 import {ScrollView} from 'react-native-gesture-handler';
-import {IPost} from './store/interfaces/post';
+import {IPost} from '../../interfaces/post';
 import timeAgo from '../../utils/timeAgo';
 import CommentModal from './components/CommentModal';
-import {IAuthor, IComment} from './store/interfaces/comment';
+import {IAuthor, IComment} from '../../interfaces/comment';
 import {
   makeSelectAvatar,
   makeSelectBio,
@@ -230,7 +230,7 @@ const HomeScreen = ({
                       <Image
                         style={styles.avatarAuthor}
                         source={{
-                          uri: post.author.avatar,
+                          uri: post?.author?.avatar,
                         }}
                         defaultSource={require('../../assets/images/avatar-default.png')}
                       />

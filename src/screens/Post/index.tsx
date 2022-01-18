@@ -10,6 +10,7 @@ import {styles} from './styles';
 import * as PostActions from './store/actions';
 import {
   makeSelectIsLoading,
+  makeSelectVideoDuration,
   makeSelectVideoType,
   makeSelectVideoURI,
 } from './store/selectors';
@@ -24,6 +25,7 @@ interface IProp {
   navigation: StackNavigationHelpers;
   videoURI: string;
   videoType: string;
+  videoDuration: number;
   isLoading: boolean;
   postVideo: (payload: any) => void;
 }
@@ -93,6 +95,7 @@ const PostScreen = (props: IProp) => {
               description: description,
               video: props.videoURI,
               videoType: props.videoType,
+              videoDuration: props.videoDuration,
               callback: () => {
                 props.navigation.navigate(Screens.Home);
               },
@@ -115,6 +118,7 @@ const PostScreen = (props: IProp) => {
 const mapStateToProps = createStructuredSelector<any, any>({
   videoURI: makeSelectVideoURI(),
   videoType: makeSelectVideoType(),
+  videoDuration: makeSelectVideoDuration(),
   isLoading: makeSelectIsLoading(),
 });
 

@@ -1,8 +1,7 @@
 import {call, put, takeLatest} from 'redux-saga/effects';
 
-import {uploadToS3} from '../../../../utils/uploadS3';
 import * as PostAction from '../actions';
-import {getPresignedUrlService, postService} from '../services';
+import {postService, uploadThumbnail, uploadToS3Service} from '../services';
 
 interface Data {
   [key: string]: any;
@@ -14,19 +13,26 @@ function* postVideoSaga({payload}: any) {
       type: PostAction.Types.LOADING.begin,
     });
 
-    const {
-      data: {imageUrl: videoUrl, presignedUrl},
-    }: Data = yield call(getPresignedUrlService);
-
-    yield call(uploadToS3, {
-      url: presignedUrl,
-      image: payload.video,
+    const uploadVideoPromise = uploadToS3Service({
+      video: payload.video,
       type: payload.videoType,
     });
+
+    const uploadThumbnailPromise = uploadThumbnail({
+      video: payload.video,
+      type: payload.videoType,
+      duration: payload.videoDuration,
+    });
+
+    const [videoUrl, thumbnailUrl]: [string, string] = yield Promise.all([
+      uploadVideoPromise,
+      uploadThumbnailPromise,
+    ]);
 
     yield call(postService, {
       description: payload.description,
       url: videoUrl,
+      thumbnail: thumbnailUrl,
     });
 
     yield put({

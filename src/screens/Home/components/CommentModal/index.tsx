@@ -17,7 +17,7 @@ import Text from '../../../../components/Text';
 import View, {Row} from '../../../../components/View';
 import Comment from '../Comment';
 import {styles} from './styles';
-import {IAuthor, IComment} from '../../store/interfaces/comment';
+import {IAuthor, IComment} from '../../../../interfaces/comment';
 import FastImage from 'react-native-fast-image';
 import Colors from '../../../../constants/Colors';
 import TextInput from '../../../../components/TextInput';

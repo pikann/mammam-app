@@ -6,6 +6,7 @@ import loginWatcher from '../screens/Login/store/sagas';
 import updateProfileWatcher from '../screens/UpdateProfile/store/sagas';
 import homeWatcher from '../screens/Home/store/sagas';
 import postWatcher from '../screens/Post/store/sagas';
+import userWatcher from '../screens/User/store/sagas';
 
 export function* rootSaga() {
   yield all([fork(appWatcher)]);
@@ -14,4 +15,5 @@ export function* rootSaga() {
   yield all([fork(updateProfileWatcher)]);
   yield all([fork(homeWatcher)]);
   yield all([fork(postWatcher)]);
+  yield all([fork(userWatcher)]);
 }

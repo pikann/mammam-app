@@ -5,6 +5,7 @@ import * as PostActions from '../actions';
 export const initialState = {
   videoURI: '',
   videoType: '',
+  videoDuration: 0,
   isLoading: false,
 };
 
@@ -16,6 +17,7 @@ const postReducer = (state = initialState, {type, payload}: any) =>
       case PostActions.Types.PICK_VIDEO.begin:
         draft.videoURI = payload.uri;
         draft.videoType = payload.type;
+        draft.videoDuration = payload.duration;
         break;
       case PostActions.Types.LOADING.begin:
         draft.isLoading = true;
