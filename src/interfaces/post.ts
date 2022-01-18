@@ -11,6 +11,7 @@ export interface IPost {
   restaurant: string;
   author: IAuthor;
   url: string;
+  thumbnail: string;
   type: string;
   description: string;
   likeTotal: number;

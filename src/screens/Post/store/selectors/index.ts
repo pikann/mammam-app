@@ -14,9 +14,19 @@ const makeSelectVideoType = () =>
     return state.videoType;
   });
 
+const makeSelectVideoDuration = () =>
+  createSelector(postState, state => {
+    return state.videoDuration;
+  });
+
 const makeSelectIsLoading = () =>
   createSelector(postState, state => {
     return state.isLoading;
   });
 
-export {makeSelectVideoURI, makeSelectVideoType, makeSelectIsLoading};
+export {
+  makeSelectVideoURI,
+  makeSelectVideoType,
+  makeSelectVideoDuration,
+  makeSelectIsLoading,
+};

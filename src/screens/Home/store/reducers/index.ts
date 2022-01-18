@@ -1,9 +1,10 @@
 import produce from 'immer';
 
 import * as HomeActions from '../actions';
+import * as UserActions from '../../../User/store/actions';
 import {GetPostsTag} from '../enums/get-posts-tag';
-import {IComment} from '../interfaces/comment';
-import {IPost} from '../interfaces/post';
+import {IComment} from '../../../../interfaces/comment';
+import {IPost} from '../../../../interfaces/post';
 
 export const initialState = {
   posts: [] as IPost[],
@@ -236,6 +237,19 @@ const homeReducer = (state = initialState, {type, payload}: any) =>
         break;
       case HomeActions.Types.SET_GET_POSTS_TAG.begin:
         draft.getPostsTag = payload;
+        break;
+      case UserActions.Types.GET_USER_POSTS.succeeded:
+        draft.posts = payload.posts.map((post: IPost) => {
+          return {...post, loading: true, author: payload.author};
+        });
+        break;
+      case UserActions.Types.APPEND_USER_POSTS.succeeded:
+        draft.posts = [
+          ...draft.posts,
+          ...payload.posts.map((post: IPost) => {
+            return {...post, loading: true, author: payload.author};
+          }),
+        ];
         break;
       default:
         break;

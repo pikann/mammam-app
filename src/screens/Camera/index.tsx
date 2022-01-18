@@ -24,10 +24,16 @@ const CameraScreen = (props: IProp) => {
       mediaType: 'video',
       includeBase64: true,
     });
-    if (result?.assets && result.assets[0].uri && result.assets[0].type) {
+    if (
+      result?.assets &&
+      result.assets[0].uri &&
+      result.assets[0].type &&
+      result.assets[0].duration
+    ) {
       props.pickVideo({
         uri: result.assets[0].uri,
         type: result.assets[0].type,
+        duration: result.assets[0].duration,
       });
       props.navigation.navigate(Screens.Post);
     }

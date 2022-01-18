@@ -7,7 +7,7 @@ import Text from '../../../../components/Text';
 import View, {Row} from '../../../../components/View';
 import Colors from '../../../../constants/Colors';
 import {styles} from './styles';
-import {IComment} from '../../store/interfaces/comment';
+import {IComment} from '../../../../interfaces/comment';
 import timeAgo from '../../../../utils/timeAgo';
 import FastImage from 'react-native-fast-image';
 
