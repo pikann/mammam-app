@@ -15,20 +15,27 @@ function* updateProfileSaga({payload}: any) {
       type: UpdateProfileAction.Types.LOADING.begin,
     });
 
-    const {
-      data: {imageUrl, presignedUrl},
-    }: Data = yield call(getPresignedUrlService);
-
-    yield call(uploadToS3, {
-      url: presignedUrl,
-      image: payload.avatar,
-      type: payload.avatarType,
-    });
-
-    yield call(updateProfileService, {
+    const updatePayload = {
       username: payload.username,
-      avatar: imageUrl,
-    });
+      bio: payload.bio,
+      avatar: undefined,
+    };
+
+    if (payload.avatar) {
+      const {
+        data: {imageUrl, presignedUrl},
+      }: Data = yield call(getPresignedUrlService);
+
+      yield call(uploadToS3, {
+        url: presignedUrl,
+        image: payload.avatar,
+        type: payload.avatarType,
+      });
+
+      updatePayload.avatar = imageUrl;
+    }
+
+    yield call(updateProfileService, updatePayload);
 
     yield put({
       type: UpdateProfileAction.Types.LOADING.succeeded,

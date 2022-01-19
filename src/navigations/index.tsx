@@ -42,14 +42,6 @@ const AppNavContainer = (props: IProp) => {
             options={{headerShown: false}}
           />
         </Stack.Navigator>
-      ) : props.username === '' ? (
-        <Stack.Navigator initialRouteName={Screens.UpdateProfile}>
-          <Stack.Screen
-            name={Screens.UpdateProfile}
-            component={UpdateProfileScreen}
-            options={horizontalIOSOption}
-          />
-        </Stack.Navigator>
       ) : (
         <Stack.Navigator initialRouteName={Navigations.Authenticated}>
           <Stack.Screen
@@ -58,13 +50,18 @@ const AppNavContainer = (props: IProp) => {
             options={{headerShown: false}}
           />
           <Stack.Screen
-            name={Navigations.Camera}
+            name={Screens.Camera}
             component={CameraScreen}
             options={verticalIOSOption}
           />
           <Stack.Screen
-            name={Navigations.Post}
+            name={Screens.Post}
             component={PostScreen}
+            options={horizontalIOSOption}
+          />
+          <Stack.Screen
+            name={Screens.UpdateProfile}
+            component={UpdateProfileScreen}
             options={horizontalIOSOption}
           />
         </Stack.Navigator>

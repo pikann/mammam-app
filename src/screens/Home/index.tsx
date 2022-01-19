@@ -36,6 +36,7 @@ import {
   makeSelectUsername,
 } from '../../store/selectors';
 import {GetPostsTag} from './store/enums/get-posts-tag';
+import Screens from '../../constants/Screens';
 
 const {height} = Dimensions.get('window');
 
@@ -106,6 +107,12 @@ const HomeScreen = ({
 }: IProp) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [commandModelShow, setCommandModelShow] = useState(false);
+
+  useEffect(() => {
+    if (!username || username === '') {
+      navigation.navigate(Screens.UpdateProfile);
+    }
+  }, [navigation, username]);
 
   useEffect(() => {
     setCurrentIndex(0);

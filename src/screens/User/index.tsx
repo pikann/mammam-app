@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import {createStructuredSelector} from 'reselect';
 import {Menu, MenuItem} from 'react-native-material-menu';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {StackNavigationHelpers} from '@react-navigation/stack/lib/typescript/src/types';
 
 import View, {Row} from '../../components/View';
 import Text from '../../components/Text';
@@ -22,8 +23,10 @@ import * as AppActions from '../../store/actions';
 import {IPost} from '../../interfaces/post';
 import FastImage from 'react-native-fast-image';
 import {makeSelectLoading} from './store/selectors';
+import Screens from '../../constants/Screens';
 
 interface IUserPayload {
+  navigation: StackNavigationHelpers;
   userId: string;
   username: string;
   avatar: string;
@@ -36,6 +39,7 @@ interface IUserPayload {
 }
 
 const UserScreen = ({
+  navigation,
   userId,
   username,
   avatar,
@@ -91,7 +95,11 @@ const UserScreen = ({
           showsHorizontalScrollIndicator={false}
           onScroll={({nativeEvent: e}) => onScroll(e)}
           scrollEventThrottle={400}>
-          <Text style={styles.bioText}>Bio.........</Text>
+          {bio && bio !== '' ? (
+            <Text style={styles.bioText}>{bio}</Text>
+          ) : (
+            <View />
+          )}
           <Row style={styles.followProfile}>
             <View style={styles.followTextGroup}>
               <Text style={styles.followNumber}>10</Text>
@@ -102,7 +110,11 @@ const UserScreen = ({
               <Text style={styles.followField}>Followings</Text>
             </View>
           </Row>
-          <Button style={styles.followBtn}>Update profile</Button>
+          <Button
+            style={styles.followBtn}
+            onPress={() => navigation.navigate(Screens.UpdateProfile)}>
+            Update profile
+          </Button>
           <View style={styles.listVideoView}>
             {[...Array(Math.ceil(posts.length / 3)).keys()].map(rowId => (
               <Row key={rowId}>
