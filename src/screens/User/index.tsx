@@ -178,7 +178,9 @@ const UserScreen = ({
         <Menu
           visible={popupVisible}
           onRequestClose={() => setPopupVisible(false)}>
-          <MenuItem onPress={() => logout()}>Logout</MenuItem>
+          <MenuItem onPress={() => logout()}>
+            <Text style={styles.menuItem}>Logout</Text>
+          </MenuItem>
         </Menu>
       </View>
     </View>
