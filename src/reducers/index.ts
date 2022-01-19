@@ -7,6 +7,7 @@ import updateProfileReducer from '../screens/UpdateProfile/store/reducers';
 import homeReducer from '../screens/Home/store/reducers';
 import postReducer from '../screens/Post/store/reducers';
 import userReducer from '../screens/User/store/reducers';
+import passwordReducer from '../screens/Password/store/reducers';
 
 const rootReducer = combineReducers({
   appReducer,
@@ -16,5 +17,6 @@ const rootReducer = combineReducers({
   homeReducer,
   postReducer,
   userReducer,
+  passwordReducer,
 });
 export default rootReducer;
