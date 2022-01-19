@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Image, NativeScrollEvent, ScrollView} from 'react-native';
 import {connect} from 'react-redux';
 import {createStructuredSelector} from 'reselect';
-import {Menu, MenuItem} from 'react-native-material-menu';
+import {Menu, MenuDivider, MenuItem} from 'react-native-material-menu';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {StackNavigationHelpers} from '@react-navigation/stack/lib/typescript/src/types';
 
@@ -178,6 +178,10 @@ const UserScreen = ({
         <Menu
           visible={popupVisible}
           onRequestClose={() => setPopupVisible(false)}>
+          <MenuItem onPress={() => navigation.navigate(Screens.Password)}>
+            <Text style={styles.menuItem}>Update password</Text>
+          </MenuItem>
+          <MenuDivider />
           <MenuItem onPress={() => logout()}>
             <Text style={styles.menuItem}>Logout</Text>
           </MenuItem>

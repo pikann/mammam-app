@@ -11,4 +11,5 @@ export default {
   Post: 'Post',
   Restaurant: 'Restaurant',
   User: 'User',
+  Password: 'Password',
 };
