@@ -1,7 +1,7 @@
 import {Dimensions, StyleSheet} from 'react-native';
 import Colors from '../../constants/Colors';
 
-const {width} = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
 export const styles = StyleSheet.create({
   background: {
@@ -36,34 +36,46 @@ export const styles = StyleSheet.create({
     marginTop: 10,
   },
   contentContainer: {
+    position: 'absolute',
     backgroundColor: Colors.background,
-    flex: 1,
+    width,
+    height: height + 300,
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
   },
   avatar: {
-    width: 200,
-    height: 200,
-    marginLeft: width / 2 - 100,
+    width: 150,
+    height: 150,
+    marginLeft: 'auto',
+    marginRight: 'auto',
     marginTop: 50,
     borderRadius: 100,
   },
   changeAvatarBtn: {
     backgroundColor: Colors.primary,
-    height: 55,
-    width: 55,
+    height: 40,
+    width: 40,
     borderRadius: 30,
     marginLeft: width / 2 + 40,
-    marginTop: -50,
+    marginTop: -40,
   },
   usernameInput: {
-    marginTop: 60,
+    height: 50,
+    marginTop: 35,
     marginHorizontal: 40,
     fontSize: 18,
   },
+  bioInput: {
+    height: height - 600,
+    marginTop: 15,
+    marginHorizontal: 40,
+    fontSize: 18,
+    borderRadius: 25,
+  },
   submitButton: {
     marginLeft: 40,
-    marginTop: 50,
+    marginTop: 30,
+    marginBottom: 30,
     width: width - 80,
   },
 });

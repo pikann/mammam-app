@@ -84,6 +84,7 @@ function* getUserProfileSaga() {
         id: response.data._id,
         username: response.data.username,
         avatar: response.data.avatar,
+        bio: response.data.bio,
       },
     });
   } catch (error) {
