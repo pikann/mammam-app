@@ -2,13 +2,13 @@ import * as React from 'react';
 import {Image, TouchableOpacity} from 'react-native';
 import {StackNavigationHelpers} from '@react-navigation/stack/lib/typescript/src/types';
 
-import {IconButton, TextButton} from '../../../../components/Button';
-import Text from '../../../../components/Text';
-import View, {Row} from '../../../../components/View';
-import Colors from '../../../../constants/Colors';
+import {IconButton, TextButton} from '../Button';
+import Text from '../Text';
+import View, {Row} from '../View';
+import Colors from '../../constants/Colors';
 import {styles} from './styles';
-import {IComment} from '../../../../interfaces/comment';
-import timeAgo from '../../../../utils/timeAgo';
+import {IComment} from '../../interfaces/comment';
+import timeAgo from '../../utils/timeAgo';
 import FastImage from 'react-native-fast-image';
 
 interface IProp {
@@ -39,7 +39,7 @@ export default function Comment({
         source={{
           uri: comment.author.avatar,
         }}
-        defaultSource={require('../../../../assets/images/avatar-default.png')}
+        defaultSource={require('../../assets/images/avatar-default.png')}
       />
       <View style={styles.flex}>
         <Text style={styles.content}>{comment.content}</Text>
@@ -126,7 +126,7 @@ export default function Comment({
           )}
         {comment.loadingReplies && (
           <FastImage
-            source={require('../../../../assets/images/white-loading.gif')}
+            source={require('../../assets/images/white-loading.gif')}
             style={styles.loading}
           />
         )}

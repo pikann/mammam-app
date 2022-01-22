@@ -16,6 +16,7 @@ import {horizontalIOSOption, verticalIOSOption} from './animation';
 import PostScreen from '../screens/Post';
 import CameraScreen from '../screens/Camera';
 import PasswordScreen from '../screens/Password';
+import WatchingScreen from '../screens/Watching';
 
 const Stack = createStackNavigator();
 
@@ -68,6 +69,11 @@ const AppNavContainer = (props: IProp) => {
           <Stack.Screen
             name={Screens.Password}
             component={PasswordScreen}
+            options={horizontalIOSOption}
+          />
+          <Stack.Screen
+            name={Screens.Watching}
+            component={WatchingScreen}
             options={horizontalIOSOption}
           />
         </Stack.Navigator>
