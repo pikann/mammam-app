@@ -1,5 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {Image, NativeScrollEvent, ScrollView} from 'react-native';
+import {
+  Image,
+  NativeScrollEvent,
+  ScrollView,
+  TouchableWithoutFeedback,
+} from 'react-native';
 import {connect} from 'react-redux';
 import {createStructuredSelector} from 'reselect';
 import {Menu, MenuDivider, MenuItem} from 'react-native-material-menu';
@@ -15,15 +20,16 @@ import {
   makeSelectId,
   makeSelectUsername,
 } from '../../store/selectors';
-import {makeSelectPosts} from '../Home/store/selectors';
+import {makeSelectLoading, makeSelectPosts} from '../Home/store/selectors';
 import Colors from '../../constants/Colors';
 import Button, {IconButton} from '../../components/Button';
 import * as UserActions from './store/actions';
 import * as AppActions from '../../store/actions';
+import * as WatchingActions from '../Watching/store/actions';
 import {IPost} from '../../interfaces/post';
 import FastImage from 'react-native-fast-image';
-import {makeSelectLoading} from './store/selectors';
 import Screens from '../../constants/Screens';
+import {GettingType} from '../Watching/store/enums/getting-type';
 
 interface IUserPayload {
   navigation: StackNavigationHelpers;
@@ -36,6 +42,7 @@ interface IUserPayload {
   logout: () => void;
   getPostOfUser: (payload: any) => void;
   appendPostOfUser: (payload: any) => void;
+  setGettingType: (payload: any) => void;
 }
 
 const UserScreen = ({
@@ -49,6 +56,7 @@ const UserScreen = ({
   logout,
   getPostOfUser,
   appendPostOfUser,
+  setGettingType,
 }: IUserPayload) => {
   const [popupVisible, setPopupVisible] = useState(false);
   const [page, setPage] = useState(0);
@@ -86,6 +94,22 @@ const UserScreen = ({
     }
   };
 
+  const onPressThumbnail = (indexBegin: number) => {
+    setGettingType({
+      gettingType: GettingType.User,
+      gettingPayload: {
+        author: {
+          _id: userId,
+          username,
+          avatar,
+          bio,
+        },
+      },
+      indexBegin,
+    });
+    navigation.navigate(Screens.Watching);
+  };
+
   return (
     <View style={styles.background}>
       <View style={styles.contentContainer}>
@@ -121,23 +145,27 @@ const UserScreen = ({
                 {[...Array(3).keys()].map(colId => {
                   if (rowId * 3 + colId < posts.length) {
                     return (
-                      <View key={colId} style={styles.thumbnailView}>
-                        <Image
-                          style={styles.thumbnailImage}
-                          source={{uri: posts[rowId * 3 + colId].thumbnail}}
-                        />
-                        <Row style={styles.viewBlurThumbnail}>
-                          <Icon
-                            style={styles.likeIconThumbnail}
-                            name="heart"
-                            size={16}
-                            color={Colors.background}
+                      <TouchableWithoutFeedback
+                        key={colId}
+                        onPress={() => onPressThumbnail(rowId * 3 + colId)}>
+                        <View style={styles.thumbnailView}>
+                          <Image
+                            style={styles.thumbnailImage}
+                            source={{uri: posts[rowId * 3 + colId].thumbnail}}
                           />
-                          <Text style={styles.viewTotalThumbnail}>
-                            {'' + posts[rowId * 3 + colId].likeTotal}
-                          </Text>
-                        </Row>
-                      </View>
+                          <Row style={styles.viewBlurThumbnail}>
+                            <Icon
+                              style={styles.likeIconThumbnail}
+                              name="heart"
+                              size={16}
+                              color={Colors.background}
+                            />
+                            <Text style={styles.viewTotalThumbnail}>
+                              {'' + posts[rowId * 3 + colId].likeTotal}
+                            </Text>
+                          </Row>
+                        </View>
+                      </TouchableWithoutFeedback>
                     );
                   } else {
                     return <View key={colId} />;
@@ -206,6 +234,8 @@ const mapDispatchToProps = (dispatch: any) => ({
     dispatch(UserActions.getUserPosts.request(payload)),
   appendPostOfUser: (payload: any) =>
     dispatch(UserActions.appendUserPosts.request(payload)),
+  setGettingType: (payload: any) =>
+    dispatch(WatchingActions.setGettingType.request(payload)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserScreen);

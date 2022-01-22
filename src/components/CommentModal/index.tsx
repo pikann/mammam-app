@@ -13,15 +13,15 @@ import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {StackNavigationHelpers} from '@react-navigation/stack/lib/typescript/src/types';
 
-import Text from '../../../../components/Text';
-import View, {Row} from '../../../../components/View';
+import Text from '../Text';
+import View, {Row} from '../View';
 import Comment from '../Comment';
 import {styles} from './styles';
-import {IAuthor, IComment} from '../../../../interfaces/comment';
+import {IAuthor, IComment} from '../../interfaces/comment';
 import FastImage from 'react-native-fast-image';
-import Colors from '../../../../constants/Colors';
-import TextInput from '../../../../components/TextInput';
-import {IconButton} from '../../../../components/Button';
+import Colors from '../../constants/Colors';
+import TextInput from '../TextInput';
+import {IconButton} from '../Button';
 
 interface IProp {
   navigation: StackNavigationHelpers;
@@ -167,7 +167,7 @@ export default function CommentModal(props: IProp) {
             ))}
             {props.loadingComments && (
               <FastImage
-                source={require('../../../../assets/images/white-loading.gif')}
+                source={require('../../assets/images/white-loading.gif')}
                 style={styles.loading}
               />
             )}

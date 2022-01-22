@@ -1,6 +1,7 @@
 import {call, put, takeLatest} from 'redux-saga/effects';
 
 import * as UserAction from '../actions';
+import * as HomeAction from '../../../Home/store/actions';
 import {getPostOfUserService} from '../services';
 
 interface Data {
@@ -15,7 +16,7 @@ function* getPostOfUserSaga({payload}: any) {
     });
 
     yield put({
-      type: UserAction.Types.LOADING.begin,
+      type: HomeAction.Types.LOADING.begin,
     });
 
     const response: Data = yield call(getPostOfUserService, {
@@ -24,7 +25,7 @@ function* getPostOfUserSaga({payload}: any) {
     });
 
     yield put({
-      type: UserAction.Types.LOADING.succeeded,
+      type: HomeAction.Types.LOADING.succeeded,
     });
 
     yield put({
@@ -33,7 +34,7 @@ function* getPostOfUserSaga({payload}: any) {
     });
   } catch (error) {
     yield put({
-      type: UserAction.Types.LOADING.succeeded,
+      type: HomeAction.Types.LOADING.succeeded,
     });
     yield put({
       type: UserAction.Types.GET_USER_POSTS.failed,
@@ -50,7 +51,7 @@ function* appendPostOfUserSaga({payload}: any) {
     });
 
     yield put({
-      type: UserAction.Types.LOADING.begin,
+      type: HomeAction.Types.LOADING.begin,
     });
 
     const response: Data = yield call(getPostOfUserService, {
@@ -59,7 +60,7 @@ function* appendPostOfUserSaga({payload}: any) {
     });
 
     yield put({
-      type: UserAction.Types.LOADING.succeeded,
+      type: HomeAction.Types.LOADING.succeeded,
     });
 
     yield put({
@@ -68,7 +69,7 @@ function* appendPostOfUserSaga({payload}: any) {
     });
   } catch (error) {
     yield put({
-      type: UserAction.Types.LOADING.succeeded,
+      type: HomeAction.Types.LOADING.succeeded,
     });
     yield put({
       type: UserAction.Types.APPEND_USER_POSTS.failed,

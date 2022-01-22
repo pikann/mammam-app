@@ -1,35 +1,42 @@
 import React, {useEffect, useState} from 'react';
+import {Dimensions} from 'react-native';
 import {connect} from 'react-redux';
-import {StackNavigationHelpers} from '@react-navigation/stack/lib/typescript/src/types';
 import {createStructuredSelector} from 'reselect';
+import {StackNavigationHelpers} from '@react-navigation/stack/lib/typescript/src/types';
 
-import {IconButton, TextButton} from '../../components/Button';
-import * as HomeActions from './store/actions';
-import View, {Row} from '../../components/View';
-import Colors from '../../constants/Colors';
-import {styles} from './styles';
-import {
-  makeSelectComments,
-  makeSelectCurrentPostId,
-  makeSelectGetPostsTag,
-  makeSelectLoading,
-  makeSelectLoadingComments,
-  makeSelectPageComment,
-  makeSelectPosts,
-  makeSelectTotalComment,
-  makeSelectTotalPageComment,
-} from './store/selectors';
-import {IPost} from '../../interfaces/post';
+import View from '../../components/View';
 import {IAuthor, IComment} from '../../interfaces/comment';
+import {IPost} from '../../interfaces/post';
 import {
   makeSelectAvatar,
   makeSelectBio,
   makeSelectId,
   makeSelectUsername,
 } from '../../store/selectors';
-import {GetPostsTag} from './store/enums/get-posts-tag';
-import Screens from '../../constants/Screens';
+import {
+  makeSelectComments,
+  makeSelectCurrentPostId,
+  makeSelectLoading,
+  makeSelectLoadingComments,
+  makeSelectPageComment,
+  makeSelectPosts,
+  makeSelectTotalComment,
+  makeSelectTotalPageComment,
+} from '../Home/store/selectors';
+import {styles} from './styles';
+import * as HomeActions from '../Home/store/actions';
+import * as UserActions from '../User/store/actions';
+import {
+  makeSelectGettingPayload,
+  makeSelectGettingType,
+  makeSelectIndexBegin,
+} from './store/selectors';
+import {GettingType} from './store/enums/getting-type';
+import {BackButton} from '../../components/Button';
+import Colors from '../../constants/Colors';
 import PostsComponent from '../../components/Posts';
+
+const {height} = Dimensions.get('window');
 
 interface IProp {
   navigation: StackNavigationHelpers;
@@ -45,9 +52,9 @@ interface IProp {
   avatar: string;
   bio: string;
   isLoading: boolean;
-  getPostsTag: string;
-  getPosts: (tag: string) => void;
-  appendPosts: (tag: string, availables: string) => void;
+  gettingType: string;
+  gettingPayload: any;
+  indexBegin: number;
   likePost: (postId: string) => void;
   dislikePost: (postId: string) => void;
   viewPost: (postId: string) => void;
@@ -61,10 +68,10 @@ interface IProp {
   replyComment: (commentId: string, content: string, author: IAuthor) => void;
   loadingVideo: (postId: string) => void;
   displayVideo: (postId: string) => void;
-  setGetPostsTag: (tag: string) => void;
+  appendPostOfUser: (payload: any) => void;
 }
 
-const HomeScreen = ({
+const WatchingScreen = ({
   navigation,
   posts,
   comments,
@@ -78,9 +85,9 @@ const HomeScreen = ({
   avatar,
   bio,
   isLoading,
-  getPostsTag,
-  getPosts,
-  appendPosts,
+  gettingType,
+  gettingPayload,
+  indexBegin,
   likePost,
   dislikePost,
   viewPost,
@@ -94,33 +101,27 @@ const HomeScreen = ({
   replyComment,
   loadingVideo,
   displayVideo,
-  setGetPostsTag,
+  appendPostOfUser,
 }: IProp) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
-    if (!username || username === '') {
-      navigation.navigate(Screens.UpdateProfile);
-    }
-  }, [navigation, username]);
-
-  useEffect(() => {
-    setCurrentIndex(0);
-    getPosts(getPostsTag);
-  }, [getPosts, getPostsTag]);
+    setCurrentIndex(indexBegin);
+  }, [setCurrentIndex, indexBegin]);
 
   useEffect(() => {
     if (currentIndex >= posts.length - 2 && !isLoading && posts.length > 0) {
-      appendPosts(
-        getPostsTag,
-        posts
-          .slice(currentIndex, posts.length)
-          .map(post => post._id)
-          .join(','),
-      );
+      if (gettingType === GettingType.User) {
+        appendPostOfUser({
+          ...gettingPayload,
+          page,
+        });
+        setPage(page + 1);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [appendPosts, currentIndex, viewPost]);
+  }, [gettingType, gettingPayload, currentIndex, viewPost]);
 
   return (
     <View style={styles.background}>
@@ -139,8 +140,10 @@ const HomeScreen = ({
         bio={bio}
         isLoading={isLoading}
         currentIndex={currentIndex}
-        isFull={false}
-        scrollRef={undefined}
+        isFull={true}
+        scrollRef={ref => {
+          ref?.scrollTo({y: indexBegin * height, animated: false});
+        }}
         likePost={likePost}
         dislikePost={dislikePost}
         viewPost={viewPost}
@@ -156,47 +159,13 @@ const HomeScreen = ({
         displayVideo={displayVideo}
         setCurrentIndex={setCurrentIndex}
       />
-      <Row style={styles.tagView}>
-        <TextButton
-          textStyle={
-            getPostsTag === GetPostsTag.ForYou
-              ? {...styles.tagTitle, ...styles.choicedTag}
-              : styles.tagTitle
-          }
-          onPress={() => {
-            setGetPostsTag(GetPostsTag.ForYou);
-          }}>
-          For you
-        </TextButton>
-        <TextButton
-          textStyle={
-            getPostsTag === GetPostsTag.Popular
-              ? {...styles.tagTitle, ...styles.choicedTag}
-              : styles.tagTitle
-          }
-          onPress={() => {
-            setGetPostsTag(GetPostsTag.Popular);
-          }}>
-          Popular
-        </TextButton>
-        <TextButton
-          textStyle={
-            getPostsTag === GetPostsTag.Following
-              ? {...styles.tagTitle, ...styles.choicedTag}
-              : styles.tagTitle
-          }
-          onPress={() => {
-            setGetPostsTag(GetPostsTag.Following);
-          }}>
-          Following
-        </TextButton>
-        <IconButton
-          style={styles.searchButton}
-          name={'search'}
-          color={Colors.background}
-          size={15}
-        />
-      </Row>
+      <BackButton
+        style={styles.backButton}
+        colorIcon={Colors.background}
+        onPress={() => {
+          navigation.goBack();
+        }}
+      />
     </View>
   );
 };
@@ -214,13 +183,12 @@ const mapStateToProps = createStructuredSelector<any, any>({
   avatar: makeSelectAvatar(),
   bio: makeSelectBio(),
   isLoading: makeSelectLoading(),
-  getPostsTag: makeSelectGetPostsTag(),
+  gettingType: makeSelectGettingType(),
+  gettingPayload: makeSelectGettingPayload(),
+  indexBegin: makeSelectIndexBegin(),
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
-  getPosts: (tag: string) => dispatch(HomeActions.getPosts.request(tag)),
-  appendPosts: (tag: string, availables: string) =>
-    dispatch(HomeActions.appendPosts.request({tag, availables})),
   likePost: (postId: string) => dispatch(HomeActions.likePost.request(postId)),
   dislikePost: (postId: string) =>
     dispatch(HomeActions.dislikePost.request(postId)),
@@ -245,8 +213,8 @@ const mapDispatchToProps = (dispatch: any) => ({
     dispatch(HomeActions.loadingVideo.request(postId)),
   displayVideo: (postId: string) =>
     dispatch(HomeActions.displayVideo.request(postId)),
-  setGetPostsTag: (tag: string) =>
-    dispatch(HomeActions.setGetPostsTag.request(tag)),
+  appendPostOfUser: (payload: any) =>
+    dispatch(UserActions.appendUserPosts.request(payload)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(WatchingScreen);
