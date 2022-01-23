@@ -5,6 +5,7 @@ import {createStructuredSelector} from 'reselect';
 
 import {IconButton, TextButton} from '../../components/Button';
 import * as HomeActions from './store/actions';
+import * as UserActions from '../User/store/actions';
 import View, {Row} from '../../components/View';
 import Colors from '../../constants/Colors';
 import {styles} from './styles';
@@ -62,6 +63,7 @@ interface IProp {
   loadingVideo: (postId: string) => void;
   displayVideo: (postId: string) => void;
   setGetPostsTag: (tag: string) => void;
+  setUserInfo: (payload: any) => void;
 }
 
 const HomeScreen = ({
@@ -95,6 +97,7 @@ const HomeScreen = ({
   loadingVideo,
   displayVideo,
   setGetPostsTag,
+  setUserInfo,
 }: IProp) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -155,6 +158,7 @@ const HomeScreen = ({
         loadingVideo={loadingVideo}
         displayVideo={displayVideo}
         setCurrentIndex={setCurrentIndex}
+        setUserInfo={setUserInfo}
       />
       <Row style={styles.tagView}>
         <TextButton
@@ -247,6 +251,8 @@ const mapDispatchToProps = (dispatch: any) => ({
     dispatch(HomeActions.displayVideo.request(postId)),
   setGetPostsTag: (tag: string) =>
     dispatch(HomeActions.setGetPostsTag.request(tag)),
+  setUserInfo: (payload: any) =>
+    dispatch(UserActions.setUserInfo.request(payload)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
