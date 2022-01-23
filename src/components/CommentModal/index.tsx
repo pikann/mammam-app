@@ -76,11 +76,12 @@ export default function CommentModal(props: IProp) {
       Keyboard.dismiss();
       if (replyingComment) {
         setReplyingComment(undefined);
-        props.replyComment(
-          replyingComment._id,
-          commentContent,
-          replyingComment.author,
-        );
+        props.replyComment(replyingComment._id, commentContent, {
+          _id: props.userId,
+          username: props.username,
+          avatar: props.avatar,
+          bio: props.bio,
+        });
       } else {
         scrollRef.current?.scrollTo({
           y: 0,

@@ -14,13 +14,14 @@ import {StackNavigationHelpers} from '@react-navigation/stack/lib/typescript/src
 import View, {Row} from '../../components/View';
 import Text from '../../components/Text';
 import {styles} from './styles';
+import {makeSelectId} from '../../store/selectors';
+import {makeSelectLoading, makeSelectPosts} from '../Home/store/selectors';
 import {
   makeSelectAvatar,
   makeSelectBio,
-  makeSelectId,
+  makeSelectUserId,
   makeSelectUsername,
-} from '../../store/selectors';
-import {makeSelectLoading, makeSelectPosts} from '../Home/store/selectors';
+} from './store/selectors';
 import Colors from '../../constants/Colors';
 import Button, {IconButton} from '../../components/Button';
 import * as UserActions from './store/actions';
@@ -33,6 +34,7 @@ import {GettingType} from '../Watching/store/enums/getting-type';
 
 interface IUserPayload {
   navigation: StackNavigationHelpers;
+  loginUserId: string;
   userId: string;
   username: string;
   avatar: string;
@@ -47,6 +49,7 @@ interface IUserPayload {
 
 const UserScreen = ({
   navigation,
+  loginUserId,
   userId,
   username,
   avatar,
@@ -136,8 +139,14 @@ const UserScreen = ({
           </Row>
           <Button
             style={styles.followBtn}
-            onPress={() => navigation.navigate(Screens.UpdateProfile)}>
-            Update profile
+            onPress={() => {
+              if (userId === loginUserId) {
+                navigation.navigate(Screens.UpdateProfile);
+              } else {
+                console.log('Follow');
+              }
+            }}>
+            {userId === loginUserId ? 'Update profile' : 'Follow'}
           </Button>
           <View style={styles.listVideoView}>
             {[...Array(Math.ceil(posts.length / 3)).keys()].map(rowId => (
@@ -203,24 +212,35 @@ const UserScreen = ({
           underlayColor={Colors.primary}
           onPress={() => setPopupVisible(!popupVisible)}
         />
-        <Menu
-          visible={popupVisible}
-          onRequestClose={() => setPopupVisible(false)}>
-          <MenuItem onPress={() => navigation.navigate(Screens.Password)}>
-            <Text style={styles.menuItem}>Update password</Text>
-          </MenuItem>
-          <MenuDivider />
-          <MenuItem onPress={() => logout()}>
-            <Text style={styles.menuItem}>Logout</Text>
-          </MenuItem>
-        </Menu>
+        {userId === loginUserId ? (
+          <Menu
+            visible={popupVisible}
+            onRequestClose={() => setPopupVisible(false)}>
+            <MenuItem onPress={() => navigation.navigate(Screens.Password)}>
+              <Text style={styles.menuItem}>Update password</Text>
+            </MenuItem>
+            <MenuDivider />
+            <MenuItem onPress={() => logout()}>
+              <Text style={styles.menuItem}>Logout</Text>
+            </MenuItem>
+          </Menu>
+        ) : (
+          <Menu
+            visible={popupVisible}
+            onRequestClose={() => setPopupVisible(false)}>
+            <MenuItem onPress={() => console.log('Report')}>
+              <Text style={styles.menuItem}>Report</Text>
+            </MenuItem>
+          </Menu>
+        )}
       </View>
     </View>
   );
 };
 
 const mapStateToProps = createStructuredSelector<any, any>({
-  userId: makeSelectId(),
+  loginUserId: makeSelectId(),
+  userId: makeSelectUserId(),
   username: makeSelectUsername(),
   avatar: makeSelectAvatar(),
   bio: makeSelectBio(),

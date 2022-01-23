@@ -1,6 +1,11 @@
 import * as React from 'react';
 import {useEffect, useState} from 'react';
-import {Dimensions, Image, ScrollView} from 'react-native';
+import {
+  Dimensions,
+  Image,
+  ScrollView,
+  TouchableWithoutFeedback,
+} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Video from 'react-native-video';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -15,6 +20,7 @@ import Colors from '../../constants/Colors';
 import CommentModal from '../CommentModal';
 import {IAuthor, IComment} from '../../interfaces/comment';
 import {IPost} from '../../interfaces/post';
+import Screens from '../../constants/Screens';
 
 const {height} = Dimensions.get('window');
 
@@ -49,6 +55,7 @@ interface IProp {
   loadingVideo: (postId: string) => void;
   displayVideo: (postId: string) => void;
   setCurrentIndex: (currentIndex: number) => void;
+  setUserInfo: (payload: any) => void;
 }
 
 export default function PostsComponent({
@@ -82,6 +89,7 @@ export default function PostsComponent({
   loadingVideo,
   displayVideo,
   setCurrentIndex,
+  setUserInfo,
 }: IProp) {
   const [commandModelShow, setCommandModelShow] = useState(false);
 
@@ -194,13 +202,24 @@ export default function PostsComponent({
                       <Text style={styles.actionCount}>
                         {'' + post.shareTotal}
                       </Text>
-                      <Image
-                        style={styles.avatarAuthor}
-                        source={{
-                          uri: post?.author?.avatar,
-                        }}
-                        defaultSource={require('../../assets/images/avatar-default.png')}
-                      />
+                      <TouchableWithoutFeedback
+                        onPress={() => {
+                          setUserInfo({
+                            userId: post?.author?._id,
+                            username: post?.author?.username,
+                            avatar: post?.author?.avatar,
+                            bio: post?.author?.bio,
+                          });
+                          navigation.navigate(Screens.User);
+                        }}>
+                        <Image
+                          style={styles.avatarAuthor}
+                          source={{
+                            uri: post?.author?.avatar,
+                          }}
+                          defaultSource={require('../../assets/images/avatar-default.png')}
+                        />
+                      </TouchableWithoutFeedback>
                     </View>
                   </Row>
                 </DoublePressView>
