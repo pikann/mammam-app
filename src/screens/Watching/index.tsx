@@ -24,12 +24,15 @@ import {
   makeSelectTotalPageComment,
 } from '../Home/store/selectors';
 import {styles} from './styles';
+import * as WatchingActions from './store/actions';
 import * as HomeActions from '../Home/store/actions';
 import * as UserActions from '../User/store/actions';
+import * as SearchActions from '../Search/store/actions';
 import {
   makeSelectGettingPayload,
   makeSelectGettingType,
   makeSelectIndexBegin,
+  makeSelectPage,
 } from './store/selectors';
 import {GettingType} from './store/enums/getting-type';
 import {BackButton} from '../../components/Button';
@@ -55,6 +58,7 @@ interface IProp {
   gettingType: string;
   gettingPayload: any;
   indexBegin: number;
+  page: number;
   likePost: (postId: string) => void;
   dislikePost: (postId: string) => void;
   viewPost: (postId: string) => void;
@@ -69,7 +73,9 @@ interface IProp {
   loadingVideo: (postId: string) => void;
   displayVideo: (postId: string) => void;
   appendPostOfUser: (payload: any) => void;
+  appendSearchPosts: (payload: any) => void;
   setUserInfo: (payload: any) => void;
+  setPage: (page: number) => void;
 }
 
 const WatchingScreen = ({
@@ -89,6 +95,7 @@ const WatchingScreen = ({
   gettingType,
   gettingPayload,
   indexBegin,
+  page,
   likePost,
   dislikePost,
   viewPost,
@@ -103,10 +110,11 @@ const WatchingScreen = ({
   loadingVideo,
   displayVideo,
   appendPostOfUser,
+  appendSearchPosts,
   setUserInfo,
+  setPage,
 }: IProp) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [page, setPage] = useState(1);
 
   useEffect(() => {
     setCurrentIndex(indexBegin);
@@ -116,6 +124,12 @@ const WatchingScreen = ({
     if (currentIndex >= posts.length - 2 && !isLoading && posts.length > 0) {
       if (gettingType === GettingType.User) {
         appendPostOfUser({
+          ...gettingPayload,
+          page,
+        });
+        setPage(page + 1);
+      } else if (gettingType === GettingType.Search) {
+        appendSearchPosts({
           ...gettingPayload,
           page,
         });
@@ -189,6 +203,7 @@ const mapStateToProps = createStructuredSelector<any, any>({
   gettingType: makeSelectGettingType(),
   gettingPayload: makeSelectGettingPayload(),
   indexBegin: makeSelectIndexBegin(),
+  page: makeSelectPage(),
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
@@ -220,6 +235,9 @@ const mapDispatchToProps = (dispatch: any) => ({
     dispatch(UserActions.appendUserPosts.request(payload)),
   setUserInfo: (payload: any) =>
     dispatch(UserActions.setUserInfo.request(payload)),
+  setPage: (page: number) => dispatch(WatchingActions.setPage.request(page)),
+  appendSearchPosts: (payload: any) =>
+    dispatch(SearchActions.appendSearchPosts.request(payload)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(WatchingScreen);

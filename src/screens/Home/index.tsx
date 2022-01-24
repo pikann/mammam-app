@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {connect} from 'react-redux';
 import {StackNavigationHelpers} from '@react-navigation/stack/lib/typescript/src/types';
 import {createStructuredSelector} from 'reselect';
+import {useIsFocused} from '@react-navigation/native';
 
 import {IconButton, TextButton} from '../../components/Button';
 import * as HomeActions from './store/actions';
@@ -100,6 +101,7 @@ const HomeScreen = ({
   setUserInfo,
 }: IProp) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     if (!username || username === '') {
@@ -110,7 +112,7 @@ const HomeScreen = ({
   useEffect(() => {
     setCurrentIndex(0);
     getPosts(getPostsTag);
-  }, [getPosts, getPostsTag]);
+  }, [getPosts, getPostsTag, isFocused]);
 
   useEffect(() => {
     if (currentIndex >= posts.length - 2 && !isLoading && posts.length > 0) {
@@ -199,6 +201,7 @@ const HomeScreen = ({
           name={'search'}
           color={Colors.background}
           size={15}
+          onPress={() => navigation.navigate(Screens.Search)}
         />
       </Row>
     </View>

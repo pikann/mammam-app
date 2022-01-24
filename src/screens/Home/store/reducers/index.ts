@@ -30,12 +30,14 @@ const homeReducer = (state = initialState, {type, payload}: any) =>
         });
         break;
       case HomeActions.Types.APPEND_POSTS.succeeded:
-        draft.posts = [
-          ...draft.posts,
-          ...payload.map((post: IPost) => {
-            return {...post, loading: true};
-          }),
-        ];
+        if (payload.length > 0) {
+          draft.posts = [
+            ...draft.posts,
+            ...payload.map((post: IPost) => {
+              return {...post, loading: true};
+            }),
+          ];
+        }
         break;
       case HomeActions.Types.LIKE_POST.succeeded:
         index = draft.posts.findIndex(post => post._id === payload);
@@ -244,12 +246,14 @@ const homeReducer = (state = initialState, {type, payload}: any) =>
         });
         break;
       case UserActions.Types.APPEND_USER_POSTS.succeeded:
-        draft.posts = [
-          ...draft.posts,
-          ...payload.posts.map((post: IPost) => {
-            return {...post, loading: true, author: payload.author};
-          }),
-        ];
+        if (payload.posts.length > 0) {
+          draft.posts = [
+            ...draft.posts,
+            ...payload.posts.map((post: IPost) => {
+              return {...post, loading: true, author: payload.author};
+            }),
+          ];
+        }
         break;
       default:
         break;
