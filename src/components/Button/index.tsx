@@ -53,7 +53,7 @@ export default function Button(
 }
 
 export function BackButton(
-  props: TouchableHighlightProps & {colorIcon: string},
+  props: TouchableHighlightProps & {colorIcon?: string},
 ) {
   const {style, colorIcon, ...otherProps} = props;
   return (

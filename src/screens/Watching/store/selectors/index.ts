@@ -20,4 +20,14 @@ const makeSelectIndexBegin = () =>
     return state.indexBegin;
   });
 
-export {makeSelectGettingType, makeSelectGettingPayload, makeSelectIndexBegin};
+const makeSelectPage = () =>
+  createSelector(watchingState, state => {
+    return state.page;
+  });
+
+export {
+  makeSelectGettingType,
+  makeSelectGettingPayload,
+  makeSelectIndexBegin,
+  makeSelectPage,
+};

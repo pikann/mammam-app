@@ -9,6 +9,7 @@ import postReducer from '../screens/Post/store/reducers';
 import passwordReducer from '../screens/Password/store/reducers';
 import userReducer from '../screens/User/store/reducers';
 import watchingReducer from '../screens/Watching/store/reducers';
+import searchReducer from '../screens/Search/store/reducers';
 
 const rootReducer = combineReducers({
   appReducer,
@@ -20,5 +21,6 @@ const rootReducer = combineReducers({
   passwordReducer,
   userReducer,
   watchingReducer,
+  searchReducer,
 });
 export default rootReducer;

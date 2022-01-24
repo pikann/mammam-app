@@ -1,14 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {
-  Image,
-  NativeScrollEvent,
-  ScrollView,
-  TouchableWithoutFeedback,
-} from 'react-native';
+import {Image, NativeScrollEvent, ScrollView} from 'react-native';
 import {connect} from 'react-redux';
 import {createStructuredSelector} from 'reselect';
 import {Menu, MenuDivider, MenuItem} from 'react-native-material-menu';
-import Icon from 'react-native-vector-icons/Ionicons';
 import {StackNavigationHelpers} from '@react-navigation/stack/lib/typescript/src/types';
 
 import View, {Row} from '../../components/View';
@@ -28,9 +22,9 @@ import * as UserActions from './store/actions';
 import * as AppActions from '../../store/actions';
 import * as WatchingActions from '../Watching/store/actions';
 import {IPost} from '../../interfaces/post';
-import FastImage from 'react-native-fast-image';
 import Screens from '../../constants/Screens';
 import {GettingType} from '../Watching/store/enums/getting-type';
+import ListPost from '../../components/ListPost';
 
 interface IUserPayload {
   navigation: StackNavigationHelpers;
@@ -109,6 +103,7 @@ const UserScreen = ({
         },
       },
       indexBegin,
+      page,
     });
     navigation.navigate(Screens.Watching);
   };
@@ -148,49 +143,12 @@ const UserScreen = ({
             }}>
             {userId === loginUserId ? 'Update profile' : 'Follow'}
           </Button>
-          <View style={styles.listVideoView}>
-            {[...Array(Math.ceil(posts.length / 3)).keys()].map(rowId => (
-              <Row key={rowId}>
-                {[...Array(3).keys()].map(colId => {
-                  if (rowId * 3 + colId < posts.length) {
-                    return (
-                      <TouchableWithoutFeedback
-                        key={colId}
-                        onPress={() => onPressThumbnail(rowId * 3 + colId)}>
-                        <View style={styles.thumbnailView}>
-                          <Image
-                            style={styles.thumbnailImage}
-                            source={{uri: posts[rowId * 3 + colId].thumbnail}}
-                          />
-                          <Row style={styles.viewBlurThumbnail}>
-                            <Icon
-                              style={styles.likeIconThumbnail}
-                              name="heart"
-                              size={16}
-                              color={Colors.background}
-                            />
-                            <Text style={styles.viewTotalThumbnail}>
-                              {'' + posts[rowId * 3 + colId].likeTotal}
-                            </Text>
-                          </Row>
-                        </View>
-                      </TouchableWithoutFeedback>
-                    );
-                  } else {
-                    return <View key={colId} />;
-                  }
-                })}
-              </Row>
-            ))}
-            {isLoading ? (
-              <FastImage
-                source={require('../../assets/images/white-loading.gif')}
-                style={styles.loading}
-              />
-            ) : (
-              <View />
-            )}
-          </View>
+          <ListPost
+            style={styles.listVideoView}
+            posts={posts}
+            isLoading={isLoading}
+            onPressThumbnail={onPressThumbnail}
+          />
         </ScrollView>
       </View>
       <Row style={styles.profileView}>
