@@ -71,7 +71,10 @@ export const styles = StyleSheet.create({
   followBtnText: {
     fontSize: 14,
   },
-  listVideoView: {
-    flex: 1,
+  loading: {
+    width: 100,
+    height: 100,
+    marginLeft: 'auto',
+    marginRight: 'auto',
   },
 });
