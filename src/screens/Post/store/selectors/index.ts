@@ -24,9 +24,21 @@ const makeSelectIsLoading = () =>
     return state.isLoading;
   });
 
+const makeSelectUpdateId = () =>
+  createSelector(postState, state => {
+    return state.updateId;
+  });
+
+const makeSelectDefaultDescription = () =>
+  createSelector(postState, state => {
+    return state.defaultDescription;
+  });
+
 export {
   makeSelectVideoURI,
   makeSelectVideoType,
   makeSelectVideoDuration,
   makeSelectIsLoading,
+  makeSelectUpdateId,
+  makeSelectDefaultDescription,
 };

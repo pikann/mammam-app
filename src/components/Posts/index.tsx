@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {useEffect, useState} from 'react';
 import {
+  Alert,
   Dimensions,
   Image,
   ScrollView,
@@ -10,6 +11,7 @@ import FastImage from 'react-native-fast-image';
 import Video from 'react-native-video';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {StackNavigationHelpers} from '@react-navigation/stack/lib/typescript/src/types';
+import {Menu, MenuItem} from 'react-native-material-menu';
 
 import Text from '../Text';
 import View, {DoublePressView, Row} from '../View';
@@ -56,6 +58,8 @@ interface IProp {
   displayVideo: (postId: string) => void;
   setCurrentIndex: (currentIndex: number) => void;
   setUserInfo: (payload: any) => void;
+  setUpdateVideo: (payload: any) => void;
+  deletePost: (id: string) => void;
 }
 
 export default function PostsComponent({
@@ -90,8 +94,27 @@ export default function PostsComponent({
   displayVideo,
   setCurrentIndex,
   setUserInfo,
+  setUpdateVideo,
+  deletePost,
 }: IProp) {
   const [commandModelShow, setCommandModelShow] = useState(false);
+  const [popupVisible, setPopupVisible] = useState(false);
+
+  const onDelete = (id: string) => {
+    Alert.alert('Delete post', 'Do you want to delete this post?', [
+      {
+        text: 'Yes',
+        onPress: () => {
+          deletePost(id);
+          navigation.navigate(Screens.Home);
+        },
+      },
+      {
+        text: 'No',
+        style: 'cancel',
+      },
+    ]);
+  };
 
   useEffect(() => {
     if (posts.length > 0) {
@@ -193,15 +216,47 @@ export default function PostsComponent({
                       <Text style={styles.actionCount}>
                         {'' + post.commentTotal}
                       </Text>
-                      <IconButton
-                        style={styles.actionButton}
-                        name={'share-social'}
-                        color={Colors.background}
-                        size={30}
-                      />
-                      <Text style={styles.actionCount}>
-                        {'' + post.shareTotal}
-                      </Text>
+                      <View style={styles.actionButton}>
+                        <IconButton
+                          style={styles.actionButton}
+                          name={'ellipsis-vertical'}
+                          color={Colors.background}
+                          size={30}
+                          onPress={() => setPopupVisible(!popupVisible)}
+                        />
+                        {index === currentIndex ? (
+                          userId === post.author._id ? (
+                            <Menu
+                              visible={popupVisible}
+                              onRequestClose={() => setPopupVisible(false)}>
+                              <MenuItem
+                                onPress={() => {
+                                  setUpdateVideo({
+                                    videoURI: post.url,
+                                    updateId: post._id,
+                                    defaultDescription: post.description,
+                                  });
+                                  navigation.navigate(Screens.Post);
+                                }}>
+                                <Text style={styles.menuItem}>Modify</Text>
+                              </MenuItem>
+                              <MenuItem onPress={() => onDelete(post._id)}>
+                                <Text style={styles.menuItem}>Delete</Text>
+                              </MenuItem>
+                            </Menu>
+                          ) : (
+                            <Menu
+                              visible={popupVisible}
+                              onRequestClose={() => setPopupVisible(false)}>
+                              <MenuItem onPress={() => console.log('Report')}>
+                                <Text style={styles.menuItem}>Report</Text>
+                              </MenuItem>
+                            </Menu>
+                          )
+                        ) : (
+                          <View />
+                        )}
+                      </View>
                       <TouchableWithoutFeedback
                         onPress={() => {
                           setUserInfo({

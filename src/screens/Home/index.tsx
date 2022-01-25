@@ -7,6 +7,7 @@ import {useIsFocused} from '@react-navigation/native';
 import {IconButton, TextButton} from '../../components/Button';
 import * as HomeActions from './store/actions';
 import * as UserActions from '../User/store/actions';
+import * as PostActions from '../Post/store/actions';
 import View, {Row} from '../../components/View';
 import Colors from '../../constants/Colors';
 import {styles} from './styles';
@@ -65,6 +66,8 @@ interface IProp {
   displayVideo: (postId: string) => void;
   setGetPostsTag: (tag: string) => void;
   setUserInfo: (payload: any) => void;
+  setUpdateVideo: (payload: any) => void;
+  deletePost: (id: string) => void;
 }
 
 const HomeScreen = ({
@@ -99,6 +102,8 @@ const HomeScreen = ({
   displayVideo,
   setGetPostsTag,
   setUserInfo,
+  setUpdateVideo,
+  deletePost,
 }: IProp) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const isFocused = useIsFocused();
@@ -161,6 +166,8 @@ const HomeScreen = ({
         displayVideo={displayVideo}
         setCurrentIndex={setCurrentIndex}
         setUserInfo={setUserInfo}
+        setUpdateVideo={setUpdateVideo}
+        deletePost={deletePost}
       />
       <Row style={styles.tagView}>
         <TextButton
@@ -256,6 +263,9 @@ const mapDispatchToProps = (dispatch: any) => ({
     dispatch(HomeActions.setGetPostsTag.request(tag)),
   setUserInfo: (payload: any) =>
     dispatch(UserActions.setUserInfo.request(payload)),
+  setUpdateVideo: (payload: any) =>
+    dispatch(PostActions.setUpdateVideo.request(payload)),
+  deletePost: (id: string) => dispatch(HomeActions.deletePost.request(id)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);

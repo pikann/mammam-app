@@ -11,6 +11,12 @@ export const postService = async (payload: any) => {
   return await AxiosClientInstance.post('posts', payload);
 };
 
+export const updatePostService = async (payload: any) => {
+  return await AxiosClientInstance.patch(`posts/${payload._id}`, {
+    description: payload.description,
+  });
+};
+
 export const getPresignedUrlService = async () => {
   return await AxiosClientInstance.get('posts/presigned-url');
 };

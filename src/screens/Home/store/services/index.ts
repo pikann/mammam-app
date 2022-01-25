@@ -54,3 +54,7 @@ export const replyCommentService = async (
     content,
   });
 };
+
+export const deletePostService = async (id: string) => {
+  return await AxiosClientInstance.delete(`posts/${id}`, {});
+};

@@ -9,7 +9,9 @@ import View from '../../components/View';
 import {styles} from './styles';
 import * as PostActions from './store/actions';
 import {
+  makeSelectDefaultDescription,
   makeSelectIsLoading,
+  makeSelectUpdateId,
   makeSelectVideoDuration,
   makeSelectVideoType,
   makeSelectVideoURI,
@@ -27,13 +29,40 @@ interface IProp {
   videoType: string;
   videoDuration: number;
   isLoading: boolean;
+  updateId: string;
+  defaultDescription: string;
   postVideo: (payload: any) => void;
+  updatePost: (payload: any) => void;
 }
 
 const PostScreen = (props: IProp) => {
-  const [description, setDescription] = useState('');
+  const [description, setDescription] = useState(
+    props.updateId === '' ? '' : props.defaultDescription,
+  );
 
   const marginTop = useRef(new Animated.Value(height * 0.6)).current;
+
+  const onSubmit = () => {
+    if (props.updateId === '') {
+      props.postVideo({
+        description: description,
+        video: props.videoURI,
+        videoType: props.videoType,
+        videoDuration: props.videoDuration,
+        callback: () => {
+          props.navigation.navigate(Screens.Home);
+        },
+      });
+    } else {
+      props.updatePost({
+        _id: props.updateId,
+        description,
+        callback: () => {
+          props.navigation.navigate(Screens.Home);
+        },
+      });
+    }
+  };
 
   useEffect(() => {
     Animated.timing(marginTop, {
@@ -80,6 +109,7 @@ const PostScreen = (props: IProp) => {
         <TextInput
           style={styles.description}
           placeholder="Description..."
+          defaultValue={props.updateId === '' ? '' : props.defaultDescription}
           onChangeText={text => setDescription(text)}
         />
         <TextInput
@@ -90,18 +120,8 @@ const PostScreen = (props: IProp) => {
         <Button
           style={styles.postBtn}
           loading={props.isLoading}
-          onPress={() =>
-            props.postVideo({
-              description: description,
-              video: props.videoURI,
-              videoType: props.videoType,
-              videoDuration: props.videoDuration,
-              callback: () => {
-                props.navigation.navigate(Screens.Home);
-              },
-            })
-          }>
-          Post
+          onPress={() => onSubmit()}>
+          {props.updateId === '' ? 'Post' : 'Modify'}
         </Button>
       </Animated.View>
       <IconButton
@@ -120,10 +140,14 @@ const mapStateToProps = createStructuredSelector<any, any>({
   videoType: makeSelectVideoType(),
   videoDuration: makeSelectVideoDuration(),
   isLoading: makeSelectIsLoading(),
+  updateId: makeSelectUpdateId(),
+  defaultDescription: makeSelectDefaultDescription(),
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
   postVideo: (payload: any) => dispatch(PostActions.postVideo.request(payload)),
+  updatePost: (payload: any) =>
+    dispatch(PostActions.updatePost.request(payload)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(PostScreen);

@@ -28,6 +28,7 @@ import * as WatchingActions from './store/actions';
 import * as HomeActions from '../Home/store/actions';
 import * as UserActions from '../User/store/actions';
 import * as SearchActions from '../Search/store/actions';
+import * as PostActions from '../Post/store/actions';
 import {
   makeSelectGettingPayload,
   makeSelectGettingType,
@@ -76,6 +77,8 @@ interface IProp {
   appendSearchPosts: (payload: any) => void;
   setUserInfo: (payload: any) => void;
   setPage: (page: number) => void;
+  setUpdateVideo: (payload: any) => void;
+  deletePost: (id: string) => void;
 }
 
 const WatchingScreen = ({
@@ -113,6 +116,8 @@ const WatchingScreen = ({
   appendSearchPosts,
   setUserInfo,
   setPage,
+  setUpdateVideo,
+  deletePost,
 }: IProp) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -175,6 +180,8 @@ const WatchingScreen = ({
         displayVideo={displayVideo}
         setCurrentIndex={setCurrentIndex}
         setUserInfo={setUserInfo}
+        setUpdateVideo={setUpdateVideo}
+        deletePost={deletePost}
       />
       <BackButton
         style={styles.backButton}
@@ -238,6 +245,9 @@ const mapDispatchToProps = (dispatch: any) => ({
   setPage: (page: number) => dispatch(WatchingActions.setPage.request(page)),
   appendSearchPosts: (payload: any) =>
     dispatch(SearchActions.appendSearchPosts.request(payload)),
+  setUpdateVideo: (payload: any) =>
+    dispatch(PostActions.setUpdateVideo.request(payload)),
+  deletePost: (id: string) => dispatch(HomeActions.deletePost.request(id)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(WatchingScreen);
