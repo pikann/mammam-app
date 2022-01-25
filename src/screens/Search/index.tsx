@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import {connect} from 'react-redux';
 import {createStructuredSelector} from 'reselect';
+import FastImage from 'react-native-fast-image';
 import {StackNavigationHelpers} from '@react-navigation/stack/lib/typescript/src/types';
 
 import * as SearchActions from './store/actions';
@@ -149,40 +150,50 @@ const SearchScreen = ({
         onScroll={({nativeEvent: e}) => onScroll(e)}
         scrollEventThrottle={400}>
         {tagSearch === TagSearch.User ? (
-          users.map((user, index) => (
-            <TouchableWithoutFeedback
-              key={index}
-              onPress={() => {
-                setUserInfo({
-                  userId: user._id,
-                  username: user.username,
-                  avatar: user.avatar,
-                  bio: user.bio,
-                });
-                navigation.navigate(Screens.User);
-              }}>
-              <Row style={styles.userRow}>
-                <Image
-                  style={styles.avatar}
-                  source={{
-                    uri: user.avatar,
-                  }}
-                  defaultSource={require('../../assets/images/avatar-default.png')}
-                />
-                <Text style={styles.username}>{user.username}</Text>
+          <View style={styles.flex}>
+            {users.map((user, index) => (
+              <TouchableWithoutFeedback
+                key={index}
+                onPress={() => {
+                  setUserInfo({
+                    userId: user._id,
+                    username: user.username,
+                    avatar: user.avatar,
+                    bio: user.bio,
+                  });
+                  navigation.navigate(Screens.User);
+                }}>
+                <Row style={styles.userRow}>
+                  <Image
+                    style={styles.avatar}
+                    source={{
+                      uri: user.avatar,
+                    }}
+                    defaultSource={require('../../assets/images/avatar-default.png')}
+                  />
+                  <Text style={styles.username}>{user.username}</Text>
 
-                <Button
-                  style={styles.followBtn}
-                  textChildrenStyle={styles.followBtnText}
-                  onPress={() => console.log('Follow')}>
-                  Follow
-                </Button>
-              </Row>
-            </TouchableWithoutFeedback>
-          ))
+                  <Button
+                    style={styles.followBtn}
+                    textChildrenStyle={styles.followBtnText}
+                    onPress={() => console.log('Follow')}>
+                    Follow
+                  </Button>
+                </Row>
+              </TouchableWithoutFeedback>
+            ))}
+            {isLoading ? (
+              <FastImage
+                source={require('../../assets/images/white-loading.gif')}
+                style={styles.loading}
+              />
+            ) : (
+              <View />
+            )}
+          </View>
         ) : (
           <ListPost
-            style={styles.listVideoView}
+            style={styles.flex}
             posts={posts}
             isLoading={isLoading}
             onPressThumbnail={onPressThumbnail}
