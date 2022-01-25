@@ -46,6 +46,7 @@ export const styles = StyleSheet.create({
     marginTop: 'auto',
   },
   actionButton: {
+    backgroundColor: 'transparent',
     width: 30,
     height: 30,
     marginLeft: 'auto',
@@ -68,7 +69,7 @@ export const styles = StyleSheet.create({
   avatarAuthor: {
     width: 50,
     height: 50,
-    marginTop: 15,
+    marginTop: 25,
     marginBottom: 20,
     borderRadius: 25,
   },
@@ -116,5 +117,11 @@ export const styles = StyleSheet.create({
     position: 'absolute',
     height: Math.floor(height),
     width,
+  },
+  optionBtn: {
+    height: 27,
+  },
+  menuItem: {
+    color: Colors.text,
   },
 });

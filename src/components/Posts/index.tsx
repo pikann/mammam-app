@@ -10,6 +10,7 @@ import FastImage from 'react-native-fast-image';
 import Video from 'react-native-video';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {StackNavigationHelpers} from '@react-navigation/stack/lib/typescript/src/types';
+import {Menu, MenuItem} from 'react-native-material-menu';
 
 import Text from '../Text';
 import View, {DoublePressView, Row} from '../View';
@@ -56,6 +57,7 @@ interface IProp {
   displayVideo: (postId: string) => void;
   setCurrentIndex: (currentIndex: number) => void;
   setUserInfo: (payload: any) => void;
+  setUpdateVideo: (payload: any) => void;
 }
 
 export default function PostsComponent({
@@ -90,8 +92,10 @@ export default function PostsComponent({
   displayVideo,
   setCurrentIndex,
   setUserInfo,
+  setUpdateVideo,
 }: IProp) {
   const [commandModelShow, setCommandModelShow] = useState(false);
+  const [popupVisible, setPopupVisible] = useState(false);
 
   useEffect(() => {
     if (posts.length > 0) {
@@ -193,15 +197,47 @@ export default function PostsComponent({
                       <Text style={styles.actionCount}>
                         {'' + post.commentTotal}
                       </Text>
-                      <IconButton
-                        style={styles.actionButton}
-                        name={'share-social'}
-                        color={Colors.background}
-                        size={30}
-                      />
-                      <Text style={styles.actionCount}>
-                        {'' + post.shareTotal}
-                      </Text>
+                      <View style={styles.actionButton}>
+                        <IconButton
+                          style={styles.actionButton}
+                          name={'ellipsis-vertical'}
+                          color={Colors.background}
+                          size={30}
+                          onPress={() => setPopupVisible(!popupVisible)}
+                        />
+                        {index === currentIndex ? (
+                          userId === post.author._id ? (
+                            <Menu
+                              visible={popupVisible}
+                              onRequestClose={() => setPopupVisible(false)}>
+                              <MenuItem
+                                onPress={() => {
+                                  setUpdateVideo({
+                                    videoURI: post.url,
+                                    updateId: post._id,
+                                    defaultDescription: post.description,
+                                  });
+                                  navigation.navigate(Screens.Post);
+                                }}>
+                                <Text style={styles.menuItem}>Modify</Text>
+                              </MenuItem>
+                              <MenuItem onPress={() => console.log('Delete')}>
+                                <Text style={styles.menuItem}>Delete</Text>
+                              </MenuItem>
+                            </Menu>
+                          ) : (
+                            <Menu
+                              visible={popupVisible}
+                              onRequestClose={() => setPopupVisible(false)}>
+                              <MenuItem onPress={() => console.log('Report')}>
+                                <Text style={styles.menuItem}>Report</Text>
+                              </MenuItem>
+                            </Menu>
+                          )
+                        ) : (
+                          <View />
+                        )}
+                      </View>
                       <TouchableWithoutFeedback
                         onPress={() => {
                           setUserInfo({

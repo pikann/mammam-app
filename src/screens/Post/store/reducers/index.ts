@@ -7,6 +7,8 @@ export const initialState = {
   videoType: '',
   videoDuration: 0,
   isLoading: false,
+  updateId: '',
+  defaultDescription: '',
 };
 
 export type PostState = typeof initialState;
@@ -18,6 +20,12 @@ const postReducer = (state = initialState, {type, payload}: any) =>
         draft.videoURI = payload.uri;
         draft.videoType = payload.type;
         draft.videoDuration = payload.duration;
+        draft.updateId = '';
+        break;
+      case PostActions.Types.SET_UPDATE_VIDEO.begin:
+        draft.videoURI = payload.videoURI;
+        draft.updateId = payload.updateId;
+        draft.defaultDescription = payload.defaultDescription;
         break;
       case PostActions.Types.LOADING.begin:
         draft.isLoading = true;
