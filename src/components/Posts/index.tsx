@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {useEffect, useState} from 'react';
 import {
+  Alert,
   Dimensions,
   Image,
   ScrollView,
@@ -58,6 +59,7 @@ interface IProp {
   setCurrentIndex: (currentIndex: number) => void;
   setUserInfo: (payload: any) => void;
   setUpdateVideo: (payload: any) => void;
+  deletePost: (id: string) => void;
 }
 
 export default function PostsComponent({
@@ -93,9 +95,26 @@ export default function PostsComponent({
   setCurrentIndex,
   setUserInfo,
   setUpdateVideo,
+  deletePost,
 }: IProp) {
   const [commandModelShow, setCommandModelShow] = useState(false);
   const [popupVisible, setPopupVisible] = useState(false);
+
+  const onDelete = (id: string) => {
+    Alert.alert('Delete post', 'Do you want to delete this post?', [
+      {
+        text: 'Yes',
+        onPress: () => {
+          deletePost(id);
+          navigation.navigate(Screens.Home);
+        },
+      },
+      {
+        text: 'No',
+        style: 'cancel',
+      },
+    ]);
+  };
 
   useEffect(() => {
     if (posts.length > 0) {
@@ -221,7 +240,7 @@ export default function PostsComponent({
                                 }}>
                                 <Text style={styles.menuItem}>Modify</Text>
                               </MenuItem>
-                              <MenuItem onPress={() => console.log('Delete')}>
+                              <MenuItem onPress={() => onDelete(post._id)}>
                                 <Text style={styles.menuItem}>Delete</Text>
                               </MenuItem>
                             </Menu>

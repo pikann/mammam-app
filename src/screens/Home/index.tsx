@@ -67,6 +67,7 @@ interface IProp {
   setGetPostsTag: (tag: string) => void;
   setUserInfo: (payload: any) => void;
   setUpdateVideo: (payload: any) => void;
+  deletePost: (id: string) => void;
 }
 
 const HomeScreen = ({
@@ -102,6 +103,7 @@ const HomeScreen = ({
   setGetPostsTag,
   setUserInfo,
   setUpdateVideo,
+  deletePost,
 }: IProp) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const isFocused = useIsFocused();
@@ -165,6 +167,7 @@ const HomeScreen = ({
         setCurrentIndex={setCurrentIndex}
         setUserInfo={setUserInfo}
         setUpdateVideo={setUpdateVideo}
+        deletePost={deletePost}
       />
       <Row style={styles.tagView}>
         <TextButton
@@ -262,6 +265,7 @@ const mapDispatchToProps = (dispatch: any) => ({
     dispatch(UserActions.setUserInfo.request(payload)),
   setUpdateVideo: (payload: any) =>
     dispatch(PostActions.setUpdateVideo.request(payload)),
+  deletePost: (id: string) => dispatch(HomeActions.deletePost.request(id)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);

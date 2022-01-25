@@ -4,6 +4,7 @@ import * as HomeAction from '../actions';
 import {
   appendPostsService,
   commentPostService,
+  deletePostService,
   dislikeCommentService,
   dislikePostService,
   getCommentsService,
@@ -329,6 +330,17 @@ function* replyCommentSaga({payload: {commentId, content, author}}: any) {
   }
 }
 
+function* deletePostSaga({payload}: any) {
+  try {
+    yield call(deletePostService, payload);
+  } catch (error) {
+    yield put({
+      type: HomeAction.Types.DELETE_POST.failed,
+      payload: error,
+    });
+  }
+}
+
 export default function* homeWatcher() {
   yield takeLatest(HomeAction.Types.GET_POSTS.begin, getPostsSaga);
   yield takeLatest(HomeAction.Types.APPEND_POSTS.begin, appendPostsSaga);
@@ -349,4 +361,5 @@ export default function* homeWatcher() {
   );
   yield takeLatest(HomeAction.Types.COMMENT_POST.begin, commentPostSaga);
   yield takeLatest(HomeAction.Types.REPLY_COMMENT.begin, replyCommentSaga);
+  yield takeLatest(HomeAction.Types.DELETE_POST.begin, deletePostSaga);
 }
