@@ -79,6 +79,8 @@ interface IProp {
   setPage: (page: number) => void;
   setUpdateVideo: (payload: any) => void;
   deletePost: (id: string) => void;
+  updateComment: (payload: any) => void;
+  deleteComment: (payload: any) => void;
 }
 
 const WatchingScreen = ({
@@ -118,6 +120,8 @@ const WatchingScreen = ({
   setPage,
   setUpdateVideo,
   deletePost,
+  updateComment,
+  deleteComment,
 }: IProp) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -182,6 +186,8 @@ const WatchingScreen = ({
         setUserInfo={setUserInfo}
         setUpdateVideo={setUpdateVideo}
         deletePost={deletePost}
+        updateComment={updateComment}
+        deleteComment={deleteComment}
       />
       <BackButton
         style={styles.backButton}
@@ -248,6 +254,10 @@ const mapDispatchToProps = (dispatch: any) => ({
   setUpdateVideo: (payload: any) =>
     dispatch(PostActions.setUpdateVideo.request(payload)),
   deletePost: (id: string) => dispatch(HomeActions.deletePost.request(id)),
+  updateComment: (payload: any) =>
+    dispatch(HomeActions.updateComment.request(payload)),
+  deleteComment: (payload: any) =>
+    dispatch(HomeActions.deleteComment.request(payload)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(WatchingScreen);

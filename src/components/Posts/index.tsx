@@ -60,6 +60,8 @@ interface IProp {
   setUserInfo: (payload: any) => void;
   setUpdateVideo: (payload: any) => void;
   deletePost: (id: string) => void;
+  updateComment: (payload: any) => void;
+  deleteComment: (payload: any) => void;
 }
 
 export default function PostsComponent({
@@ -96,6 +98,8 @@ export default function PostsComponent({
   setUserInfo,
   setUpdateVideo,
   deletePost,
+  updateComment,
+  deleteComment,
 }: IProp) {
   const [commandModelShow, setCommandModelShow] = useState(false);
   const [popupVisible, setPopupVisible] = useState(false);
@@ -325,6 +329,8 @@ export default function PostsComponent({
         appendRepliesComment={appendRepliesComment}
         commentPost={commentPost}
         replyComment={replyComment}
+        updateComment={updateComment}
+        deleteComment={deleteComment}
       />
     </View>
   );

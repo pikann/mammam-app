@@ -255,6 +255,19 @@ const homeReducer = (state = initialState, {type, payload}: any) =>
           ];
         }
         break;
+      case HomeActions.Types.UPDATE_COMMENT.succeeded:
+        index = draft.comments.findIndex(
+          comment => comment._id === payload._id,
+        );
+
+        if (index >= 0) {
+          draft.comments[index].content = payload.content;
+        }
+        break;
+      case HomeActions.Types.DELETE_COMMENT.succeeded:
+        index = draft.posts.findIndex(post => post._id === draft.currentPostId);
+        draft.posts[index].commentTotal--;
+        break;
       default:
         break;
     }

@@ -24,6 +24,8 @@ export const Types = actionTypesFactory(
   'LOADING',
   'SET_GET_POSTS_TAG',
   'DELETE_POST',
+  'UPDATE_COMMENT',
+  'DELETE_COMMENT',
 );
 
 export const getPosts = createActionGenerator(Types.GET_POSTS);
@@ -55,3 +57,5 @@ export const displayVideo = createActionGenerator(Types.DISPLAY_VIDEO);
 export const loading = createActionGenerator(Types.LOADING);
 export const setGetPostsTag = createActionGenerator(Types.SET_GET_POSTS_TAG);
 export const deletePost = createActionGenerator(Types.DELETE_POST);
+export const updateComment = createActionGenerator(Types.UPDATE_COMMENT);
+export const deleteComment = createActionGenerator(Types.DELETE_COMMENT);

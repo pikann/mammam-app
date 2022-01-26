@@ -4,6 +4,7 @@ import * as HomeAction from '../actions';
 import {
   appendPostsService,
   commentPostService,
+  deleteCommentService,
   deletePostService,
   dislikeCommentService,
   dislikePostService,
@@ -13,6 +14,7 @@ import {
   likeCommentService,
   likePostService,
   replyCommentService,
+  updateCommentService,
   viewPostService,
 } from '../services';
 
@@ -341,6 +343,39 @@ function* deletePostSaga({payload}: any) {
   }
 }
 
+function* updateCommentSaga({payload}: any) {
+  try {
+    yield call(updateCommentService, {
+      _id: payload._id,
+      content: payload.content,
+    });
+
+    yield put({
+      type: HomeAction.Types.UPDATE_COMMENT.succeeded,
+      payload,
+    });
+  } catch (error) {
+    yield put({
+      type: HomeAction.Types.UPDATE_COMMENT.failed,
+      payload: error,
+    });
+  }
+}
+
+function* deleteCommentSaga({payload}: any) {
+  try {
+    yield call(deleteCommentService, payload);
+    yield put({
+      type: HomeAction.Types.DELETE_COMMENT.succeeded,
+    });
+  } catch (error) {
+    yield put({
+      type: HomeAction.Types.DELETE_COMMENT.failed,
+      payload: error,
+    });
+  }
+}
+
 export default function* homeWatcher() {
   yield takeLatest(HomeAction.Types.GET_POSTS.begin, getPostsSaga);
   yield takeLatest(HomeAction.Types.APPEND_POSTS.begin, appendPostsSaga);
@@ -362,4 +397,6 @@ export default function* homeWatcher() {
   yield takeLatest(HomeAction.Types.COMMENT_POST.begin, commentPostSaga);
   yield takeLatest(HomeAction.Types.REPLY_COMMENT.begin, replyCommentSaga);
   yield takeLatest(HomeAction.Types.DELETE_POST.begin, deletePostSaga);
+  yield takeLatest(HomeAction.Types.UPDATE_COMMENT.begin, updateCommentSaga);
+  yield takeLatest(HomeAction.Types.DELETE_COMMENT.begin, deleteCommentSaga);
 }

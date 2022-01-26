@@ -1,6 +1,8 @@
 import * as React from 'react';
+import {useState} from 'react';
 import {Image, TouchableOpacity} from 'react-native';
 import {StackNavigationHelpers} from '@react-navigation/stack/lib/typescript/src/types';
+import {Menu, MenuItem} from 'react-native-material-menu';
 
 import {IconButton, TextButton} from '../Button';
 import Text from '../Text';
@@ -15,23 +17,31 @@ interface IProp {
   navigation: StackNavigationHelpers;
   child: boolean;
   comment: IComment;
+  userId: string;
   likeComment: (commentId: string) => void;
   dislikeComment: (commentId: string) => void;
   getRepliesComment: (commentId: string) => void;
   appendRepliesComment: (commentId: string, page: number) => void;
   setReplyingComment: (comment: IComment) => void;
+  setModifyingComment: (comment: IComment) => void;
+  onDelete: (id: string) => void;
 }
 
 export default function Comment({
   navigation,
   child,
   comment,
+  userId,
   likeComment,
   dislikeComment,
   getRepliesComment,
   appendRepliesComment,
   setReplyingComment,
+  setModifyingComment,
+  onDelete,
 }: IProp) {
+  const [popupVisible, setPopupVisible] = useState(false);
+
   return (
     <Row style={styles.container}>
       <Image
@@ -42,7 +52,40 @@ export default function Comment({
         defaultSource={require('../../assets/images/avatar-default.png')}
       />
       <View style={styles.flex}>
-        <Text style={styles.content}>{comment.content}</Text>
+        <Row>
+          <Text style={styles.content}>{comment.content}</Text>
+          <View style={styles.actionView}>
+            <IconButton
+              name={'ellipsis-vertical'}
+              color={Colors.text}
+              size={18}
+              onPress={() => setPopupVisible(!popupVisible)}
+            />
+            {userId === comment.author._id ? (
+              <Menu
+                visible={popupVisible}
+                onRequestClose={() => setPopupVisible(false)}>
+                <MenuItem
+                  onPress={() => {
+                    setModifyingComment(comment);
+                  }}>
+                  <Text style={styles.menuItem}>Modify</Text>
+                </MenuItem>
+                <MenuItem onPress={() => onDelete(comment._id)}>
+                  <Text style={styles.menuItem}>Delete</Text>
+                </MenuItem>
+              </Menu>
+            ) : (
+              <Menu
+                visible={popupVisible}
+                onRequestClose={() => setPopupVisible(false)}>
+                <MenuItem onPress={() => console.log('Report')}>
+                  <Text style={styles.menuItem}>Report</Text>
+                </MenuItem>
+              </Menu>
+            )}
+          </View>
+        </Row>
         <Row>
           <Text style={styles.createAt}>{timeAgo(comment.createdAt)}</Text>
           <IconButton
@@ -76,11 +119,14 @@ export default function Comment({
             navigation={navigation}
             comment={reply}
             key={index}
+            userId={userId}
             likeComment={likeComment}
             dislikeComment={dislikeComment}
             getRepliesComment={getRepliesComment}
             appendRepliesComment={appendRepliesComment}
             setReplyingComment={setReplyingComment}
+            setModifyingComment={setModifyingComment}
+            onDelete={onDelete}
           />
         ))}
         {comment.replyTotal > 0 &&
