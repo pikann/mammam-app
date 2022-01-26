@@ -15,6 +15,7 @@ export const styles = StyleSheet.create({
     borderRadius: 25,
   },
   content: {
+    flex: 1,
     backgroundColor: Colors.gray,
     minHeight: 35,
     paddingVertical: 10,
@@ -57,5 +58,16 @@ export const styles = StyleSheet.create({
     marginRight: 'auto',
     marginTop: -20,
     marginBottom: -25,
+  },
+  actionView: {
+    backgroundColor: 'transparent',
+    width: 20,
+    height: 20,
+    marginLeft: 10,
+    marginTop: 'auto',
+    marginBottom: 'auto',
+  },
+  menuItem: {
+    color: Colors.text,
   },
 });

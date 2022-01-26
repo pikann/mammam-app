@@ -8,6 +8,7 @@ import {
   Animated,
   ToastAndroid,
   NativeScrollEvent,
+  Alert,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -44,6 +45,8 @@ interface IProp {
   appendRepliesComment: (commentId: string, page: number) => void;
   commentPost: (postId: string, content: string, author: IAuthor) => void;
   replyComment: (commentId: string, content: string, author: IAuthor) => void;
+  updateComment: (payload: any) => void;
+  deleteComment: (payload: any) => void;
 }
 
 const newLocal = 'ios-chatbubble-ellipses-sharp';
@@ -53,6 +56,9 @@ export default function CommentModal(props: IProp) {
   const [replyingComment, setReplyingComment] = useState<IComment | undefined>(
     undefined,
   );
+  const [modifyingComment, setModifyingComment] = useState<
+    IComment | undefined
+  >(undefined);
 
   const scrollRef = useRef<ScrollView | null>(null);
   const height = useRef(new Animated.Value(75)).current;
@@ -82,6 +88,11 @@ export default function CommentModal(props: IProp) {
           avatar: props.avatar,
           bio: props.bio,
         });
+      } else if (modifyingComment) {
+        props.updateComment({
+          _id: modifyingComment._id,
+          content: commentContent,
+        });
       } else {
         scrollRef.current?.scrollTo({
           y: 0,
@@ -97,12 +108,28 @@ export default function CommentModal(props: IProp) {
     }
   };
 
+  const onDelete = (id: string) => {
+    Alert.alert('Delete comment', 'Do you want to delete this comment?', [
+      {
+        text: 'Yes',
+        onPress: () => {
+          props.deleteComment(id);
+          props.setCommandModelShow(false);
+        },
+      },
+      {
+        text: 'No',
+        style: 'cancel',
+      },
+    ]);
+  };
+
   useEffect(() => {
     setReplyingComment(undefined);
   }, [props.currentPostId]);
 
   useEffect(() => {
-    const defaultHeight = replyingComment ? 100 : 75;
+    const defaultHeight = replyingComment || modifyingComment ? 100 : 75;
     Animated.timing(height, {
       toValue: defaultHeight,
       duration: 400,
@@ -131,7 +158,18 @@ export default function CommentModal(props: IProp) {
       showSubscription.remove();
       hideSubscription.remove();
     };
-  }, [height, replyingComment]);
+  }, [height, replyingComment, modifyingComment]);
+
+  useEffect(() => {
+    setReplyingComment(undefined);
+    if (modifyingComment) {
+      setCommentContent(modifyingComment.content);
+    }
+  }, [modifyingComment]);
+
+  useEffect(() => {
+    setModifyingComment(undefined);
+  }, [replyingComment]);
 
   return (
     <Modal
@@ -159,11 +197,14 @@ export default function CommentModal(props: IProp) {
                 navigation={props.navigation}
                 comment={comment}
                 key={index}
+                userId={props.userId}
                 likeComment={props.likeComment}
                 dislikeComment={props.dislikeComment}
                 getRepliesComment={props.getRepliesComment}
                 appendRepliesComment={props.appendRepliesComment}
                 setReplyingComment={setReplyingComment}
+                setModifyingComment={setModifyingComment}
+                onDelete={onDelete}
               />
             ))}
             {props.loadingComments && (
@@ -213,6 +254,20 @@ export default function CommentModal(props: IProp) {
                 size={15}
                 onPress={() => {
                   setReplyingComment(undefined);
+                }}
+              />
+            </Row>
+          )}
+          {modifyingComment && (
+            <Row style={styles.replyingText}>
+              <Text>Modifying comment</Text>
+              <IconButton
+                style={styles.cancelReplying}
+                name={'close'}
+                color={Colors.text}
+                size={15}
+                onPress={() => {
+                  setModifyingComment(undefined);
                 }}
               />
             </Row>

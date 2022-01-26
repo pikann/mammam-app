@@ -58,3 +58,13 @@ export const replyCommentService = async (
 export const deletePostService = async (id: string) => {
   return await AxiosClientInstance.delete(`posts/${id}`, {});
 };
+
+export const updateCommentService = async (payload: any) => {
+  return await AxiosClientInstance.put(`comments/${payload._id}`, {
+    content: payload.content,
+  });
+};
+
+export const deleteCommentService = async (id: string) => {
+  return await AxiosClientInstance.delete(`comments/${id}`, {});
+};
