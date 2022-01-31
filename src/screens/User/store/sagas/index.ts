@@ -30,7 +30,7 @@ function* getPostOfUserSaga({payload}: any) {
 
     yield put({
       type: UserAction.Types.GET_USER_POSTS.succeeded,
-      payload: {posts: response.data, author: payload.author},
+      payload: {posts: response.data.data, author: payload.author},
     });
   } catch (error) {
     yield put({
@@ -65,7 +65,7 @@ function* appendPostOfUserSaga({payload}: any) {
 
     yield put({
       type: UserAction.Types.APPEND_USER_POSTS.succeeded,
-      payload: {posts: response.data, author: payload.author},
+      payload: {posts: response.data.data, author: payload.author},
     });
   } catch (error) {
     yield put({
