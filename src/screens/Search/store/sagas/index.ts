@@ -36,7 +36,8 @@ function* searchPostsSaga({payload}: any) {
 
     yield put({
       type: SearchAction.Types.SEARCH_POSTS.failed,
-      payload: error,
+      payload,
+      error,
     });
   }
 }
@@ -64,7 +65,8 @@ function* appendSearchPostsSaga({payload}: any) {
 
     yield put({
       type: SearchAction.Types.APPEND_SEARCH_POSTS.failed,
-      payload: error,
+      payload,
+      error,
     });
   }
 }
@@ -97,7 +99,8 @@ function* searchUsersSaga({payload}: any) {
 
     yield put({
       type: SearchAction.Types.SEARCH_USERS.failed,
-      payload: error,
+      payload,
+      error,
     });
   }
 }
@@ -125,7 +128,8 @@ function* appendSearchUsersSaga({payload}: any) {
 
     yield put({
       type: SearchAction.Types.APPEND_SEARCH_USERS.failed,
-      payload: error,
+      payload,
+      error,
     });
   }
 }

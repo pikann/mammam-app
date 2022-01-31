@@ -50,7 +50,8 @@ function* getPostsSaga({payload}: any) {
 
     yield put({
       type: HomeAction.Types.GET_POSTS.failed,
-      payload: error,
+      payload,
+      error,
     });
   }
 }
@@ -78,7 +79,8 @@ function* appendPostsSaga({payload}: any) {
 
     yield put({
       type: HomeAction.Types.APPEND_POSTS.failed,
-      payload: error,
+      payload,
+      error,
     });
   }
 }
@@ -94,7 +96,8 @@ function* likePostSaga({payload}: any) {
   } catch (error) {
     yield put({
       type: HomeAction.Types.LIKE_POST.failed,
-      payload: error,
+      payload,
+      error,
     });
   }
 }
@@ -110,7 +113,8 @@ function* dislikePostSaga({payload}: any) {
   } catch (error) {
     yield put({
       type: HomeAction.Types.DISLIKE_POST.failed,
-      payload: error,
+      payload,
+      error,
     });
   }
 }
@@ -126,7 +130,8 @@ function* viewPostSaga({payload}: any) {
   } catch (error) {
     yield put({
       type: HomeAction.Types.VIEW_POST.failed,
-      payload: error,
+      payload,
+      error,
     });
   }
 }
@@ -162,7 +167,8 @@ function* getCommentsSaga({payload}: any) {
     });
     yield put({
       type: HomeAction.Types.GET_COMMENTS.failed,
-      payload: error,
+      payload,
+      error,
     });
   }
 }
@@ -187,7 +193,8 @@ function* appendCommentsSaga({payload}: any) {
     });
     yield put({
       type: HomeAction.Types.APPEND_COMMENTS.failed,
-      payload: error,
+      payload,
+      error,
     });
   }
 }
@@ -203,7 +210,8 @@ function* likeCommentSaga({payload}: any) {
   } catch (error) {
     yield put({
       type: HomeAction.Types.LIKE_COMMENT.failed,
-      payload: error,
+      payload,
+      error,
     });
   }
 }
@@ -219,7 +227,8 @@ function* dislikeCommentSaga({payload}: any) {
   } catch (error) {
     yield put({
       type: HomeAction.Types.DISLIKE_COMMENT.failed,
-      payload: error,
+      payload,
+      error,
     });
   }
 }
@@ -262,7 +271,8 @@ function* getRepliesCommentSaga({payload}: any) {
     });
     yield put({
       type: HomeAction.Types.GET_REPLIES_COMMENT.failed,
-      payload: error,
+      payload,
+      error,
     });
   }
 }
@@ -295,7 +305,8 @@ function* appendRepliesCommentSaga({payload}: any) {
     });
     yield put({
       type: HomeAction.Types.APPEND_REPLIES_COMMENT.failed,
-      payload: error,
+      payload,
+      error,
     });
   }
 }
@@ -311,7 +322,7 @@ function* commentPostSaga({payload: {postId, content, author}}: any) {
   } catch (error) {
     yield put({
       type: HomeAction.Types.COMMENT_POST.failed,
-      payload: error,
+      error,
     });
   }
 }
@@ -327,7 +338,7 @@ function* replyCommentSaga({payload: {commentId, content, author}}: any) {
   } catch (error) {
     yield put({
       type: HomeAction.Types.REPLY_COMMENT.failed,
-      payload: error,
+      error,
     });
   }
 }
@@ -338,7 +349,8 @@ function* deletePostSaga({payload}: any) {
   } catch (error) {
     yield put({
       type: HomeAction.Types.DELETE_POST.failed,
-      payload: error,
+      payload,
+      error,
     });
   }
 }
@@ -357,7 +369,8 @@ function* updateCommentSaga({payload}: any) {
   } catch (error) {
     yield put({
       type: HomeAction.Types.UPDATE_COMMENT.failed,
-      payload: error,
+      payload,
+      error,
     });
   }
 }
@@ -371,7 +384,8 @@ function* deleteCommentSaga({payload}: any) {
   } catch (error) {
     yield put({
       type: HomeAction.Types.DELETE_COMMENT.failed,
-      payload: error,
+      payload,
+      error,
     });
   }
 }

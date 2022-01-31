@@ -29,7 +29,7 @@ function* checkLogin() {
   } catch (error) {
     yield put({
       type: AppActions.Types.CHECK_LOGIN.failed,
-      payload: error,
+      error,
     });
   }
 }
@@ -46,7 +46,7 @@ function* logout() {
   } catch (error) {
     yield put({
       type: AppActions.Types.LOGOUT.failed,
-      payload: error,
+      error,
     });
   }
 }
@@ -69,7 +69,7 @@ function* refreshToken() {
   } catch (error) {
     yield put({
       type: AppActions.Types.REFRESH_TOKEN.failed,
-      payload: error,
+      error,
     });
   }
 }
@@ -90,7 +90,7 @@ function* getUserProfileSaga() {
   } catch (error) {
     yield put({
       type: AppActions.Types.GET_USER_PROFILE.failed,
-      payload: error,
+      error,
     });
   }
 }
