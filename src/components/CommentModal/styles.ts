@@ -2,28 +2,20 @@ import {Dimensions, StyleSheet} from 'react-native';
 
 import Colors from '../../constants/Colors';
 
-const {width, height} = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 
 export const styles = StyleSheet.create({
   flex: {flex: 1},
   container: {
-    position: 'absolute',
-    width,
-    height: height - 70,
-    marginLeft: 0,
-  },
-  backgroundModal: {
-    position: 'absolute',
-    width,
-    height,
+    flex: 1,
+    margin: 0,
+    justifyContent: 'flex-end',
   },
   modalView: {
     flex: 1,
-    width,
-    height,
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
-    top: 50,
+    marginTop: 70,
   },
   title: {
     fontFamily: 'SourceSansPro-SemiBold',
@@ -58,6 +50,7 @@ export const styles = StyleSheet.create({
     marginBottom: 130,
     marginLeft: 'auto',
     marginRight: 'auto',
+    textAlign: 'center',
   },
   commantEditView: {
     borderTopColor: Colors.gray,
