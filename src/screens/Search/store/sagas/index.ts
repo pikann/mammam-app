@@ -27,7 +27,7 @@ function* searchPostsSaga({payload}: any) {
 
     yield put({
       type: HomeAction.Types.GET_POSTS.succeeded,
-      payload: response.data,
+      payload: response.data.data,
     });
   } catch (error) {
     yield put({
@@ -55,7 +55,7 @@ function* appendSearchPostsSaga({payload}: any) {
 
     yield put({
       type: HomeAction.Types.APPEND_POSTS.succeeded,
-      payload: response.data,
+      payload: response.data.data,
     });
   } catch (error) {
     yield put({
@@ -88,7 +88,7 @@ function* searchUsersSaga({payload}: any) {
 
     yield put({
       type: SearchAction.Types.SEARCH_USERS.succeeded,
-      payload: response.data,
+      payload: response.data.data,
     });
   } catch (error) {
     yield put({
@@ -116,7 +116,7 @@ function* appendSearchUsersSaga({payload}: any) {
 
     yield put({
       type: SearchAction.Types.APPEND_SEARCH_USERS.succeeded,
-      payload: response.data,
+      payload: response.data.data,
     });
   } catch (error) {
     yield put({
