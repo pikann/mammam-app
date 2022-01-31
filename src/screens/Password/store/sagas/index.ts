@@ -28,7 +28,8 @@ function* updatePasswordSaga({payload}: any) {
     });
     yield put({
       type: PasswordActions.Types.UPDATE_PASSWORD.failed,
-      payload: error,
+      payload,
+      error,
     });
   }
 }

@@ -51,7 +51,8 @@ function* postVideoSaga({payload}: any) {
     });
     yield put({
       type: PostAction.Types.POST_VIDEO.failed,
-      payload: error,
+      payload,
+      error,
     });
   }
 }
@@ -78,7 +79,8 @@ function* updatePostSaga({payload}: any) {
     });
     yield put({
       type: PostAction.Types.UPDATE_POST.failed,
-      payload: error,
+      payload,
+      error,
     });
   }
 }

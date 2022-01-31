@@ -53,7 +53,8 @@ function* updateProfileSaga({payload}: any) {
     });
     yield put({
       type: UpdateProfileAction.Types.UPDATE_PROFILE.failed,
-      payload: error,
+      payload,
+      error,
     });
   }
 }

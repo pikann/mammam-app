@@ -38,7 +38,8 @@ function* getPostOfUserSaga({payload}: any) {
     });
     yield put({
       type: UserAction.Types.GET_USER_POSTS.failed,
-      payload: error,
+      payload,
+      error,
     });
   }
 }
@@ -73,7 +74,8 @@ function* appendPostOfUserSaga({payload}: any) {
     });
     yield put({
       type: UserAction.Types.APPEND_USER_POSTS.failed,
-      payload: error,
+      payload,
+      error,
     });
   }
 }
