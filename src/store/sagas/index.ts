@@ -59,7 +59,7 @@ function* refreshToken() {
       const response: Data = yield call(refreshTokenService, token);
 
       yield AsyncStorage.setItem('access_token', response.data.access_token);
-      yield AsyncStorage.setItem('refresh_token', response.data.access_token);
+      yield AsyncStorage.setItem('refresh_token', response.data.refresh_token);
       AxiosClientInstance.setHeader(response.data.access_token);
 
       yield put({type: AppActions.Types.REFRESH_TOKEN.succeeded});

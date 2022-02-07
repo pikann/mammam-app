@@ -9,7 +9,7 @@ export default {
   Map: 'Map',
   Camera: 'Camera',
   Post: 'Post',
-  Restaurant: 'Restaurant',
+  Notification: 'Notification',
   User: 'User',
   Password: 'Password',
   Watching: 'Watching',
