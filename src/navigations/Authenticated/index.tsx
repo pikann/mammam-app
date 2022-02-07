@@ -9,7 +9,7 @@ import {StackNavigationHelpers} from '@react-navigation/stack/lib/typescript/src
 import Screens from '../../constants/Screens';
 import HomeScreen from '../../screens/Home';
 import MapScreen from '../../screens/Map';
-import RestaurantScreen from '../../screens/Restaurant';
+import NotificationScreen from '../../screens/Notification';
 import UserScreen from '../../screens/User';
 import Colors from '../../constants/Colors';
 import View from '../../components/View';
@@ -97,12 +97,12 @@ const AuthenticatedNav = ({
         }}
       />
       <Tab.Screen
-        name={Screens.Restaurant}
-        component={RestaurantScreen}
+        name={Screens.Notification}
+        component={NotificationScreen}
         options={{
           headerShown: false,
           tabBarIcon: ({color, size}) => (
-            <Icon name="restaurant" color={color} size={size} />
+            <Icon name="notifications" color={color} size={size} />
           ),
           unmountOnBlur: true,
         }}

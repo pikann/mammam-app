@@ -2,6 +2,7 @@ import produce from 'immer';
 
 import * as HomeActions from '../actions';
 import * as UserActions from '../../../User/store/actions';
+import * as NotificationActions from '../../../Notification/store/actions';
 import {GetPostsTag} from '../enums/get-posts-tag';
 import {IComment} from '../../../../interfaces/comment';
 import {IPost} from '../../../../interfaces/post';
@@ -267,6 +268,9 @@ const homeReducer = (state = initialState, {type, payload}: any) =>
       case HomeActions.Types.DELETE_COMMENT.succeeded:
         index = draft.posts.findIndex(post => post._id === draft.currentPostId);
         draft.posts[index].commentTotal--;
+        break;
+      case NotificationActions.Types.GET_ONE_POST.succeeded:
+        draft.posts = [payload];
         break;
       default:
         break;
