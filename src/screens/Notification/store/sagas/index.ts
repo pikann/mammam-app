@@ -1,7 +1,11 @@
 import {call, put, takeLatest} from 'redux-saga/effects';
 
 import * as NotificationAction from '../actions';
-import {getNotificationService, getOnePostService} from '../services';
+import {
+  getNotificationCountService,
+  getNotificationService,
+  getOnePostService,
+} from '../services';
 
 interface Data {
   [key: string]: any;
@@ -78,6 +82,22 @@ function* getOnePostSaga({payload}: any) {
   }
 }
 
+function* getNotificationCountSaga() {
+  try {
+    const response: Data = yield call(getNotificationCountService);
+
+    yield put({
+      type: NotificationAction.Types.GET_NOTIFICATION_COUNT.succeeded,
+      payload: response.data,
+    });
+  } catch (error) {
+    yield put({
+      type: NotificationAction.Types.GET_NOTIFICATION_COUNT.failed,
+      error,
+    });
+  }
+}
+
 export default function* notificationWatcher() {
   yield takeLatest(
     NotificationAction.Types.GET_NOTIFICATION.begin,
@@ -88,4 +108,8 @@ export default function* notificationWatcher() {
     appendNotificationSaga,
   );
   yield takeLatest(NotificationAction.Types.GET_ONE_POST.begin, getOnePostSaga);
+  yield takeLatest(
+    NotificationAction.Types.GET_NOTIFICATION_COUNT.begin,
+    getNotificationCountSaga,
+  );
 }

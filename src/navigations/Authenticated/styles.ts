@@ -16,4 +16,17 @@ export const styles = StyleSheet.create({
     marginLeft: 'auto',
     marginRight: 'auto',
   },
+  notificationText: {
+    position: 'absolute',
+    backgroundColor: Colors.price,
+    height: 15,
+    width: 15,
+    borderRadius: 8,
+    marginLeft: 15,
+    marginTop: -3,
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    fontSize: 10,
+    color: Colors.background,
+  },
 });

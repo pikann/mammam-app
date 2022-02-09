@@ -1,4 +1,5 @@
 import {StyleSheet} from 'react-native';
+import Colors from '../../constants/Colors';
 
 export const styles = StyleSheet.create({
   flex: {flex: 1},
@@ -39,5 +40,22 @@ export const styles = StyleSheet.create({
     height: 100,
     marginLeft: 'auto',
     marginRight: 'auto',
+  },
+  noNotificationsView: {
+    marginTop: 50,
+  },
+  noNotifications: {
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  },
+  noNotificationsText: {
+    fontSize: 40,
+    fontWeight: '700',
+    color: Colors.gray,
+    marginTop: 15,
+    marginBottom: 130,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    textAlign: 'center',
   },
 });
