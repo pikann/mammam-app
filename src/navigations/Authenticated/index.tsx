@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {TouchableOpacity} from 'react-native';
 import {connect} from 'react-redux';
 import {createStructuredSelector} from 'reselect';
@@ -21,7 +21,12 @@ import {
   makeSelectId,
   makeSelectUsername,
 } from '../../store/selectors';
+import {makeSelectNotificationsCount} from '../../screens/Notification/store/selectors';
 import * as UserActions from '../../screens/User/store/actions';
+import * as NotificationActions from '../../screens/Notification/store/actions';
+import Text from '../../components/Text';
+import SocketClientInstance from '../../utils/socket';
+import {INotification} from '../../screens/Notification/store/interfaces/notification';
 
 interface IProp {
   navigation: StackNavigationHelpers;
@@ -29,7 +34,10 @@ interface IProp {
   username: string;
   avatar: string;
   bio: string;
+  notificationsCount: number;
   setUserInfo: (payload: any) => void;
+  getNotificationCount: () => void;
+  appendRealtimeNotification: (notification: INotification) => void;
 }
 
 const AuthenticatedNav = ({
@@ -38,9 +46,25 @@ const AuthenticatedNav = ({
   username,
   avatar,
   bio,
+  notificationsCount,
   setUserInfo,
+  getNotificationCount,
+  appendRealtimeNotification,
 }: IProp) => {
   const Tab = createBottomTabNavigator();
+
+  useEffect(() => {
+    const onMessage = (payload: any) => {
+      appendRealtimeNotification(payload);
+    };
+
+    SocketClientInstance.setOnMessage(onMessage);
+  }, [appendRealtimeNotification]);
+
+  useEffect(() => {
+    getNotificationCount();
+  }, [getNotificationCount, userId]);
+
   return (
     <Tab.Navigator
       screenOptions={{
@@ -102,7 +126,16 @@ const AuthenticatedNav = ({
         options={{
           headerShown: false,
           tabBarIcon: ({color, size}) => (
-            <Icon name="notifications" color={color} size={size} />
+            <View>
+              <Icon name="notifications" color={color} size={size} />
+              {notificationsCount > 0 ? (
+                <Text style={styles.notificationText}>
+                  {'' + notificationsCount}
+                </Text>
+              ) : (
+                <View />
+              )}
+            </View>
           ),
           unmountOnBlur: true,
         }}
@@ -142,11 +175,18 @@ const mapStateToProps = createStructuredSelector<any, any>({
   username: makeSelectUsername(),
   avatar: makeSelectAvatar(),
   bio: makeSelectBio(),
+  notificationsCount: makeSelectNotificationsCount(),
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
   setUserInfo: (payload: any) =>
     dispatch(UserActions.setUserInfo.request(payload)),
+  getNotificationCount: () =>
+    dispatch(NotificationActions.getNotificationCount.request()),
+  appendRealtimeNotification: (notification: INotification) =>
+    dispatch(
+      NotificationActions.appendRealtimeNotification.request(notification),
+    ),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AuthenticatedNav);

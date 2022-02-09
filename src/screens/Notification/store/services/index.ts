@@ -9,3 +9,7 @@ export const getNotificationService = async (page: number) => {
 export const getOnePostService = async (id: string) => {
   return await AxiosClientInstance.get(`/posts/${id}`);
 };
+
+export const getNotificationCountService = async () => {
+  return await AxiosClientInstance.get('/notifications/count');
+};

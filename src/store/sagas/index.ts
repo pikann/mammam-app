@@ -1,6 +1,7 @@
 import {call, put, takeLatest} from 'redux-saga/effects';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AxiosClientInstance from '../../utils/axios';
+import SocketClientInstance from '../../utils/socket';
 
 import * as AppActions from '../actions';
 import {getUserProfileService, refreshTokenService} from '../services';
@@ -15,6 +16,7 @@ function* checkLogin() {
 
     if (token) {
       AxiosClientInstance.setHeader(token);
+      SocketClientInstance.connect(token);
       yield put({type: AppActions.Types.GET_USER_PROFILE.begin});
     } else {
       yield put({
@@ -25,6 +27,7 @@ function* checkLogin() {
       });
 
       AxiosClientInstance.setHeader('');
+      SocketClientInstance.disconnect();
     }
   } catch (error) {
     yield put({
@@ -39,6 +42,8 @@ function* logout() {
     yield AsyncStorage.clear();
 
     yield put({type: AppActions.Types.CHECK_LOGIN.begin});
+
+    SocketClientInstance.disconnect();
 
     yield put({
       type: AppActions.Types.LOGOUT.succeeded,

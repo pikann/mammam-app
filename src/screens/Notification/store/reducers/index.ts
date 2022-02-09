@@ -6,6 +6,7 @@ import {INotification} from '../interfaces/notification';
 export const initialState = {
   notifications: [] as INotification[],
   totalPage: 0,
+  notificationsCount: 0,
   isLoading: false,
 };
 
@@ -33,11 +34,23 @@ const notificationReducer = (state = initialState, {type, payload}: any) =>
           draft.totalPage = payload.totalPage;
         }
         break;
+      case NotificationActions.Types.APPEND_REALTIME_NOTIFICATION.begin:
+        const availableIds = draft.notifications.map(
+          notification => notification._id,
+        );
+        if (!availableIds.includes(payload._id)) {
+          draft.notifications = [payload, ...draft.notifications];
+        }
+        draft.notificationsCount++;
+        break;
       case NotificationActions.Types.LOADING.begin:
         draft.isLoading = true;
         break;
       case NotificationActions.Types.LOADING.succeeded:
         draft.isLoading = false;
+        break;
+      case NotificationActions.Types.GET_NOTIFICATION_COUNT.succeeded:
+        draft.notificationsCount = payload;
         break;
       default:
         break;

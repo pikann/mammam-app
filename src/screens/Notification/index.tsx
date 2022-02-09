@@ -21,6 +21,8 @@ import timeAgo from '../../utils/timeAgo';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {GettingType} from '../Watching/store/enums/getting-type';
 import Screens from '../../constants/Screens';
+import Icon from 'react-native-vector-icons/Ionicons';
+import Colors from '../../constants/Colors';
 
 interface IProp {
   navigation: StackNavigationHelpers;
@@ -31,6 +33,7 @@ interface IProp {
   appendNotification: (page: number) => void;
   getOnePost: (id: string) => void;
   setGettingType: (payload: any) => void;
+  getNotificationCount: () => void;
 }
 
 const NotificationScreen = ({
@@ -42,6 +45,7 @@ const NotificationScreen = ({
   appendNotification,
   getOnePost,
   setGettingType,
+  getNotificationCount,
 }: IProp) => {
   const [page, setPage] = useState(1);
 
@@ -99,6 +103,10 @@ const NotificationScreen = ({
     getNotification(0);
   }, [getNotification]);
 
+  useEffect(() => {
+    getNotificationCount();
+  }, [notifications, getNotificationCount]);
+
   return (
     <View style={styles.flex}>
       <Text style={styles.title}>Notifications</Text>
@@ -140,6 +148,17 @@ const NotificationScreen = ({
         ) : (
           <View />
         )}
+        {notifications.length === 0 && !isLoading && (
+          <View style={styles.noNotificationsView}>
+            <Icon
+              style={styles.noNotifications}
+              name="newspaper-outline"
+              color={Colors.gray}
+              size={170}
+            />
+            <Text style={styles.noNotificationsText}>No notification yet</Text>
+          </View>
+        )}
       </ScrollView>
     </View>
   );
@@ -160,6 +179,8 @@ const mapDispatchToProps = (dispatch: any) => ({
     dispatch(NotificationActions.getOnePost.request(id)),
   setGettingType: (payload: any) =>
     dispatch(WatchingActions.setGettingType.request(payload)),
+  getNotificationCount: () =>
+    dispatch(NotificationActions.getNotificationCount.request()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(NotificationScreen);

@@ -15,9 +15,19 @@ const makeSelectTotalPage = () =>
     return state.totalPage;
   });
 
+const makeSelectNotificationsCount = () =>
+  createSelector(notificationState, state => {
+    return state.notificationsCount;
+  });
+
 const makeSelectLoading = () =>
   createSelector(notificationState, state => {
     return state.isLoading;
   });
 
-export {makeSelectNotifications, makeSelectTotalPage, makeSelectLoading};
+export {
+  makeSelectNotifications,
+  makeSelectTotalPage,
+  makeSelectNotificationsCount,
+  makeSelectLoading,
+};
