@@ -5,6 +5,7 @@ import {createStructuredSelector} from 'reselect';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {StackNavigationHelpers} from '@react-navigation/stack/lib/typescript/src/types';
+import messaging from '@react-native-firebase/messaging';
 
 import Screens from '../../constants/Screens';
 import HomeScreen from '../../screens/Home';
@@ -63,6 +64,7 @@ const AuthenticatedNav = ({
 
   useEffect(() => {
     getNotificationCount();
+    messaging().subscribeToTopic(userId);
   }, [getNotificationCount, userId]);
 
   return (

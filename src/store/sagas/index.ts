@@ -1,8 +1,9 @@
 import {call, put, takeLatest} from 'redux-saga/effects';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import messaging from '@react-native-firebase/messaging';
+
 import AxiosClientInstance from '../../utils/axios';
 import SocketClientInstance from '../../utils/socket';
-
 import * as AppActions from '../actions';
 import {getUserProfileService, refreshTokenService} from '../services';
 
@@ -39,6 +40,10 @@ function* checkLogin() {
 
 function* logout() {
   try {
+    const userId: string = yield call(AsyncStorage.getItem, 'id_user');
+
+    yield messaging().unsubscribeFromTopic(userId);
+
     yield AsyncStorage.clear();
 
     yield put({type: AppActions.Types.CHECK_LOGIN.begin});
