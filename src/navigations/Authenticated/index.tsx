@@ -160,6 +160,7 @@ const AuthenticatedNav = ({
                   username,
                   avatar,
                   bio,
+                  isFollowed: false,
                 });
                 navigation.navigate(Screens.User);
               }}

@@ -3,6 +3,7 @@ export interface IAuthor extends Document {
   avatar: string;
   username: string;
   bio: string;
+  isFollowed: boolean;
 }
 
 export interface IComment extends Document {

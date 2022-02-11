@@ -268,6 +268,7 @@ export default function PostsComponent({
                             username: post?.author?.username,
                             avatar: post?.author?.avatar,
                             bio: post?.author?.bio,
+                            isFollowed: post?.author?.isFollowed,
                           });
                           navigation.navigate(Screens.User);
                         }}>

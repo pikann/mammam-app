@@ -160,6 +160,7 @@ const SearchScreen = ({
                     username: user.username,
                     avatar: user.avatar,
                     bio: user.bio,
+                    isFollowed: user.isFollowed,
                   });
                   navigation.navigate(Screens.User);
                 }}>
