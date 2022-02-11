@@ -24,4 +24,27 @@ const makeSelectBio = () =>
     return state.bio;
   });
 
-export {makeSelectUserId, makeSelectUsername, makeSelectAvatar, makeSelectBio};
+const makeSelectIsFollowed = () =>
+  createSelector(userState, state => {
+    return state.isFollowed;
+  });
+
+const makeSelectFollowers = () =>
+  createSelector(userState, state => {
+    return state.followers;
+  });
+
+const makeSelectFollowings = () =>
+  createSelector(userState, state => {
+    return state.followings;
+  });
+
+export {
+  makeSelectUserId,
+  makeSelectUsername,
+  makeSelectAvatar,
+  makeSelectBio,
+  makeSelectIsFollowed,
+  makeSelectFollowers,
+  makeSelectFollowings,
+};

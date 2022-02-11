@@ -3,6 +3,7 @@ export interface IAuthor {
   avatar: string;
   username: string;
   bio: string;
+  isFollowed: boolean;
 }
 
 export interface IPost {

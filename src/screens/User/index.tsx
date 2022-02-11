@@ -13,6 +13,9 @@ import {makeSelectLoading, makeSelectPosts} from '../Home/store/selectors';
 import {
   makeSelectAvatar,
   makeSelectBio,
+  makeSelectFollowers,
+  makeSelectFollowings,
+  makeSelectIsFollowed,
   makeSelectUserId,
   makeSelectUsername,
 } from './store/selectors';
@@ -33,12 +36,18 @@ interface IUserPayload {
   username: string;
   avatar: string;
   bio: string;
+  isFollowed: boolean;
   posts: IPost[];
   isLoading: boolean;
+  followers: number;
+  followings: number;
   logout: () => void;
   getPostOfUser: (payload: any) => void;
   appendPostOfUser: (payload: any) => void;
   setGettingType: (payload: any) => void;
+  follow: (userId: string) => void;
+  unfollow: (userId: string) => void;
+  getFollowersTotal: (userId: string) => void;
 }
 
 const UserScreen = ({
@@ -48,12 +57,18 @@ const UserScreen = ({
   username,
   avatar,
   bio,
+  isFollowed,
   posts,
   isLoading,
+  followers,
+  followings,
   logout,
   getPostOfUser,
   appendPostOfUser,
   setGettingType,
+  follow,
+  unfollow,
+  getFollowersTotal,
 }: IUserPayload) => {
   const [popupVisible, setPopupVisible] = useState(false);
   const [page, setPage] = useState(0);
@@ -70,6 +85,10 @@ const UserScreen = ({
     });
     setPage(1);
   }, [avatar, bio, getPostOfUser, userId, username]);
+
+  useEffect(() => {
+    getFollowersTotal(userId);
+  }, [userId, getFollowersTotal]);
 
   const onScroll = (e: NativeScrollEvent) => {
     if (
@@ -124,25 +143,29 @@ const UserScreen = ({
           )}
           <Row style={styles.followProfile}>
             <View style={styles.followTextGroup}>
-              <Text style={styles.followNumber}>10</Text>
+              <Text style={styles.followNumber}>{'' + followers}</Text>
               <Text style={styles.followField}>Followers</Text>
             </View>
             <View style={styles.followTextGroup}>
-              <Text style={styles.followNumber}>10</Text>
+              <Text style={styles.followNumber}>{'' + followings}</Text>
               <Text style={styles.followField}>Followings</Text>
             </View>
           </Row>
-          <Button
-            style={styles.followBtn}
-            onPress={() => {
-              if (userId === loginUserId) {
-                navigation.navigate(Screens.UpdateProfile);
-              } else {
-                console.log('Follow');
-              }
-            }}>
-            {userId === loginUserId ? 'Update profile' : 'Follow'}
-          </Button>
+          {userId === loginUserId ? (
+            <Button
+              style={styles.followBtn}
+              onPress={() => navigation.navigate(Screens.UpdateProfile)}>
+              Update profile
+            </Button>
+          ) : isFollowed ? (
+            <Button style={styles.followBtn} onPress={() => unfollow(userId)}>
+              Unfollow
+            </Button>
+          ) : (
+            <Button style={styles.followBtn} onPress={() => follow(userId)}>
+              Follow
+            </Button>
+          )}
           <ListPost
             style={styles.listVideoView}
             posts={posts}
@@ -202,8 +225,11 @@ const mapStateToProps = createStructuredSelector<any, any>({
   username: makeSelectUsername(),
   avatar: makeSelectAvatar(),
   bio: makeSelectBio(),
+  isFollowed: makeSelectIsFollowed(),
   posts: makeSelectPosts(),
   isLoading: makeSelectLoading(),
+  followers: makeSelectFollowers(),
+  followings: makeSelectFollowings(),
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
@@ -214,6 +240,10 @@ const mapDispatchToProps = (dispatch: any) => ({
     dispatch(UserActions.appendUserPosts.request(payload)),
   setGettingType: (payload: any) =>
     dispatch(WatchingActions.setGettingType.request(payload)),
+  follow: (userId: string) => dispatch(UserActions.follow.request(userId)),
+  unfollow: (userId: string) => dispatch(UserActions.unfollow.request(userId)),
+  getFollowersTotal: (userId: string) =>
+    dispatch(UserActions.getFollowersTotal.request(userId)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserScreen);
