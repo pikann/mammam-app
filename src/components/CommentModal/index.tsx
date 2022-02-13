@@ -87,6 +87,7 @@ export default function CommentModal(props: IProp) {
           username: props.username,
           avatar: props.avatar,
           bio: props.bio,
+          isFollowed: false,
         });
       } else if (modifyingComment) {
         props.updateComment({
@@ -103,6 +104,7 @@ export default function CommentModal(props: IProp) {
           username: props.username,
           avatar: props.avatar,
           bio: props.bio,
+          isFollowed: false,
         });
       }
     }

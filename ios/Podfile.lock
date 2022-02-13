@@ -350,6 +350,8 @@ PODS:
     - React-Core
   - react-native-image-picker (4.6.0):
     - React-Core
+  - react-native-maps (0.30.1):
+    - React-Core
   - react-native-safe-area-context (3.3.2):
     - React-Core
   - react-native-video (5.2.0):
@@ -499,6 +501,7 @@ DEPENDENCIES:
   - react-native-camera (from `../node_modules/react-native-camera`)
   - react-native-create-thumbnail (from `../node_modules/react-native-create-thumbnail`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
+  - react-native-maps (from `../node_modules/react-native-maps`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-video (from `../node_modules/react-native-video`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
@@ -595,6 +598,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-create-thumbnail"
   react-native-image-picker:
     :path: "../node_modules/react-native-image-picker"
+  react-native-maps:
+    :path: "../node_modules/react-native-maps"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-video:
@@ -687,6 +692,7 @@ SPEC CHECKSUMS:
   react-native-camera: 3eae183c1d111103963f3dd913b65d01aef8110f
   react-native-create-thumbnail: dedcb7cd3d14a4b6cc2026563197242081edb52b
   react-native-image-picker: 8c83c5c7d137e866bcb9a2db93f1e1ca866fddbf
+  react-native-maps: d752b0dd0e1951d815b1336332835aab6b4a836f
   react-native-safe-area-context: 584dc04881deb49474363f3be89e4ca0e854c057
   react-native-video: a4c2635d0802f983594b7057e1bce8f442f0ad28
   React-perflogger: 1f554c2b684e2f484f9edcdfdaeedab039fbaca8
