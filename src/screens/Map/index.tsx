@@ -204,8 +204,10 @@ const MapScreen = ({
                   }}
                   defaultSource={require('../../assets/images/avatar-default.png')}
                 />
-                <Text style={styles.username}>{restaurant.name}</Text>
-
+                <View style={styles.flex}>
+                  <Text style={styles.username}>{restaurant.name}</Text>
+                  <Text style={styles.address}>{restaurant.address}</Text>
+                </View>
                 <Button
                   style={styles.followBtn}
                   textChildrenStyle={styles.followBtnText}

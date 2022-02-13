@@ -52,8 +52,15 @@ export const styles = StyleSheet.create({
   },
   username: {
     fontFamily: 'SourceSansPro-SemiBold',
-    flex: 1,
     fontSize: 20,
+    marginTop: 5,
+    marginLeft: 25,
+    marginRight: 20,
+    textAlignVertical: 'center',
+  },
+  address: {
+    fontSize: 13,
+    marginTop: 5,
     marginLeft: 25,
     marginRight: 20,
     textAlignVertical: 'center',
