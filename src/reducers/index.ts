@@ -12,6 +12,7 @@ import watchingReducer from '../screens/Watching/store/reducers';
 import searchReducer from '../screens/Search/store/reducers';
 import notificationReducer from '../screens/Notification/store/reducers';
 import mapReducer from '../screens/Map/store/reducers';
+import userRestaurantReducer from '../screens/UserRestaurant/store/reducers';
 
 const rootReducer = combineReducers({
   appReducer,
@@ -26,5 +27,6 @@ const rootReducer = combineReducers({
   searchReducer,
   notificationReducer,
   mapReducer,
+  userRestaurantReducer,
 });
 export default rootReducer;

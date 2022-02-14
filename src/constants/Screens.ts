@@ -14,4 +14,5 @@ export default {
   Password: 'Password',
   Watching: 'Watching',
   Search: 'Search',
+  UserRestaurant: 'UserRestaurant',
 };

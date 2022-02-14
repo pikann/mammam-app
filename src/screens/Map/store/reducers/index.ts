@@ -1,6 +1,6 @@
 import produce from 'immer';
 
-import * as LoginActions from '../actions';
+import * as MapActions from '../actions';
 import {IRestaurant} from '../interfaces/restaurant';
 
 export const initialState = {
@@ -8,23 +8,23 @@ export const initialState = {
   isLoading: false,
 };
 
-export type LoginState = typeof initialState;
+export type MapState = typeof initialState;
 
-const loginReducer = (state = initialState, {type, payload}: any) =>
-  produce(state, (draft: LoginState) => {
+const mapReducer = (state = initialState, {type, payload}: any) =>
+  produce(state, (draft: MapState) => {
     switch (type) {
-      case LoginActions.Types.SEARCH_RESTAURANT.succeeded:
+      case MapActions.Types.SEARCH_RESTAURANT.succeeded:
         draft.restaurants = payload.data;
         break;
-      case LoginActions.Types.APPEND_SEARCH_RESTAURANT.succeeded:
+      case MapActions.Types.APPEND_SEARCH_RESTAURANT.succeeded:
         if (payload.data.length > 0) {
           draft.restaurants = {...draft.restaurants, ...payload.data};
         }
         break;
-      case LoginActions.Types.LOADING.begin:
+      case MapActions.Types.LOADING.begin:
         draft.isLoading = true;
         break;
-      case LoginActions.Types.LOADING.succeeded:
+      case MapActions.Types.LOADING.succeeded:
         draft.isLoading = false;
         break;
       default:
@@ -32,4 +32,4 @@ const loginReducer = (state = initialState, {type, payload}: any) =>
     }
   });
 
-export default loginReducer;
+export default mapReducer;
