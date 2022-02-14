@@ -25,6 +25,7 @@ import Colors from '../../constants/Colors';
 import Text from '../../components/Text';
 import {makeSelectLoading, makeSelectRestaurants} from './store/selectors';
 import {IRestaurant} from './store/interfaces/restaurant';
+import Screens from '../../constants/Screens';
 
 const {height} = Dimensions.get('window');
 
@@ -37,6 +38,7 @@ interface IProp {
 }
 
 const MapScreen = ({
+  navigation,
   restaurants,
   isLoading,
   searchRestaurant,
@@ -173,7 +175,7 @@ const MapScreen = ({
         <Menu
           visible={popupVisible}
           onRequestClose={() => setPopupVisible(false)}>
-          <MenuItem onPress={() => console.log('Your restaurant')}>
+          <MenuItem onPress={() => navigation.navigate(Screens.UserRestaurant)}>
             <Text style={styles.menuItem}>Your restaurant</Text>
           </MenuItem>
         </Menu>
