@@ -19,6 +19,7 @@ import {makeSelectLoading, makeSelectRestaurants} from './store/selectors';
 import {styles} from './styles';
 import {IRestaurant} from './store/interfaces/restaurant';
 import Colors from '../../constants/Colors';
+import Screens from '../../constants/Screens';
 
 interface IProp {
   navigation: StackNavigationHelpers;
@@ -68,7 +69,7 @@ const UserRestaurantScreen = ({
         <TextButton
           style={styles.registerButton}
           textStyle={styles.registerButtonText}
-          onPress={() => console.log('New restaurant')}>
+          onPress={() => navigation.navigate(Screens.CreateRestaurant)}>
           New restaurant
         </TextButton>
       </Row>

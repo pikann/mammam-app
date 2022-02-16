@@ -37,7 +37,7 @@ export const styles = StyleSheet.create({
     marginTop: 10,
   },
   contentContainer: {
-    height,
+    height: height - 200,
     width,
     marginTop: 50,
     borderTopLeftRadius: 50,

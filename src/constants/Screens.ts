@@ -15,4 +15,6 @@ export default {
   Watching: 'Watching',
   Search: 'Search',
   UserRestaurant: 'UserRestaurant',
+  CreateRestaurant: 'CreateRestaurant',
+  EnterAddress: 'EnterAddress',
 };

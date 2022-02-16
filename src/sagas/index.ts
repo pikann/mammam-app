@@ -12,6 +12,7 @@ import searchWatcher from '../screens/Search/store/sagas';
 import notificationWatcher from '../screens/Notification/store/sagas';
 import mapWatcher from '../screens/Map/store/sagas';
 import userRestaurantWatcher from '../screens/UserRestaurant/store/sagas';
+import enterAddressWatcher from '../screens/EnterAddress/store/sagas';
 
 export function* rootSaga() {
   yield all([fork(appWatcher)]);
@@ -26,4 +27,5 @@ export function* rootSaga() {
   yield all([fork(notificationWatcher)]);
   yield all([fork(mapWatcher)]);
   yield all([fork(userRestaurantWatcher)]);
+  yield all([fork(enterAddressWatcher)]);
 }
