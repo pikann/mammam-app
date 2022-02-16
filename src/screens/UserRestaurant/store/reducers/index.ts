@@ -12,6 +12,7 @@ export type UserRestaurantState = typeof initialState;
 
 const userRestaurantReducer = (state = initialState, {type, payload}: any) =>
   produce(state, (draft: UserRestaurantState) => {
+    let index = 0;
     switch (type) {
       case UserRestaurantActions.Types.GET_USER_RESTAURANT.succeeded:
         draft.restaurants = payload.data;
@@ -26,6 +27,12 @@ const userRestaurantReducer = (state = initialState, {type, payload}: any) =>
         break;
       case UserRestaurantActions.Types.LOADING.succeeded:
         draft.isLoading = false;
+        break;
+      case UserRestaurantActions.Types.DELETE_RESTAURANT.succeeded:
+        index = draft.restaurants.findIndex(
+          restaurant => restaurant._id === payload,
+        );
+        draft.restaurants.splice(index, 1);
         break;
       default:
         break;
