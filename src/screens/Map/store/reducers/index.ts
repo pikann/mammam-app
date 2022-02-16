@@ -18,7 +18,7 @@ const mapReducer = (state = initialState, {type, payload}: any) =>
         break;
       case MapActions.Types.APPEND_SEARCH_RESTAURANT.succeeded:
         if (payload.data.length > 0) {
-          draft.restaurants = {...draft.restaurants, ...payload.data};
+          draft.restaurants = [...draft.restaurants, ...payload.data];
         }
         break;
       case MapActions.Types.LOADING.begin:

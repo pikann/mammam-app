@@ -18,7 +18,7 @@ const userRestaurantReducer = (state = initialState, {type, payload}: any) =>
         break;
       case UserRestaurantActions.Types.APPEND_USER_RESTAURANT.succeeded:
         if (payload.data.length > 0) {
-          draft.restaurants = {...draft.restaurants, ...payload.data};
+          draft.restaurants = [...draft.restaurants, ...payload.data];
         }
         break;
       case UserRestaurantActions.Types.LOADING.begin:

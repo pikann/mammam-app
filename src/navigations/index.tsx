@@ -12,13 +12,19 @@ import * as AppActions from '../store/actions';
 import UnauthenticatedNav from './Unauthenticated';
 import Navigations from '../constants/Navigations';
 import AuthenticatedNav from './Authenticated';
-import {horizontalIOSOption, verticalIOSOption} from './animation';
+import {
+  horizontalIOSOption,
+  verticalIOSOption,
+  verticalSlideOption,
+} from './animation';
 import PostScreen from '../screens/Post';
 import CameraScreen from '../screens/Camera';
 import PasswordScreen from '../screens/Password';
 import WatchingScreen from '../screens/Watching';
 import SearchScreen from '../screens/Search';
 import UserRestaurantScreen from '../screens/UserRestaurant';
+import CreateRestaurantScreen from '../screens/CreateRestaurant';
+import EnterAddressScreen from '../screens/EnterAddress';
 
 const Stack = createStackNavigator();
 
@@ -87,6 +93,16 @@ const AppNavContainer = (props: IProp) => {
             name={Screens.UserRestaurant}
             component={UserRestaurantScreen}
             options={horizontalIOSOption}
+          />
+          <Stack.Screen
+            name={Screens.CreateRestaurant}
+            component={CreateRestaurantScreen}
+            options={horizontalIOSOption}
+          />
+          <Stack.Screen
+            name={Screens.EnterAddress}
+            component={EnterAddressScreen}
+            options={verticalSlideOption}
           />
         </Stack.Navigator>
       )}
