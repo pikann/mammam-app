@@ -12,66 +12,91 @@ import View, {Row} from '../../components/View';
 import {styles} from './styles';
 import TextInput from '../../components/TextInput';
 import {
+  makeSelectAddress,
   makeSelectAvatar,
   makeSelectAvatarType,
   makeSelectBio,
   makeSelectComplete,
+  makeSelectId,
+  makeSelectLatitude,
   makeSelectLoading,
+  makeSelectLongitude,
   makeSelectName,
 } from './store/selectors';
 import Screens from '../../constants/Screens';
 
 interface IProp {
   navigation: StackNavigationHelpers;
+  _id: string;
   name: string;
   bio: string;
   avatar: string;
   avatarType: string;
   address: string;
+  latitude: number;
+  longitude: number;
   isLoading: boolean;
   complete: boolean;
   createRestaurant: (payload: any) => void;
+  updateRestaurant: (payload: any) => void;
   resetComplete: () => void;
 }
 
 const EnterAddressScreen = (props: IProp) => {
-  const [address, setAddress] = useState('');
+  const [address, setAddress] = useState(props.address || '');
   const [initialRegion, setInitialRegion] = useState<Region>({
-    latitude: 16.15973172304073,
-    longitude: 108.0700939334929,
+    latitude: props.latitude || 16.15973172304073,
+    longitude: props.longitude || 108.0700939334929,
     latitudeDelta: 0.9196330438574769,
     longitudeDelta: 0.5471287295222282,
   });
   const [marker, setMarker] = useState<LatLng>({
-    latitude: 16.15973172304073,
-    longitude: 108.0700939334929,
+    latitude: props.latitude || 16.15973172304073,
+    longitude: props.longitude || 108.0700939334929,
   });
 
   const onSubmit = () => {
-    props.createRestaurant({
-      name: props.name,
-      bio: props.bio,
-      avatar: props.avatar === '' ? undefined : props.avatar,
-      avatarType: props.avatarType === '' ? undefined : props.avatarType,
-      address,
-      latitude: marker.latitude,
-      longitude: marker.longitude,
-    });
+    if (props._id === '') {
+      props.createRestaurant({
+        name: props.name,
+        bio: props.bio,
+        avatar: props.avatar === '' ? undefined : props.avatar,
+        avatarType: props.avatarType === '' ? undefined : props.avatarType,
+        address,
+        latitude: marker.latitude,
+        longitude: marker.longitude,
+      });
+    } else {
+      props.updateRestaurant({
+        _id: props._id,
+        name: props.name,
+        bio: props.bio,
+        avatar: props.avatar === '' ? undefined : props.avatar,
+        avatarType: props.avatarType === '' ? undefined : props.avatarType,
+        address,
+        latitude: marker.latitude,
+        longitude: marker.longitude,
+      });
+    }
   };
 
   useEffect(() => {
     Geolocation.getCurrentPosition(
       info => {
         setInitialRegion({
-          latitude: info.coords.latitude,
-          longitude: info.coords.longitude,
+          latitude:
+            props.latitude === 0 ? info.coords.latitude : props.latitude,
+          longitude:
+            props.longitude === 0 ? info.coords.longitude : props.longitude,
           latitudeDelta: 0.9196330438574769,
           longitudeDelta: 0.5471287295222282,
         });
-        setMarker({
-          latitude: info.coords.latitude,
-          longitude: info.coords.longitude,
-        });
+        if (props.latitude === 0 && props.longitude === 0) {
+          setMarker({
+            latitude: info.coords.latitude,
+            longitude: info.coords.longitude,
+          });
+        }
       },
       error => console.log('ERROR', error),
       {
@@ -80,6 +105,7 @@ const EnterAddressScreen = (props: IProp) => {
         maximumAge: 3600000,
       },
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -135,10 +161,14 @@ const EnterAddressScreen = (props: IProp) => {
 };
 
 const mapStateToProps = createStructuredSelector<any, any>({
+  _id: makeSelectId(),
   name: makeSelectName(),
   bio: makeSelectBio(),
   avatar: makeSelectAvatar(),
   avatarType: makeSelectAvatarType(),
+  address: makeSelectAddress(),
+  latitude: makeSelectLatitude(),
+  longitude: makeSelectLongitude(),
   isLoading: makeSelectLoading(),
   complete: makeSelectComplete(),
 });
@@ -146,6 +176,8 @@ const mapStateToProps = createStructuredSelector<any, any>({
 const mapDispatchToProps = (dispatch: any) => ({
   createRestaurant: (payload: any) =>
     dispatch(EnterAddressActions.createRestaurant.request(payload)),
+  updateRestaurant: (payload: any) =>
+    dispatch(EnterAddressActions.updateRestaurant.request(payload)),
   resetComplete: () => dispatch(EnterAddressActions.resetComplete.request()),
 });
 

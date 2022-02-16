@@ -2,7 +2,11 @@ import {call, put, takeLatest} from 'redux-saga/effects';
 
 import * as EnterAddressAction from '../actions';
 import {uploadToS3} from '../../../../utils/uploadS3';
-import {createRestaurantService, getPresignedUrlService} from '../services';
+import {
+  createRestaurantService,
+  getPresignedUrlService,
+  updateRestaurantService,
+} from '../services';
 
 interface Data {
   [key: string]: any;
@@ -57,9 +61,63 @@ function* createRestaurantSaga({payload}: any) {
   }
 }
 
+function* updateRestaurantSaga({payload}: any) {
+  try {
+    yield put({
+      type: EnterAddressAction.Types.LOADING.begin,
+    });
+
+    const updatePayload = {
+      _id: payload._id,
+      name: payload.name,
+      bio: payload.bio,
+      avatar: undefined,
+      address: payload.address,
+      latitude: payload.latitude,
+      longitude: payload.longitude,
+    };
+
+    if (payload.avatar) {
+      const {
+        data: {imageUrl, presignedUrl},
+      }: Data = yield call(getPresignedUrlService);
+
+      yield call(uploadToS3, {
+        url: presignedUrl,
+        image: payload.avatar,
+        type: payload.avatarType,
+      });
+
+      updatePayload.avatar = imageUrl;
+    }
+
+    yield call(updateRestaurantService, updatePayload);
+
+    yield put({
+      type: EnterAddressAction.Types.LOADING.succeeded,
+    });
+    yield put({
+      type: EnterAddressAction.Types.UPDATE_RESTAURANT.succeeded,
+    });
+  } catch (error) {
+    yield put({
+      type: EnterAddressAction.Types.LOADING.succeeded,
+    });
+    yield put({
+      type: EnterAddressAction.Types.UPDATE_RESTAURANT.failed,
+      payload,
+      error,
+    });
+  }
+}
+
 export default function* enterAddressWatcher() {
   yield takeLatest(
     EnterAddressAction.Types.CREATE_RESTAURANT.begin,
     createRestaurantSaga,
+  );
+  yield takeLatest(
+    EnterAddressAction.Types.UPDATE_RESTAURANT.begin,
+    updateRestaurantSaga,
   );
 }

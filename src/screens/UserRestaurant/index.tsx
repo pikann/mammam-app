@@ -12,6 +12,7 @@ import {Menu, MenuItem} from 'react-native-material-menu';
 import FastImage from 'react-native-fast-image';
 
 import * as UserRestaurantActions from './store/actions';
+import * as CreateRestaurantActions from '../CreateRestaurant/store/actions';
 import {BackButton, IconButton, TextButton} from '../../components/Button';
 import Text from '../../components/Text';
 import View, {Row} from '../../components/View';
@@ -27,6 +28,7 @@ interface IProp {
   isLoading: boolean;
   getUserRestaurant: (page: number) => void;
   appendUserRestaurant: (page: number) => void;
+  setRestaurantInfo: (payload: any) => void;
 }
 
 const UserRestaurantScreen = ({
@@ -35,6 +37,7 @@ const UserRestaurantScreen = ({
   isLoading,
   getUserRestaurant,
   appendUserRestaurant,
+  setRestaurantInfo,
 }: IProp) => {
   const [page, setPage] = useState(1);
   const [showOptions, setShowOptions] = useState<boolean[]>([]);
@@ -49,6 +52,11 @@ const UserRestaurantScreen = ({
 
       setPage(page + 1);
     }
+  };
+
+  const onModify = (restaurant: IRestaurant) => {
+    setRestaurantInfo(restaurant);
+    navigation.navigate(Screens.CreateRestaurant);
   };
 
   useEffect(() => {
@@ -69,7 +77,18 @@ const UserRestaurantScreen = ({
         <TextButton
           style={styles.registerButton}
           textStyle={styles.registerButtonText}
-          onPress={() => navigation.navigate(Screens.CreateRestaurant)}>
+          onPress={() => {
+            setRestaurantInfo({
+              _id: '',
+              name: '',
+              bio: '',
+              avatar: '',
+              address: '',
+              latitude: 0,
+              longitude: 0,
+            });
+            navigation.navigate(Screens.CreateRestaurant);
+          }}>
           New restaurant
         </TextButton>
       </Row>
@@ -117,7 +136,7 @@ const UserRestaurantScreen = ({
                     onRequestClose={() =>
                       setShowOptions(new Array(restaurants.length).fill(false))
                     }>
-                    <MenuItem onPress={() => {}}>
+                    <MenuItem onPress={() => onModify(restaurant)}>
                       <Text style={styles.menuItem}>Modify</Text>
                     </MenuItem>
                     <MenuItem onPress={() => {}}>
@@ -152,6 +171,8 @@ const mapDispatchToProps = (dispatch: any) => ({
     dispatch(UserRestaurantActions.getUserRestaurant.request(page)),
   appendUserRestaurant: (page: number) =>
     dispatch(UserRestaurantActions.appendUserRestaurant.request(page)),
+  setRestaurantInfo: (payload: any) =>
+    dispatch(CreateRestaurantActions.setRestaurantInfo.request(payload)),
 });
 
 export default connect(
