@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {
+  Alert,
   Image,
   NativeScrollEvent,
   ScrollView,
@@ -29,6 +30,7 @@ interface IProp {
   getUserRestaurant: (page: number) => void;
   appendUserRestaurant: (page: number) => void;
   setRestaurantInfo: (payload: any) => void;
+  deleteRestaurant: (id: string) => void;
 }
 
 const UserRestaurantScreen = ({
@@ -38,6 +40,7 @@ const UserRestaurantScreen = ({
   getUserRestaurant,
   appendUserRestaurant,
   setRestaurantInfo,
+  deleteRestaurant,
 }: IProp) => {
   const [page, setPage] = useState(1);
   const [showOptions, setShowOptions] = useState<boolean[]>([]);
@@ -57,6 +60,21 @@ const UserRestaurantScreen = ({
   const onModify = (restaurant: IRestaurant) => {
     setRestaurantInfo(restaurant);
     navigation.navigate(Screens.CreateRestaurant);
+  };
+
+  const onDelete = (id: string) => {
+    Alert.alert('Delete restaurant', 'Do you want to delete this restaurant?', [
+      {
+        text: 'Yes',
+        onPress: () => {
+          deleteRestaurant(id);
+        },
+      },
+      {
+        text: 'No',
+        style: 'cancel',
+      },
+    ]);
   };
 
   useEffect(() => {
@@ -139,7 +157,7 @@ const UserRestaurantScreen = ({
                     <MenuItem onPress={() => onModify(restaurant)}>
                       <Text style={styles.menuItem}>Modify</Text>
                     </MenuItem>
-                    <MenuItem onPress={() => {}}>
+                    <MenuItem onPress={() => onDelete(restaurant._id)}>
                       <Text style={styles.menuItem}>Delete</Text>
                     </MenuItem>
                   </Menu>
@@ -173,6 +191,8 @@ const mapDispatchToProps = (dispatch: any) => ({
     dispatch(UserRestaurantActions.appendUserRestaurant.request(page)),
   setRestaurantInfo: (payload: any) =>
     dispatch(CreateRestaurantActions.setRestaurantInfo.request(payload)),
+  deleteRestaurant: (id: string) =>
+    dispatch(UserRestaurantActions.deleteRestaurant.request(id)),
 });
 
 export default connect(

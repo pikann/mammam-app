@@ -1,7 +1,7 @@
 import {call, put, takeLatest} from 'redux-saga/effects';
 
 import * as UserRestaurantAction from '../actions';
-import {getUserRestaurantService} from '../services';
+import {deleteRestaurantService, getUserRestaurantService} from '../services';
 
 interface Data {
   [key: string]: any;
@@ -61,6 +61,23 @@ function* appendUserRestaurantSaga({payload}: any) {
   }
 }
 
+function* deleteRestaurantSaga({payload}: any) {
+  try {
+    yield call(deleteRestaurantService, payload);
+
+    yield put({
+      type: UserRestaurantAction.Types.DELETE_RESTAURANT.succeeded,
+      payload,
+    });
+  } catch (error) {
+    yield put({
+      type: UserRestaurantAction.Types.DELETE_RESTAURANT.failed,
+      payload,
+      error,
+    });
+  }
+}
+
 export default function* userRestaurantWatcher() {
   yield takeLatest(
     UserRestaurantAction.Types.GET_USER_RESTAURANT.begin,
@@ -69,5 +86,9 @@ export default function* userRestaurantWatcher() {
   yield takeLatest(
     UserRestaurantAction.Types.APPEND_USER_RESTAURANT.begin,
     appendUserRestaurantSaga,
+  );
+  yield takeLatest(
+    UserRestaurantAction.Types.DELETE_RESTAURANT.begin,
+    deleteRestaurantSaga,
   );
 }
