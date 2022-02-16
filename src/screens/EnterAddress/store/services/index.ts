@@ -7,3 +7,8 @@ export const createRestaurantService = async (payload: any) => {
 export const getPresignedUrlService = async () => {
   return await AxiosClientInstance.get('posts/presigned-url');
 };
+
+export const updateRestaurantService = async (payload: any) => {
+  const {_id, ...body} = payload;
+  return await AxiosClientInstance.patch(`restaurants/${_id}`, body);
+};
