@@ -67,6 +67,7 @@ function* updatePostSaga({payload}: any) {
     yield call(updatePostService, {
       _id: payload._id,
       description: payload.description,
+      restaurant: payload.restaurant,
     });
 
     yield put({

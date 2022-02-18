@@ -181,6 +181,13 @@ export default function PostsComponent({
                       isFull ? styles.absoluteViewFull : styles.absoluteView
                     }>
                     <View style={styles.descriptionView}>
+                      {post.restaurant ? (
+                        <Text style={styles.restaurant}>
+                          {`at ${post.restaurant?.name}`}
+                        </Text>
+                      ) : (
+                        <View />
+                      )}
                       <Text style={styles.views}>
                         {timeAgo(post.createdAt)}
                       </Text>
@@ -239,6 +246,7 @@ export default function PostsComponent({
                                     videoURI: post.url,
                                     updateId: post._id,
                                     defaultDescription: post.description,
+                                    defaultRestaurant: post.restaurant,
                                   });
                                   navigation.navigate(Screens.Post);
                                 }}>

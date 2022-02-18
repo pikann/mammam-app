@@ -34,6 +34,11 @@ const makeSelectDefaultDescription = () =>
     return state.defaultDescription;
   });
 
+const makeSelectDefaultRestaurant = () =>
+  createSelector(postState, state => {
+    return state.defaultRestaurant;
+  });
+
 export {
   makeSelectVideoURI,
   makeSelectVideoType,
@@ -41,4 +46,5 @@ export {
   makeSelectIsLoading,
   makeSelectUpdateId,
   makeSelectDefaultDescription,
+  makeSelectDefaultRestaurant,
 };

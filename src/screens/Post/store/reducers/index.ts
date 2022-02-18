@@ -1,4 +1,5 @@
 import produce from 'immer';
+import {IRestaurant} from '../../../../interfaces/post';
 
 import * as PostActions from '../actions';
 
@@ -9,6 +10,7 @@ export const initialState = {
   isLoading: false,
   updateId: '',
   defaultDescription: '',
+  defaultRestaurant: undefined as IRestaurant | undefined,
 };
 
 export type PostState = typeof initialState;
@@ -26,6 +28,7 @@ const postReducer = (state = initialState, {type, payload}: any) =>
         draft.videoURI = payload.videoURI;
         draft.updateId = payload.updateId;
         draft.defaultDescription = payload.defaultDescription;
+        draft.defaultRestaurant = payload.defaultRestaurant;
         break;
       case PostActions.Types.LOADING.begin:
         draft.isLoading = true;
