@@ -28,6 +28,7 @@ import * as WatchingActions from './store/actions';
 import * as HomeActions from '../Home/store/actions';
 import * as UserActions from '../User/store/actions';
 import * as SearchActions from '../Search/store/actions';
+import * as RestaurantActions from '../Restaurant/store/actions';
 import * as PostActions from '../Post/store/actions';
 import {
   makeSelectGettingPayload,
@@ -75,12 +76,14 @@ interface IProp {
   displayVideo: (postId: string) => void;
   appendPostOfUser: (payload: any) => void;
   appendSearchPosts: (payload: any) => void;
+  appendRestaurantPosts: (payload: any) => void;
   setUserInfo: (payload: any) => void;
   setPage: (page: number) => void;
   setUpdateVideo: (payload: any) => void;
   deletePost: (id: string) => void;
   updateComment: (payload: any) => void;
   deleteComment: (payload: any) => void;
+  setRestaurantWatchInfo: (payload: any) => void;
 }
 
 const WatchingScreen = ({
@@ -116,12 +119,14 @@ const WatchingScreen = ({
   displayVideo,
   appendPostOfUser,
   appendSearchPosts,
+  appendRestaurantPosts,
   setUserInfo,
   setPage,
   setUpdateVideo,
   deletePost,
   updateComment,
   deleteComment,
+  setRestaurantWatchInfo,
 }: IProp) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -139,6 +144,12 @@ const WatchingScreen = ({
         setPage(page + 1);
       } else if (gettingType === GettingType.Search) {
         appendSearchPosts({
+          ...gettingPayload,
+          page,
+        });
+        setPage(page + 1);
+      } else if (gettingType === GettingType.Restaurant) {
+        appendRestaurantPosts({
           ...gettingPayload,
           page,
         });
@@ -188,6 +199,7 @@ const WatchingScreen = ({
         deletePost={deletePost}
         updateComment={updateComment}
         deleteComment={deleteComment}
+        setRestaurantInfo={setRestaurantWatchInfo}
       />
       <BackButton
         style={styles.backButton}
@@ -251,6 +263,8 @@ const mapDispatchToProps = (dispatch: any) => ({
   setPage: (page: number) => dispatch(WatchingActions.setPage.request(page)),
   appendSearchPosts: (payload: any) =>
     dispatch(SearchActions.appendSearchPosts.request(payload)),
+  appendRestaurantPosts: (payload: any) =>
+    dispatch(RestaurantActions.appendRestaurantPosts.request(payload)),
   setUpdateVideo: (payload: any) =>
     dispatch(PostActions.setUpdateVideo.request(payload)),
   deletePost: (id: string) => dispatch(HomeActions.deletePost.request(id)),
@@ -258,6 +272,8 @@ const mapDispatchToProps = (dispatch: any) => ({
     dispatch(HomeActions.updateComment.request(payload)),
   deleteComment: (payload: any) =>
     dispatch(HomeActions.deleteComment.request(payload)),
+  setRestaurantWatchInfo: (payload: any) =>
+    dispatch(RestaurantActions.setRestaurantInfo.request(payload)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(WatchingScreen);

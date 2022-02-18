@@ -17,4 +17,5 @@ export default {
   UserRestaurant: 'UserRestaurant',
   CreateRestaurant: 'CreateRestaurant',
   EnterAddress: 'EnterAddress',
+  Restaurant: 'Restaurant',
 };
