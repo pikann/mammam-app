@@ -17,6 +17,7 @@ import {StackNavigationHelpers} from '@react-navigation/stack/lib/typescript/src
 import FastImage from 'react-native-fast-image';
 
 import * as MapActions from './store/actions';
+import * as RestaurantActions from '../Restaurant/store/actions';
 import View, {Row} from '../../components/View';
 import {styles} from './styles';
 import TextInput from '../../components/TextInput';
@@ -35,6 +36,7 @@ interface IProp {
   isLoading: boolean;
   searchRestaurant: (payload: any) => void;
   appendSearchRestaurant: (payload: any) => void;
+  setRestaurantInfo: (restaurant: IRestaurant) => void;
 }
 
 const MapScreen = ({
@@ -43,6 +45,7 @@ const MapScreen = ({
   isLoading,
   searchRestaurant,
   appendSearchRestaurant,
+  setRestaurantInfo,
 }: IProp) => {
   const [keyword, setKeyword] = useState('');
   const [page, setPage] = useState(1);
@@ -213,7 +216,10 @@ const MapScreen = ({
                 <Button
                   style={styles.followBtn}
                   textChildrenStyle={styles.followBtnText}
-                  onPress={() => console.log('Detail')}>
+                  onPress={() => {
+                    setRestaurantInfo(restaurant);
+                    navigation.navigate(Screens.Restaurant);
+                  }}>
                   Detail
                 </Button>
               </Row>
@@ -243,6 +249,8 @@ const mapDispatchToProps = (dispatch: any) => ({
     dispatch(MapActions.searchRestaurant.request(payload)),
   appendSearchRestaurant: (payload: any) =>
     dispatch(MapActions.appendSearchRestaurant.request(payload)),
+  setRestaurantInfo: (restaurant: IRestaurant) =>
+    dispatch(RestaurantActions.setRestaurantInfo.request(restaurant)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(MapScreen);

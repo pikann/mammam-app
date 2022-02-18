@@ -52,11 +52,6 @@ function* getPostOfUserSaga({payload}: any) {
 function* appendPostOfUserSaga({payload}: any) {
   try {
     yield put({
-      type: UserAction.Types.APPEND_USER_POSTS.succeeded,
-      payload: {posts: [], author: {}},
-    });
-
-    yield put({
       type: HomeAction.Types.LOADING.begin,
     });
 
@@ -134,7 +129,7 @@ function* getFollowersTotalSaga({payload}: any) {
   }
 }
 
-export default function* updateProfileWatcher() {
+export default function* userWatcher() {
   yield takeLatest(UserAction.Types.GET_USER_POSTS.begin, getPostOfUserSaga);
   yield takeLatest(
     UserAction.Types.APPEND_USER_POSTS.begin,

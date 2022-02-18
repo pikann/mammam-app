@@ -14,6 +14,7 @@ import FastImage from 'react-native-fast-image';
 
 import * as UserRestaurantActions from './store/actions';
 import * as CreateRestaurantActions from '../CreateRestaurant/store/actions';
+import * as RestaurantActions from '../Restaurant/store/actions';
 import {BackButton, IconButton, TextButton} from '../../components/Button';
 import Text from '../../components/Text';
 import View, {Row} from '../../components/View';
@@ -30,6 +31,7 @@ interface IProp {
   getUserRestaurant: (page: number) => void;
   appendUserRestaurant: (page: number) => void;
   setRestaurantInfo: (payload: any) => void;
+  setRestaurantWatchInfo: (payload: any) => void;
   deleteRestaurant: (id: string) => void;
 }
 
@@ -40,6 +42,7 @@ const UserRestaurantScreen = ({
   getUserRestaurant,
   appendUserRestaurant,
   setRestaurantInfo,
+  setRestaurantWatchInfo,
   deleteRestaurant,
 }: IProp) => {
   const [page, setPage] = useState(1);
@@ -120,7 +123,12 @@ const UserRestaurantScreen = ({
           onScroll={({nativeEvent: e}) => onScroll(e)}
           scrollEventThrottle={400}>
           {restaurants.map((restaurant, index) => (
-            <TouchableWithoutFeedback key={index} onPress={() => {}}>
+            <TouchableWithoutFeedback
+              key={index}
+              onPress={() => {
+                setRestaurantWatchInfo(restaurant);
+                navigation.navigate(Screens.Restaurant);
+              }}>
               <Row style={styles.userRow}>
                 <Image
                   style={styles.avatar}
@@ -191,6 +199,8 @@ const mapDispatchToProps = (dispatch: any) => ({
     dispatch(UserRestaurantActions.appendUserRestaurant.request(page)),
   setRestaurantInfo: (payload: any) =>
     dispatch(CreateRestaurantActions.setRestaurantInfo.request(payload)),
+  setRestaurantWatchInfo: (payload: any) =>
+    dispatch(RestaurantActions.setRestaurantInfo.request(payload)),
   deleteRestaurant: (id: string) =>
     dispatch(UserRestaurantActions.deleteRestaurant.request(id)),
 });

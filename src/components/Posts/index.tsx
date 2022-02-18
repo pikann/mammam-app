@@ -62,6 +62,7 @@ interface IProp {
   deletePost: (id: string) => void;
   updateComment: (payload: any) => void;
   deleteComment: (payload: any) => void;
+  setRestaurantInfo: (payload: any) => void;
 }
 
 export default function PostsComponent({
@@ -100,6 +101,7 @@ export default function PostsComponent({
   deletePost,
   updateComment,
   deleteComment,
+  setRestaurantInfo,
 }: IProp) {
   const [commandModelShow, setCommandModelShow] = useState(false);
   const [popupVisible, setPopupVisible] = useState(false);
@@ -121,7 +123,7 @@ export default function PostsComponent({
   };
 
   useEffect(() => {
-    if (posts.length > 0) {
+    if (posts.length > 0 && posts[currentIndex]) {
       viewPost(posts[currentIndex]._id);
     }
   }, [currentIndex, posts, viewPost]);
@@ -182,9 +184,15 @@ export default function PostsComponent({
                     }>
                     <View style={styles.descriptionView}>
                       {post.restaurant ? (
-                        <Text style={styles.restaurant}>
-                          {`at ${post.restaurant?.name}`}
-                        </Text>
+                        <TouchableWithoutFeedback
+                          onPress={() => {
+                            setRestaurantInfo(post.restaurant);
+                            navigation.navigate(Screens.Restaurant);
+                          }}>
+                          <Text style={styles.restaurant}>
+                            {`at ${post.restaurant?.name}`}
+                          </Text>
+                        </TouchableWithoutFeedback>
                       ) : (
                         <View />
                       )}

@@ -25,6 +25,7 @@ import SearchScreen from '../screens/Search';
 import UserRestaurantScreen from '../screens/UserRestaurant';
 import CreateRestaurantScreen from '../screens/CreateRestaurant';
 import EnterAddressScreen from '../screens/EnterAddress';
+import RestaurantScreen from '../screens/Restaurant';
 
 const Stack = createStackNavigator();
 
@@ -103,6 +104,11 @@ const AppNavContainer = (props: IProp) => {
             name={Screens.EnterAddress}
             component={EnterAddressScreen}
             options={verticalSlideOption}
+          />
+          <Stack.Screen
+            name={Screens.Restaurant}
+            component={RestaurantScreen}
+            options={horizontalIOSOption}
           />
         </Stack.Navigator>
       )}

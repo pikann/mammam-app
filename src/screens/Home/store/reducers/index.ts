@@ -2,6 +2,7 @@ import produce from 'immer';
 
 import * as HomeActions from '../actions';
 import * as UserActions from '../../../User/store/actions';
+import * as RestaurantActions from '../../../Restaurant/store/actions';
 import * as NotificationActions from '../../../Notification/store/actions';
 import {GetPostsTag} from '../enums/get-posts-tag';
 import {IComment} from '../../../../interfaces/comment';
@@ -252,6 +253,21 @@ const homeReducer = (state = initialState, {type, payload}: any) =>
             ...draft.posts,
             ...payload.posts.map((post: IPost) => {
               return {...post, loading: true, author: payload.author};
+            }),
+          ];
+        }
+        break;
+      case RestaurantActions.Types.GET_RESTAURANT_POSTS.succeeded:
+        draft.posts = payload.posts.map((post: IPost) => {
+          return {...post, loading: true, restaurant: payload.restaurant};
+        });
+        break;
+      case RestaurantActions.Types.APPEND_RESTAURANT_POSTS.succeeded:
+        if (payload.posts.length > 0) {
+          draft.posts = [
+            ...draft.posts,
+            ...payload.posts.map((post: IPost) => {
+              return {...post, loading: true, restaurant: payload.restaurant};
             }),
           ];
         }

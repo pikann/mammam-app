@@ -15,6 +15,7 @@ import mapReducer from '../screens/Map/store/reducers';
 import userRestaurantReducer from '../screens/UserRestaurant/store/reducers';
 import enterAddressReducer from '../screens/EnterAddress/store/reducers';
 import createRestaurantReducer from '../screens/CreateRestaurant/store/reducers';
+import restaurantReducer from '../screens/Restaurant/store/reducers';
 
 const rootReducer = combineReducers({
   appReducer,
@@ -32,5 +33,6 @@ const rootReducer = combineReducers({
   userRestaurantReducer,
   enterAddressReducer,
   createRestaurantReducer,
+  restaurantReducer,
 });
 export default rootReducer;

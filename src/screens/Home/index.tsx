@@ -8,6 +8,7 @@ import {IconButton, TextButton} from '../../components/Button';
 import * as HomeActions from './store/actions';
 import * as UserActions from '../User/store/actions';
 import * as PostActions from '../Post/store/actions';
+import * as RestaurantActions from '../Restaurant/store/actions';
 import View, {Row} from '../../components/View';
 import Colors from '../../constants/Colors';
 import {styles} from './styles';
@@ -70,6 +71,7 @@ interface IProp {
   deletePost: (id: string) => void;
   updateComment: (payload: any) => void;
   deleteComment: (payload: any) => void;
+  setRestaurantWatchInfo: (payload: any) => void;
 }
 
 const HomeScreen = ({
@@ -108,6 +110,7 @@ const HomeScreen = ({
   deletePost,
   updateComment,
   deleteComment,
+  setRestaurantWatchInfo,
 }: IProp) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const isFocused = useIsFocused();
@@ -174,6 +177,7 @@ const HomeScreen = ({
         deletePost={deletePost}
         updateComment={updateComment}
         deleteComment={deleteComment}
+        setRestaurantInfo={setRestaurantWatchInfo}
       />
       <Row style={styles.tagView}>
         <TextButton
@@ -276,6 +280,8 @@ const mapDispatchToProps = (dispatch: any) => ({
     dispatch(HomeActions.updateComment.request(payload)),
   deleteComment: (payload: any) =>
     dispatch(HomeActions.deleteComment.request(payload)),
+  setRestaurantWatchInfo: (payload: any) =>
+    dispatch(RestaurantActions.setRestaurantInfo.request(payload)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
