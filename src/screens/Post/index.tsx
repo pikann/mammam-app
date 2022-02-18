@@ -8,6 +8,7 @@ import {StackNavigationHelpers} from '@react-navigation/stack/lib/typescript/src
 import View from '../../components/View';
 import {styles} from './styles';
 import * as PostActions from './store/actions';
+import * as MapActions from '../Map/store/actions';
 import {
   makeSelectDefaultDescription,
   makeSelectIsLoading,
@@ -20,6 +21,12 @@ import TextInput from '../../components/TextInput';
 import Button, {IconButton} from '../../components/Button';
 import Colors from '../../constants/Colors';
 import Screens from '../../constants/Screens';
+import RestaurantModal from '../../components/RestaurantModal';
+import {
+  makeSelectRestaurants,
+  makeSelectLoading as makeSelectRestaurantLoading,
+} from '../Map/store/selectors';
+import {IRestaurant} from '../Map/store/interfaces/restaurant';
 
 const {height} = Dimensions.get('window');
 
@@ -31,13 +38,21 @@ interface IProp {
   isLoading: boolean;
   updateId: string;
   defaultDescription: string;
+  restaurants: IRestaurant[];
+  isRestaurantLoading: boolean;
   postVideo: (payload: any) => void;
   updatePost: (payload: any) => void;
+  searchRestaurant: (payload: any) => void;
+  appendSearchRestaurant: (payload: any) => void;
 }
 
 const PostScreen = (props: IProp) => {
   const [description, setDescription] = useState(
     props.updateId === '' ? '' : props.defaultDescription,
+  );
+  const [modalShow, setModalShow] = useState(false);
+  const [restaurant, setRestaurant] = useState<IRestaurant | undefined>(
+    undefined,
   );
 
   const marginTop = useRef(new Animated.Value(height * 0.6)).current;
@@ -49,6 +64,7 @@ const PostScreen = (props: IProp) => {
         video: props.videoURI,
         videoType: props.videoType,
         videoDuration: props.videoDuration,
+        restaurant: restaurant?._id,
         callback: () => {
           props.navigation.navigate(Screens.Home);
         },
@@ -115,7 +131,8 @@ const PostScreen = (props: IProp) => {
         <TextInput
           style={styles.place}
           placeholder="Place..."
-          editable={false}
+          value={restaurant?.name}
+          onPressIn={() => setModalShow(true)}
         />
         <Button
           style={styles.postBtn}
@@ -131,6 +148,16 @@ const PostScreen = (props: IProp) => {
         size={35}
         onPress={() => props.navigation.goBack()}
       />
+      <RestaurantModal
+        navigation={props.navigation}
+        modalShow={modalShow}
+        restaurants={props.restaurants}
+        isLoading={props.isRestaurantLoading}
+        setModalShow={setModalShow}
+        searchRestaurant={props.searchRestaurant}
+        appendSearchRestaurant={props.appendSearchRestaurant}
+        setRestaurant={setRestaurant}
+      />
     </View>
   );
 };
@@ -142,12 +169,18 @@ const mapStateToProps = createStructuredSelector<any, any>({
   isLoading: makeSelectIsLoading(),
   updateId: makeSelectUpdateId(),
   defaultDescription: makeSelectDefaultDescription(),
+  restaurants: makeSelectRestaurants(),
+  isRestaurantLoading: makeSelectRestaurantLoading(),
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
   postVideo: (payload: any) => dispatch(PostActions.postVideo.request(payload)),
   updatePost: (payload: any) =>
     dispatch(PostActions.updatePost.request(payload)),
+  searchRestaurant: (payload: any) =>
+    dispatch(MapActions.searchRestaurant.request(payload)),
+  appendSearchRestaurant: (payload: any) =>
+    dispatch(MapActions.appendSearchRestaurant.request(payload)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(PostScreen);
