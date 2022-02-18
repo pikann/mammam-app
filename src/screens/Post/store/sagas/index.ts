@@ -38,6 +38,7 @@ function* postVideoSaga({payload}: any) {
       description: payload.description,
       url: videoUrl,
       thumbnail: thumbnailUrl,
+      restaurant: payload.restaurant,
     });
 
     yield put({
