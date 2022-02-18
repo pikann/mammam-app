@@ -14,6 +14,7 @@ export const postService = async (payload: any) => {
 export const updatePostService = async (payload: any) => {
   return await AxiosClientInstance.patch(`posts/${payload._id}`, {
     description: payload.description,
+    restaurant: payload.restaurant,
   });
 };
 

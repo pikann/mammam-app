@@ -79,6 +79,11 @@ export const styles = StyleSheet.create({
     marginBottom: 15,
     marginLeft: 15,
   },
+  restaurant: {
+    color: Colors.background,
+    fontSize: 12,
+    marginBottom: 5,
+  },
   description: {
     color: Colors.background,
     fontSize: 15,

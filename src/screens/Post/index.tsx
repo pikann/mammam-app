@@ -11,6 +11,7 @@ import * as PostActions from './store/actions';
 import * as MapActions from '../Map/store/actions';
 import {
   makeSelectDefaultDescription,
+  makeSelectDefaultRestaurant,
   makeSelectIsLoading,
   makeSelectUpdateId,
   makeSelectVideoDuration,
@@ -38,6 +39,7 @@ interface IProp {
   isLoading: boolean;
   updateId: string;
   defaultDescription: string;
+  defaultRestaurant: IRestaurant;
   restaurants: IRestaurant[];
   isRestaurantLoading: boolean;
   postVideo: (payload: any) => void;
@@ -52,7 +54,7 @@ const PostScreen = (props: IProp) => {
   );
   const [modalShow, setModalShow] = useState(false);
   const [restaurant, setRestaurant] = useState<IRestaurant | undefined>(
-    undefined,
+    props.defaultRestaurant,
   );
 
   const marginTop = useRef(new Animated.Value(height * 0.6)).current;
@@ -73,6 +75,7 @@ const PostScreen = (props: IProp) => {
       props.updatePost({
         _id: props.updateId,
         description,
+        restaurant: restaurant?._id,
         callback: () => {
           props.navigation.navigate(Screens.Home);
         },
@@ -169,6 +172,7 @@ const mapStateToProps = createStructuredSelector<any, any>({
   isLoading: makeSelectIsLoading(),
   updateId: makeSelectUpdateId(),
   defaultDescription: makeSelectDefaultDescription(),
+  defaultRestaurant: makeSelectDefaultRestaurant(),
   restaurants: makeSelectRestaurants(),
   isRestaurantLoading: makeSelectRestaurantLoading(),
 });
