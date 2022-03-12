@@ -120,7 +120,7 @@ const UpdateProfileScreen = (props: IProp) => {
 
   useEffect(() => {
     if (isUpdated) {
-      props.navigation.navigate(Screens.User);
+      props.navigation.navigate(Screens.Home);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.username, props.bio, props.avatar, props.navigation]);
