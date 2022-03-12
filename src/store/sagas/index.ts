@@ -27,6 +27,7 @@ function* checkLogin() {
         },
       });
 
+      yield put({type: AppActions.Types.RESET_PROFILE.begin});
       AxiosClientInstance.setHeader('');
       SocketClientInstance.disconnect();
     }
@@ -42,7 +43,7 @@ function* logout() {
   try {
     const userId: string = yield call(AsyncStorage.getItem, 'id_user');
 
-    yield messaging().unsubscribeFromTopic(userId);
+    messaging().unsubscribeFromTopic(userId);
 
     yield AsyncStorage.clear();
 

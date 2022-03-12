@@ -40,6 +40,12 @@ const appReducer = (state = initialState, {type, payload}: any) =>
           draft.started = true;
         }
         break;
+      case AppActions.Types.RESET_PROFILE.begin:
+        draft.id = '';
+        draft.username = '';
+        draft.avatar = '';
+        draft.bio = '';
+        break;
       default:
         break;
     }
