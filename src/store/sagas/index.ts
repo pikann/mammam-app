@@ -1,7 +1,9 @@
 import {call, put, takeLatest} from 'redux-saga/effects';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import AxiosClientInstance from '../../utils/axios';
+import messaging from '@react-native-firebase/messaging';
 
+import AxiosClientInstance from '../../utils/axios';
+import SocketClientInstance from '../../utils/socket';
 import * as AppActions from '../actions';
 import {getUserProfileService, refreshTokenService} from '../services';
 
@@ -15,6 +17,7 @@ function* checkLogin() {
 
     if (token) {
       AxiosClientInstance.setHeader(token);
+      SocketClientInstance.connect(token);
       yield put({type: AppActions.Types.GET_USER_PROFILE.begin});
     } else {
       yield put({
@@ -24,21 +27,29 @@ function* checkLogin() {
         },
       });
 
+      yield put({type: AppActions.Types.RESET_PROFILE.begin});
       AxiosClientInstance.setHeader('');
+      SocketClientInstance.disconnect();
     }
   } catch (error) {
     yield put({
       type: AppActions.Types.CHECK_LOGIN.failed,
-      payload: error,
+      error,
     });
   }
 }
 
 function* logout() {
   try {
+    const userId: string = yield call(AsyncStorage.getItem, 'id_user');
+
+    messaging().unsubscribeFromTopic(userId);
+
     yield AsyncStorage.clear();
 
     yield put({type: AppActions.Types.CHECK_LOGIN.begin});
+
+    SocketClientInstance.disconnect();
 
     yield put({
       type: AppActions.Types.LOGOUT.succeeded,
@@ -46,7 +57,7 @@ function* logout() {
   } catch (error) {
     yield put({
       type: AppActions.Types.LOGOUT.failed,
-      payload: error,
+      error,
     });
   }
 }
@@ -59,7 +70,7 @@ function* refreshToken() {
       const response: Data = yield call(refreshTokenService, token);
 
       yield AsyncStorage.setItem('access_token', response.data.access_token);
-      yield AsyncStorage.setItem('refresh_token', response.data.access_token);
+      yield AsyncStorage.setItem('refresh_token', response.data.refresh_token);
       AxiosClientInstance.setHeader(response.data.access_token);
 
       yield put({type: AppActions.Types.REFRESH_TOKEN.succeeded});
@@ -69,7 +80,7 @@ function* refreshToken() {
   } catch (error) {
     yield put({
       type: AppActions.Types.REFRESH_TOKEN.failed,
-      payload: error,
+      error,
     });
   }
 }
@@ -84,12 +95,13 @@ function* getUserProfileSaga() {
         id: response.data._id,
         username: response.data.username,
         avatar: response.data.avatar,
+        bio: response.data.bio,
       },
     });
   } catch (error) {
     yield put({
       type: AppActions.Types.GET_USER_PROFILE.failed,
-      payload: error,
+      error,
     });
   }
 }

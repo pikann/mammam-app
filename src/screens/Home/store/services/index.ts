@@ -1,7 +1,13 @@
 import AxiosClientInstance from '../../../../utils/axios';
 
-export const getPostsService = async () => {
-  return await AxiosClientInstance.get('/posts?perpage=5');
+export const getPostsService = async (tag: string) => {
+  return await AxiosClientInstance.get(`/posts?tag=${tag}&perpage=5`);
+};
+
+export const appendPostsService = async (payload: any) => {
+  return await AxiosClientInstance.get(
+    `/posts?tag=${payload.tag}&perpage=5&availables=${payload.availables}`,
+  );
 };
 
 export const likePostService = async (postId: string) => {
@@ -47,4 +53,18 @@ export const replyCommentService = async (
   return await AxiosClientInstance.post(`/comments/${commentId}/replies`, {
     content,
   });
+};
+
+export const deletePostService = async (id: string) => {
+  return await AxiosClientInstance.delete(`posts/${id}`, {});
+};
+
+export const updateCommentService = async (payload: any) => {
+  return await AxiosClientInstance.put(`comments/${payload._id}`, {
+    content: payload.content,
+  });
+};
+
+export const deleteCommentService = async (id: string) => {
+  return await AxiosClientInstance.delete(`comments/${id}`, {});
 };

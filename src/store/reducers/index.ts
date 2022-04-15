@@ -8,6 +8,7 @@ export const initialState = {
   id: '',
   username: '',
   avatar: '',
+  bio: '',
 };
 
 export type AppState = typeof initialState;
@@ -31,10 +32,19 @@ const appReducer = (state = initialState, {type, payload}: any) =>
         if (payload.avatar) {
           draft.avatar = payload.avatar;
         }
+        if (payload.bio) {
+          draft.bio = payload.bio;
+        }
         draft.login = true;
         if (!draft.started) {
           draft.started = true;
         }
+        break;
+      case AppActions.Types.RESET_PROFILE.begin:
+        draft.id = '';
+        draft.username = '';
+        draft.avatar = '';
+        draft.bio = '';
         break;
       default:
         break;

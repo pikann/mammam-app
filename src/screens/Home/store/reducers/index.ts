@@ -1,8 +1,12 @@
 import produce from 'immer';
 
 import * as HomeActions from '../actions';
-import {IComment} from '../interfaces/comment';
-import {IPost} from '../interfaces/post';
+import * as UserActions from '../../../User/store/actions';
+import * as RestaurantActions from '../../../Restaurant/store/actions';
+import * as NotificationActions from '../../../Notification/store/actions';
+import {GetPostsTag} from '../enums/get-posts-tag';
+import {IComment} from '../../../../interfaces/comment';
+import {IPost} from '../../../../interfaces/post';
 
 export const initialState = {
   posts: [] as IPost[],
@@ -12,6 +16,8 @@ export const initialState = {
   pageComment: 0,
   loadingComments: false,
   currentPostId: '',
+  isLoading: false,
+  getPostsTag: GetPostsTag.ForYou,
 };
 
 export type HomeState = typeof initialState;
@@ -21,12 +27,19 @@ const homeReducer = (state = initialState, {type, payload}: any) =>
     let index = 0;
     switch (type) {
       case HomeActions.Types.GET_POSTS.succeeded:
-        draft.posts = [
-          ...draft.posts,
-          ...payload.map((post: IPost) => {
-            return {...post, loading: true};
-          }),
-        ];
+        draft.posts = payload.map((post: IPost) => {
+          return {...post, loading: true};
+        });
+        break;
+      case HomeActions.Types.APPEND_POSTS.succeeded:
+        if (payload.length > 0) {
+          draft.posts = [
+            ...draft.posts,
+            ...payload.map((post: IPost) => {
+              return {...post, loading: true};
+            }),
+          ];
+        }
         break;
       case HomeActions.Types.LIKE_POST.succeeded:
         index = draft.posts.findIndex(post => post._id === payload);
@@ -219,6 +232,61 @@ const homeReducer = (state = initialState, {type, payload}: any) =>
         if (draft.posts[index].loading) {
           draft.posts[index].loading = false;
         }
+        break;
+      case HomeActions.Types.LOADING.begin:
+        draft.isLoading = true;
+        break;
+      case HomeActions.Types.LOADING.succeeded:
+        draft.isLoading = false;
+        break;
+      case HomeActions.Types.SET_GET_POSTS_TAG.begin:
+        draft.getPostsTag = payload;
+        break;
+      case UserActions.Types.GET_USER_POSTS.succeeded:
+        draft.posts = payload.posts.map((post: IPost) => {
+          return {...post, loading: true, author: payload.author};
+        });
+        break;
+      case UserActions.Types.APPEND_USER_POSTS.succeeded:
+        if (payload.posts.length > 0) {
+          draft.posts = [
+            ...draft.posts,
+            ...payload.posts.map((post: IPost) => {
+              return {...post, loading: true, author: payload.author};
+            }),
+          ];
+        }
+        break;
+      case RestaurantActions.Types.GET_RESTAURANT_POSTS.succeeded:
+        draft.posts = payload.posts.map((post: IPost) => {
+          return {...post, loading: true, restaurant: payload.restaurant};
+        });
+        break;
+      case RestaurantActions.Types.APPEND_RESTAURANT_POSTS.succeeded:
+        if (payload.posts.length > 0) {
+          draft.posts = [
+            ...draft.posts,
+            ...payload.posts.map((post: IPost) => {
+              return {...post, loading: true, restaurant: payload.restaurant};
+            }),
+          ];
+        }
+        break;
+      case HomeActions.Types.UPDATE_COMMENT.succeeded:
+        index = draft.comments.findIndex(
+          comment => comment._id === payload._id,
+        );
+
+        if (index >= 0) {
+          draft.comments[index].content = payload.content;
+        }
+        break;
+      case HomeActions.Types.DELETE_COMMENT.succeeded:
+        index = draft.posts.findIndex(post => post._id === draft.currentPostId);
+        draft.posts[index].commentTotal--;
+        break;
+      case NotificationActions.Types.GET_ONE_POST.succeeded:
+        draft.posts = [payload];
         break;
       default:
         break;

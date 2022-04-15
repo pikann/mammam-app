@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "655726753867",
+    "project_id": "mammam-7ec23",
+    "storage_bucket": "mammam-7ec23.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:655726753867:android:0231c735a3af3ff90a35ce",
+        "android_client_info": {
+          "package_name": "com.mammamapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "655726753867-pafp6vga8a2480f5hp8229u1ji3eatjl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAc83wxZBsds_hpQPIz0wziCDBoyJ-s6Vo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "655726753867-pafp6vga8a2480f5hp8229u1ji3eatjl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

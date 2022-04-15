@@ -70,7 +70,7 @@ export const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     marginLeft: 40,
     width: width - 80,
-    marginTop: 'auto',
+    marginTop: height - 680,
     marginBottom: 25,
   },
   loginGoogleText: {

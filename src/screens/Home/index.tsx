@@ -1,38 +1,39 @@
 import React, {useEffect, useState} from 'react';
-import {Dimensions, Image} from 'react-native';
-import Video from 'react-native-video';
 import {connect} from 'react-redux';
 import {StackNavigationHelpers} from '@react-navigation/stack/lib/typescript/src/types';
 import {createStructuredSelector} from 'reselect';
+import {useIsFocused} from '@react-navigation/native';
 
 import {IconButton, TextButton} from '../../components/Button';
 import * as HomeActions from './store/actions';
-import Text from '../../components/Text';
-import View, {DoublePressView, Row} from '../../components/View';
+import * as UserActions from '../User/store/actions';
+import * as PostActions from '../Post/store/actions';
+import * as RestaurantActions from '../Restaurant/store/actions';
+import View, {Row} from '../../components/View';
 import Colors from '../../constants/Colors';
 import {styles} from './styles';
 import {
   makeSelectComments,
   makeSelectCurrentPostId,
+  makeSelectGetPostsTag,
+  makeSelectLoading,
   makeSelectLoadingComments,
   makeSelectPageComment,
   makeSelectPosts,
   makeSelectTotalComment,
   makeSelectTotalPageComment,
 } from './store/selectors';
-import {ScrollView} from 'react-native-gesture-handler';
-import {IPost} from './store/interfaces/post';
-import timeAgo from '../../utils/timeAgo';
-import CommentModal from './components/CommentModal';
-import {IAuthor, IComment} from './store/interfaces/comment';
+import {IPost} from '../../interfaces/post';
+import {IAuthor, IComment} from '../../interfaces/comment';
 import {
   makeSelectAvatar,
+  makeSelectBio,
   makeSelectId,
   makeSelectUsername,
 } from '../../store/selectors';
-import FastImage from 'react-native-fast-image';
-
-const {height} = Dimensions.get('window');
+import {GetPostsTag} from './store/enums/get-posts-tag';
+import Screens from '../../constants/Screens';
+import PostsComponent from '../../components/Posts';
 
 interface IProp {
   navigation: StackNavigationHelpers;
@@ -46,7 +47,11 @@ interface IProp {
   userId: string;
   username: string;
   avatar: string;
-  getPosts: () => void;
+  bio: string;
+  isLoading: boolean;
+  getPostsTag: string;
+  getPosts: (tag: string) => void;
+  appendPosts: (tag: string, availables: string) => void;
   likePost: (postId: string) => void;
   dislikePost: (postId: string) => void;
   viewPost: (postId: string) => void;
@@ -60,6 +65,13 @@ interface IProp {
   replyComment: (commentId: string, content: string, author: IAuthor) => void;
   loadingVideo: (postId: string) => void;
   displayVideo: (postId: string) => void;
+  setGetPostsTag: (tag: string) => void;
+  setUserInfo: (payload: any) => void;
+  setUpdateVideo: (payload: any) => void;
+  deletePost: (id: string) => void;
+  updateComment: (payload: any) => void;
+  deleteComment: (payload: any) => void;
+  setRestaurantWatchInfo: (payload: any) => void;
 }
 
 const HomeScreen = ({
@@ -74,7 +86,11 @@ const HomeScreen = ({
   userId,
   username,
   avatar,
+  bio,
+  isLoading,
+  getPostsTag,
   getPosts,
+  appendPosts,
   likePost,
   dislikePost,
   viewPost,
@@ -88,160 +104,123 @@ const HomeScreen = ({
   replyComment,
   loadingVideo,
   displayVideo,
+  setGetPostsTag,
+  setUserInfo,
+  setUpdateVideo,
+  deletePost,
+  updateComment,
+  deleteComment,
+  setRestaurantWatchInfo,
 }: IProp) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [commandModelShow, setCommandModelShow] = useState(false);
+  const isFocused = useIsFocused();
 
   useEffect(() => {
-    getPosts();
-  }, [getPosts]);
-
-  useEffect(() => {
-    if (posts.length > 0) {
-      viewPost(posts[currentIndex]._id);
+    if (!username || username === '') {
+      navigation.navigate(Screens.UpdateProfile);
     }
-  }, [currentIndex, posts, viewPost]);
+  }, [navigation, username]);
+
+  useEffect(() => {
+    setCurrentIndex(0);
+    getPosts(getPostsTag);
+  }, [getPosts, getPostsTag, isFocused]);
+
+  useEffect(() => {
+    if (currentIndex >= posts.length - 2 && !isLoading && posts.length > 0) {
+      appendPosts(
+        getPostsTag,
+        posts
+          .slice(currentIndex, posts.length)
+          .map(post => post._id)
+          .join(','),
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [appendPosts, currentIndex, viewPost]);
 
   return (
     <View style={styles.background}>
-      <ScrollView
-        snapToInterval={height - 55}
-        disableIntervalMomentum={true}
-        showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}
-        onMomentumScrollEnd={event => {
-          setCurrentIndex(
-            Math.round(event.nativeEvent.contentOffset.y / (height - 55)),
-          );
-        }}
-        style={styles.flex}>
-        {posts.map((post, index) => {
-          return index - currentIndex < 3 && index - currentIndex > -2 ? (
-            <View style={styles.videoFrame} key={index}>
-              {post.loading && index === currentIndex && (
-                <FastImage
-                  source={require('../../assets/images/white-loading.gif')}
-                  style={styles.loading}
-                />
-              )}
-              <Video
-                source={{
-                  uri: post.url,
-                }}
-                style={styles.video}
-                resizeMode={'contain'}
-                repeat={true}
-                paused={index !== currentIndex}
-                onLoadStart={() => {
-                  loadingVideo(post._id);
-                }}
-                onReadyForDisplay={() => {
-                  displayVideo(post._id);
-                }}
-              />
-              <DoublePressView
-                onDoublePress={() => {
-                  likePost(post._id);
-                }}>
-                <Row style={styles.absoluteView}>
-                  <View style={styles.descriptionView}>
-                    <Text style={styles.views}>{timeAgo(post.createdAt)}</Text>
-                    <Text style={styles.description}>{post.description}</Text>
-                    <Text
-                      style={styles.views}>{`${post.viewTotal} views`}</Text>
-                  </View>
-                  <View style={styles.actionView}>
-                    <IconButton
-                      style={styles.likeActionButton}
-                      name={'heart'}
-                      color={
-                        post.isLiked ? Colors.secondary : Colors.background
-                      }
-                      size={45}
-                      onPress={() => {
-                        if (post.isLiked) {
-                          dislikePost(post._id);
-                        } else {
-                          likePost(post._id);
-                        }
-                      }}
-                    />
-                    <Text style={styles.actionCount}>
-                      {'' + post.likeTotal}
-                    </Text>
-                    <IconButton
-                      style={styles.actionButton}
-                      name={'ios-chatbubble-ellipses-sharp'}
-                      color={Colors.background}
-                      size={30}
-                      onPress={() => {
-                        getComments(post._id);
-                        setCommandModelShow(true);
-                      }}
-                    />
-                    <Text style={styles.actionCount}>
-                      {'' + post.commentTotal}
-                    </Text>
-                    <IconButton
-                      style={styles.actionButton}
-                      name={'share-social'}
-                      color={Colors.background}
-                      size={30}
-                    />
-                    <Text style={styles.actionCount}>
-                      {'' + post.shareTotal}
-                    </Text>
-                    <Image
-                      style={styles.avatarAuthor}
-                      source={{
-                        uri: post.author.avatar,
-                      }}
-                      defaultSource={require('../../assets/images/avatar-default.png')}
-                    />
-                  </View>
-                </Row>
-              </DoublePressView>
-            </View>
-          ) : (
-            <View style={styles.videoFrame} key={index} />
-          );
-        })}
-      </ScrollView>
-
+      <PostsComponent
+        navigation={navigation}
+        posts={posts}
+        comments={comments}
+        totalComment={totalComment}
+        totalPageComment={totalPageComment}
+        pageComment={pageComment}
+        loadingComments={loadingComments}
+        currentPostId={currentPostId}
+        userId={userId}
+        username={username}
+        avatar={avatar}
+        bio={bio}
+        isLoading={isLoading}
+        currentIndex={currentIndex}
+        isFull={false}
+        scrollRef={undefined}
+        likePost={likePost}
+        dislikePost={dislikePost}
+        viewPost={viewPost}
+        getComments={getComments}
+        appendComments={appendComments}
+        likeComment={likeComment}
+        dislikeComment={dislikeComment}
+        getRepliesComment={getRepliesComment}
+        appendRepliesComment={appendRepliesComment}
+        commentPost={commentPost}
+        replyComment={replyComment}
+        loadingVideo={loadingVideo}
+        displayVideo={displayVideo}
+        setCurrentIndex={setCurrentIndex}
+        setUserInfo={setUserInfo}
+        setUpdateVideo={setUpdateVideo}
+        deletePost={deletePost}
+        updateComment={updateComment}
+        deleteComment={deleteComment}
+        setRestaurantInfo={setRestaurantWatchInfo}
+      />
       <Row style={styles.tagView}>
-        <TextButton textStyle={{...styles.tagTitle, ...styles.choicedTag}}>
+        <TextButton
+          textStyle={
+            getPostsTag === GetPostsTag.ForYou
+              ? {...styles.tagTitle, ...styles.choicedTag}
+              : styles.tagTitle
+          }
+          onPress={() => {
+            setGetPostsTag(GetPostsTag.ForYou);
+          }}>
           For you
         </TextButton>
-        <TextButton textStyle={{...styles.tagTitle}}>Popular</TextButton>
-        <TextButton textStyle={{...styles.tagTitle}}>Following</TextButton>
+        <TextButton
+          textStyle={
+            getPostsTag === GetPostsTag.Popular
+              ? {...styles.tagTitle, ...styles.choicedTag}
+              : styles.tagTitle
+          }
+          onPress={() => {
+            setGetPostsTag(GetPostsTag.Popular);
+          }}>
+          Popular
+        </TextButton>
+        <TextButton
+          textStyle={
+            getPostsTag === GetPostsTag.Following
+              ? {...styles.tagTitle, ...styles.choicedTag}
+              : styles.tagTitle
+          }
+          onPress={() => {
+            setGetPostsTag(GetPostsTag.Following);
+          }}>
+          Following
+        </TextButton>
         <IconButton
           style={styles.searchButton}
           name={'search'}
           color={Colors.background}
           size={15}
+          onPress={() => navigation.navigate(Screens.Search)}
         />
       </Row>
-      <CommentModal
-        commandModelShow={commandModelShow}
-        setCommandModelShow={setCommandModelShow}
-        navigation={navigation}
-        comments={comments}
-        totalComment={totalComment}
-        totalPageComment={totalPageComment}
-        pageComment={pageComment}
-        userId={userId}
-        username={username}
-        avatar={avatar}
-        appendComments={appendComments}
-        loadingComments={loadingComments}
-        likeComment={likeComment}
-        dislikeComment={dislikeComment}
-        currentPostId={currentPostId}
-        getRepliesComment={getRepliesComment}
-        appendRepliesComment={appendRepliesComment}
-        commentPost={commentPost}
-        replyComment={replyComment}
-      />
     </View>
   );
 };
@@ -257,10 +236,15 @@ const mapStateToProps = createStructuredSelector<any, any>({
   userId: makeSelectId(),
   username: makeSelectUsername(),
   avatar: makeSelectAvatar(),
+  bio: makeSelectBio(),
+  isLoading: makeSelectLoading(),
+  getPostsTag: makeSelectGetPostsTag(),
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
-  getPosts: () => dispatch(HomeActions.getPosts.request()),
+  getPosts: (tag: string) => dispatch(HomeActions.getPosts.request(tag)),
+  appendPosts: (tag: string, availables: string) =>
+    dispatch(HomeActions.appendPosts.request({tag, availables})),
   likePost: (postId: string) => dispatch(HomeActions.likePost.request(postId)),
   dislikePost: (postId: string) =>
     dispatch(HomeActions.dislikePost.request(postId)),
@@ -285,6 +269,19 @@ const mapDispatchToProps = (dispatch: any) => ({
     dispatch(HomeActions.loadingVideo.request(postId)),
   displayVideo: (postId: string) =>
     dispatch(HomeActions.displayVideo.request(postId)),
+  setGetPostsTag: (tag: string) =>
+    dispatch(HomeActions.setGetPostsTag.request(tag)),
+  setUserInfo: (payload: any) =>
+    dispatch(UserActions.setUserInfo.request(payload)),
+  setUpdateVideo: (payload: any) =>
+    dispatch(PostActions.setUpdateVideo.request(payload)),
+  deletePost: (id: string) => dispatch(HomeActions.deletePost.request(id)),
+  updateComment: (payload: any) =>
+    dispatch(HomeActions.updateComment.request(payload)),
+  deleteComment: (payload: any) =>
+    dispatch(HomeActions.deleteComment.request(payload)),
+  setRestaurantWatchInfo: (payload: any) =>
+    dispatch(RestaurantActions.setRestaurantInfo.request(payload)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);

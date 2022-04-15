@@ -2,7 +2,10 @@ import {call, put, takeLatest} from 'redux-saga/effects';
 
 import * as HomeAction from '../actions';
 import {
+  appendPostsService,
   commentPostService,
+  deleteCommentService,
+  deletePostService,
   dislikeCommentService,
   dislikePostService,
   getCommentsService,
@@ -11,6 +14,7 @@ import {
   likeCommentService,
   likePostService,
   replyCommentService,
+  updateCommentService,
   viewPostService,
 } from '../services';
 
@@ -18,9 +22,22 @@ interface Data {
   [key: string]: any;
 }
 
-function* getPostsSaga() {
+function* getPostsSaga({payload}: any) {
   try {
-    const response: Data = yield call(getPostsService);
+    yield put({
+      type: HomeAction.Types.GET_POSTS.succeeded,
+      payload: [],
+    });
+
+    yield put({
+      type: HomeAction.Types.LOADING.begin,
+    });
+
+    const response: Data = yield call(getPostsService, payload);
+
+    yield put({
+      type: HomeAction.Types.LOADING.succeeded,
+    });
 
     yield put({
       type: HomeAction.Types.GET_POSTS.succeeded,
@@ -28,8 +45,42 @@ function* getPostsSaga() {
     });
   } catch (error) {
     yield put({
+      type: HomeAction.Types.LOADING.succeeded,
+    });
+
+    yield put({
       type: HomeAction.Types.GET_POSTS.failed,
-      payload: error,
+      payload,
+      error,
+    });
+  }
+}
+
+function* appendPostsSaga({payload}: any) {
+  try {
+    yield put({
+      type: HomeAction.Types.LOADING.begin,
+    });
+
+    const response: Data = yield call(appendPostsService, payload);
+
+    yield put({
+      type: HomeAction.Types.LOADING.succeeded,
+    });
+
+    yield put({
+      type: HomeAction.Types.APPEND_POSTS.succeeded,
+      payload: response.data,
+    });
+  } catch (error) {
+    yield put({
+      type: HomeAction.Types.LOADING.succeeded,
+    });
+
+    yield put({
+      type: HomeAction.Types.APPEND_POSTS.failed,
+      payload,
+      error,
     });
   }
 }
@@ -45,7 +96,8 @@ function* likePostSaga({payload}: any) {
   } catch (error) {
     yield put({
       type: HomeAction.Types.LIKE_POST.failed,
-      payload: error,
+      payload,
+      error,
     });
   }
 }
@@ -61,7 +113,8 @@ function* dislikePostSaga({payload}: any) {
   } catch (error) {
     yield put({
       type: HomeAction.Types.DISLIKE_POST.failed,
-      payload: error,
+      payload,
+      error,
     });
   }
 }
@@ -77,7 +130,8 @@ function* viewPostSaga({payload}: any) {
   } catch (error) {
     yield put({
       type: HomeAction.Types.VIEW_POST.failed,
-      payload: error,
+      payload,
+      error,
     });
   }
 }
@@ -113,7 +167,8 @@ function* getCommentsSaga({payload}: any) {
     });
     yield put({
       type: HomeAction.Types.GET_COMMENTS.failed,
-      payload: error,
+      payload,
+      error,
     });
   }
 }
@@ -138,7 +193,8 @@ function* appendCommentsSaga({payload}: any) {
     });
     yield put({
       type: HomeAction.Types.APPEND_COMMENTS.failed,
-      payload: error,
+      payload,
+      error,
     });
   }
 }
@@ -154,7 +210,8 @@ function* likeCommentSaga({payload}: any) {
   } catch (error) {
     yield put({
       type: HomeAction.Types.LIKE_COMMENT.failed,
-      payload: error,
+      payload,
+      error,
     });
   }
 }
@@ -170,7 +227,8 @@ function* dislikeCommentSaga({payload}: any) {
   } catch (error) {
     yield put({
       type: HomeAction.Types.DISLIKE_COMMENT.failed,
-      payload: error,
+      payload,
+      error,
     });
   }
 }
@@ -213,7 +271,8 @@ function* getRepliesCommentSaga({payload}: any) {
     });
     yield put({
       type: HomeAction.Types.GET_REPLIES_COMMENT.failed,
-      payload: error,
+      payload,
+      error,
     });
   }
 }
@@ -246,7 +305,8 @@ function* appendRepliesCommentSaga({payload}: any) {
     });
     yield put({
       type: HomeAction.Types.APPEND_REPLIES_COMMENT.failed,
-      payload: error,
+      payload,
+      error,
     });
   }
 }
@@ -262,7 +322,7 @@ function* commentPostSaga({payload: {postId, content, author}}: any) {
   } catch (error) {
     yield put({
       type: HomeAction.Types.COMMENT_POST.failed,
-      payload: error,
+      error,
     });
   }
 }
@@ -278,13 +338,61 @@ function* replyCommentSaga({payload: {commentId, content, author}}: any) {
   } catch (error) {
     yield put({
       type: HomeAction.Types.REPLY_COMMENT.failed,
-      payload: error,
+      error,
+    });
+  }
+}
+
+function* deletePostSaga({payload}: any) {
+  try {
+    yield call(deletePostService, payload);
+  } catch (error) {
+    yield put({
+      type: HomeAction.Types.DELETE_POST.failed,
+      payload,
+      error,
+    });
+  }
+}
+
+function* updateCommentSaga({payload}: any) {
+  try {
+    yield call(updateCommentService, {
+      _id: payload._id,
+      content: payload.content,
+    });
+
+    yield put({
+      type: HomeAction.Types.UPDATE_COMMENT.succeeded,
+      payload,
+    });
+  } catch (error) {
+    yield put({
+      type: HomeAction.Types.UPDATE_COMMENT.failed,
+      payload,
+      error,
+    });
+  }
+}
+
+function* deleteCommentSaga({payload}: any) {
+  try {
+    yield call(deleteCommentService, payload);
+    yield put({
+      type: HomeAction.Types.DELETE_COMMENT.succeeded,
+    });
+  } catch (error) {
+    yield put({
+      type: HomeAction.Types.DELETE_COMMENT.failed,
+      payload,
+      error,
     });
   }
 }
 
 export default function* homeWatcher() {
   yield takeLatest(HomeAction.Types.GET_POSTS.begin, getPostsSaga);
+  yield takeLatest(HomeAction.Types.APPEND_POSTS.begin, appendPostsSaga);
   yield takeLatest(HomeAction.Types.LIKE_POST.begin, likePostSaga);
   yield takeLatest(HomeAction.Types.DISLIKE_POST.begin, dislikePostSaga);
   yield takeLatest(HomeAction.Types.VIEW_POST.begin, viewPostSaga);
@@ -302,4 +410,7 @@ export default function* homeWatcher() {
   );
   yield takeLatest(HomeAction.Types.COMMENT_POST.begin, commentPostSaga);
   yield takeLatest(HomeAction.Types.REPLY_COMMENT.begin, replyCommentSaga);
+  yield takeLatest(HomeAction.Types.DELETE_POST.begin, deletePostSaga);
+  yield takeLatest(HomeAction.Types.UPDATE_COMMENT.begin, updateCommentSaga);
+  yield takeLatest(HomeAction.Types.DELETE_COMMENT.begin, deleteCommentSaga);
 }

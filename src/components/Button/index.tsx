@@ -52,8 +52,10 @@ export default function Button(
   );
 }
 
-export function BackButton(props: TouchableHighlightProps) {
-  const {style, ...otherProps} = props;
+export function BackButton(
+  props: TouchableHighlightProps & {colorIcon?: string},
+) {
+  const {style, colorIcon, ...otherProps} = props;
   return (
     <TouchableHighlight
       style={{
@@ -62,7 +64,11 @@ export function BackButton(props: TouchableHighlightProps) {
       }}
       underlayColor="transparent"
       {...otherProps}>
-      <Icon name="arrow-back" color={Colors.text} size={25} />
+      <Icon
+        name="arrow-back"
+        color={colorIcon ? colorIcon : Colors.text}
+        size={25}
+      />
     </TouchableHighlight>
   );
 }

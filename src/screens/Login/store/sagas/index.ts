@@ -39,7 +39,8 @@ function* loginSaga({payload}: any) {
     });
     yield put({
       type: LoginAction.Types.LOGIN.failed,
-      payload: error,
+      payload,
+      error,
     });
   }
 }

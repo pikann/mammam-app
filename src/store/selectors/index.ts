@@ -29,10 +29,16 @@ const makeSelectAvatar = () =>
     return state.avatar;
   });
 
+const makeSelectBio = () =>
+  createSelector(appState, state => {
+    return state.bio;
+  });
+
 export {
   makeSelectStarted,
   makeSelectLogin,
   makeSelectId,
   makeSelectUsername,
   makeSelectAvatar,
+  makeSelectBio,
 };

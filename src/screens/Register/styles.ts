@@ -63,14 +63,14 @@ export const styles = StyleSheet.create({
   },
   signInButton: {
     marginLeft: 40,
-    marginTop: 50,
+    marginTop: height - 700,
     width: width - 80,
   },
   registerGoogleBtn: {
     backgroundColor: '#FFFFFF',
     marginLeft: 40,
     width: width - 80,
-    marginTop: 'auto',
+    marginTop: 25,
     marginBottom: 25,
   },
   registerGoogleText: {

@@ -14,9 +14,37 @@ const makeSelectVideoType = () =>
     return state.videoType;
   });
 
+const makeSelectVideoDuration = () =>
+  createSelector(postState, state => {
+    return state.videoDuration;
+  });
+
 const makeSelectIsLoading = () =>
   createSelector(postState, state => {
     return state.isLoading;
   });
 
-export {makeSelectVideoURI, makeSelectVideoType, makeSelectIsLoading};
+const makeSelectUpdateId = () =>
+  createSelector(postState, state => {
+    return state.updateId;
+  });
+
+const makeSelectDefaultDescription = () =>
+  createSelector(postState, state => {
+    return state.defaultDescription;
+  });
+
+const makeSelectDefaultRestaurant = () =>
+  createSelector(postState, state => {
+    return state.defaultRestaurant;
+  });
+
+export {
+  makeSelectVideoURI,
+  makeSelectVideoType,
+  makeSelectVideoDuration,
+  makeSelectIsLoading,
+  makeSelectUpdateId,
+  makeSelectDefaultDescription,
+  makeSelectDefaultRestaurant,
+};

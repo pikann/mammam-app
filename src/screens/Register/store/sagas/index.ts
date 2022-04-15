@@ -39,7 +39,8 @@ function* registerSaga({payload}: any) {
     });
     yield put({
       type: RegisterAction.Types.REGISTER.failed,
-      payload: error,
+      payload,
+      error,
     });
   }
 }
